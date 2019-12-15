@@ -1,33 +1,11 @@
-import express from "express";
-import WebSocket from "ws";
-
-import webPageRoute from "./scripts/expressRouter/webPageRoute";
-
-import {GamesManager} from "./scripts/gamesManager/gamesManager"
-import {HeroesStacks} from "./scripts/gamesManager/gameTableManager/heroesStacks/heroesStacks";
-import {Decks} from "./scripts/gamesManager/gameTableManager/deck/decks";
-import logInfo from "./scripts/consoleLoger/logInfo";
-import logLetters from "./scripts/consoleLoger/logLetters";
-import {StartLoggingSystemStatsTimeout} from "./scripts/consoleLoger/logSystemInfo";
-
-const app = express();
-const gamesManager = new GamesManager(new WebSocket.Server({port: 8080}));
+import {runDevelopmentBuild} from "./scripts/process.dev";
+import {runProductionBuild} from "./scripts/process.prod";
 
 (async () => {
-    console.clear();
-    logLetters("Hi!");
-    logLetters("lol +_+");
-    console.log();
+    const webPort: number = +process.env.npm_package_config_webPort!;
+    const gameWSPort: number = +process.env.npm_package_config_gameWSPort!;
+    const isDev: any = process.argv.some(arg => arg === "--dev");
 
-    app.use(webPageRoute);
-    app.listen(8000, () => logInfo("server started!"));
-
-    StartLoggingSystemStatsTimeout();
-
-    gamesManager.CreateNewTable(
-        1,
-        new Set([1, 2]),
-        Decks.defaultDeck,
-        HeroesStacks.defaultStack
-    );
+    if (isDev) await runDevelopmentBuild(webPort, gameWSPort);
+    else await runProductionBuild(webPort, gameWSPort);
 })();

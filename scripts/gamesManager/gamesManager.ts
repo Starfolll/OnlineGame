@@ -13,7 +13,7 @@ import logGameInfo from "../consoleLoger/logGameInfo";
 export class GamesManager {
     private readonly tables: { [id: number]: GameTableManager } = {};
 
-    constructor(gameWSS: WebSocket.Server) {
+    constructor(gameWSS: WebSocket.Server, cb?: Function) {
         gameWSS.on("connection", (connection: WebSocket) => {
             const onMessageHandler = (event: { data: any; type: string; target: WebSocket }): void => {
                 try {
@@ -39,6 +39,7 @@ export class GamesManager {
 
             connection.addEventListener("message", onMessageHandler);
         });
+        if (!!cb) cb();
     }
 
 
