@@ -1,0 +1,60 @@
+let socket;
+
+let id = -1;
+let name = Math.random() * 10000 | 0;
+let token = "-1";
+
+const connectToGame = (tableId) => {
+   socket = new WebSocket(`ws://${window.location.hostname}:8080`);
+
+   socket.onopen = () => {
+      socket.send(JSON.stringify({
+         "messageType": "playerInitialConnection",
+         "token": token,
+         "id": id,
+         "name": name,
+         "tableId": tableId
+      }));
+   };
+
+   socket.onmessage = (e) => {
+      console.log(JSON.parse(e.data));
+   };
+
+   socket.onerror = (err) => console.error(" | connection error", err);
+   socket.onclose = (err) => console.error(" | connection close", err.reason);
+};
+
+const pickHero = (heroId) => {
+   socket.send(JSON.stringify({
+      "messageType": "heroPicked",
+      "heroWeight": heroId
+   }));
+};
+
+const pickOption = (option) => {
+   socket.send(JSON.stringify({
+      "messageType": "initialHeroTurnOptionPicked",
+      "pickedOption": option
+   }));
+};
+
+const pickCard = (cardInGameId) => {
+   socket.send(JSON.stringify({
+      "messageType": "initialHeroCardPicked",
+      "cardInGameId": cardInGameId
+   }));
+};
+
+const build = (cardInGameId) => {
+   socket.send(JSON.stringify({
+      "messageType": "buildDistrict",
+      "cardInGameId": cardInGameId
+   }));
+};
+
+const endBuildTurn = () => {
+   socket.send(JSON.stringify({
+      "messageType": "buildTurnMade",
+   }));
+};
