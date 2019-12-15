@@ -1,5 +1,5 @@
 import {playerEndGameScoreTable, Player, playerInfo, playerPreGameInfo} from "./player";
-import {Card, cardInfo} from "../gameTableManager/deck/card";
+import {Card, cardClass, cardInfo} from "../gameTableManager/deck/card";
 import {Hero} from "../gameTableManager/heroesStacks/hero";
 import {tableInfo} from "../gameTableManager/gameTable";
 
@@ -33,6 +33,11 @@ export class Players {
     }
 
 
+    public GetPlayerWithId(id: number): Player {
+        return this.players[id];
+    }
+
+
     public GivePlayerCard(playerId: number, card: Card, announce = true): void {
         this.players[playerId].hand.push(card);
         if (announce) this.InformPlayersAboutPlayerReceivedCard(playerId, card);
@@ -43,12 +48,29 @@ export class Players {
         if (announce) this.InformPlayersAboutPlayerReceivedGold(playerId, count);
     }
 
+    public SetPlayerKing(playerId: number): void {
+        Array.from(this.playersIdInGame).forEach(pId => {
+            this.players[pId].isKing = playerId === pId;
+        });
+    }
+
+    public AddBuildLimitToPlayer(playerId: number, additionLimit: number): void {
+        this.players[playerId].buildLimit += additionLimit;
+    }
+
+    public AddGoldToPlayerForEachCardClass(playerId: number, cardClass: cardClass): void {
+        const playerPlacedCards = this.GetPlayerWithId(playerId).placedCards;
+        let additionGold = 0;
+        playerPlacedCards.forEach(c => {
+            if (c.cardClass === "all" || c.cardClass === cardClass) additionGold++;
+        });
+        if (additionGold > 0) this.GivePlayerGold(playerId, additionGold);
+    }
 
     public AttachHeroWeightToPlayer(playerId: number, heroWeight: number): void {
         this.players[playerId].heroWeight = heroWeight;
         this.players[playerId].SetHeroPickTurnMade();
     }
-
 
     //------------//
     // pick hero sickle and start game

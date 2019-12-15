@@ -37,7 +37,7 @@ export type playerInfo = {
     heroesWeightToPickFrom?: Array<number> | undefined;
     initialTurnOptionsToPickFrom?: Array<string> | undefined;
     initialTurnCardsToPickFrom?: Array<cardInfo> | undefined;
-    buildLimit?: number | undefined;
+    buildLimit?: number;
 
     hand?: Array<cardInfo>;
     pickedHeroWeight?: number | undefined;
@@ -68,7 +68,7 @@ export class Player {
     public heroesWeightToPickFrom: Array<number> | undefined = undefined;
     public initialTurnOptionsToPickFrom: Array<string> | undefined = undefined;
     public initialTurnCardsToPickFrom: Array<Card> | undefined = undefined;
-    public buildLimit: number | undefined = undefined;
+    public buildLimit: number = 1;
 
     public hand: Array<Card> = [];
     public heroWeight: number | undefined = undefined;
@@ -106,6 +106,7 @@ export class Player {
 
     public ResetTurns(): void {
         this.heroWeight = undefined;
+        this.buildLimit = 1;
         this.isHeroPickTurnMade = false;
         this.isInitialHeroTurnMade = false;
         this.isBuildTurnMade = false;
@@ -124,7 +125,7 @@ export class Player {
     }
 
     public SetBuildTurnMade(): void {
-        this.buildLimit = undefined;
+        this.buildLimit = 0;
         this.isBuildTurnMade = true;
     }
 

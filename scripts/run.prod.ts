@@ -27,5 +27,5 @@ export async function runProductionBuild(webPort: number, gameWSPort: number) {
     app.use(webPageRoute);
     app.listen(webPort, () => logInfo(`Web listening at port ${webPort}`));
 
-    StartLoggingSystemStatsTimeout();
+    StartLoggingSystemStatsTimeout(600000);
 }

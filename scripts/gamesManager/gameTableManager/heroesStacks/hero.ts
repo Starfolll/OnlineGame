@@ -47,11 +47,11 @@ export abstract class Hero {
     public abstract ResetDebuffs(): void;
 
 
-    public ApplyBuff(buff: heroBuffsTypes): void {
+    public AddBuff(buff: heroBuffsTypes): void {
         this.buffs.push(buff);
     }
 
-    public ApplyDebuff(debuff: heroDebuffsTypes): void {
+    public AddDebuff(debuff: heroDebuffsTypes): void {
         this.debuffs.push(debuff);
     }
 
@@ -61,12 +61,39 @@ export abstract class Hero {
     }
 
     public InvokeBuffs(playerId: number, players: Players, heroes: HeroesStack, deck: Deck): void {
-        console.log(this.buffs);
         this.buffs.forEach(buff => {
             switch (buff) {
                 case "instanceGold":
-                    console.log("instanceGold");
                     players.GivePlayerGold(playerId, 1);
+                    break;
+
+                case "goldForGreenDistricts":
+                    players.AddGoldToPlayerForEachCardClass(playerId, "green");
+                    break;
+
+                case "goldForBlueDistricts":
+                    players.AddGoldToPlayerForEachCardClass(playerId, "blue");
+                    break;
+
+                case "goldForRedDistricts":
+                    players.AddGoldToPlayerForEachCardClass(playerId, "red");
+                    break;
+
+                case "goldForYellowDistricts":
+                    players.AddGoldToPlayerForEachCardClass(playerId, "yellow");
+                    break;
+
+                case "instanceCard":
+                    const card = deck.GetTopCard();
+                    if (!!card) players.GivePlayerCard(playerId, card);
+                    break;
+
+                case "king":
+                    players.SetPlayerKing(playerId);
+                    break;
+
+                case "overBuild":
+                    players.AddBuildLimitToPlayer(playerId, 2);
                     break;
             }
         });

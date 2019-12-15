@@ -1,4 +1,4 @@
-export type cardClass = "yellow" | "red" | "orange";
+export type cardClass = "yellow" | "red" | "purple" | "blue" | "green" | "all";
 
 export type cardInfo = {
     id: number;

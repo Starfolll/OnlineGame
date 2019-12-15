@@ -1,5 +1,5 @@
-import {runDevelopmentBuild} from "./scripts/process.dev";
-import {runProductionBuild} from "./scripts/process.prod";
+import {runDevelopmentBuild} from "./scripts/run.dev";
+import {runProductionBuild} from "./scripts/run.prod";
 
 (async () => {
     const webPort: number = +process.env.npm_package_config_webPort!;

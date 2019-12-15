@@ -12,8 +12,8 @@ export function logSystemInfo() {
         ` [ ${dateNow.toLocaleTimeString()} ]` +
         ` [ ${chalk.blueBright("SYS")} ]` +
         " |---| " +
-        chalk.blueBright(`mem: ${usedMemory} mb`) + " | " +
-        chalk.blueBright(`cpu: ${cpuUsage} %`)
+        chalk.blueBright(`mem: ${usedMemory} mb`.padEnd(20, " ")) + " | " +
+        chalk.blueBright(`cpu: ${cpuUsage} %`.padEnd(20, " "))
     );
 }
 
