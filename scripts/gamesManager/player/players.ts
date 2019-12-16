@@ -74,6 +74,39 @@ export class Players {
 
     //------------//
     // pick hero sickle and start game
+    private GetPlayerIdWithTurnNumber(turnNumber: number): number {
+        const playersId = Array.from(this.playersIdInGame);
+
+        for (let i = 0; i < playersId.length; i++) {
+            const player = this.players[playersId[i]];
+            if (player.heroPickTurnNumber === turnNumber)
+                return player.playerId;
+        }
+
+        return -1;
+    }
+
+    private GetPlayerIdWithHeroWeight(weight: number): number {
+        const playersId = Array.from(this.playersIdInGame);
+
+        for (let i = 0; i < playersId.length; i++) {
+            const player = this.players[playersId[i]];
+            if (player.heroWeight === weight)
+                return player.playerId;
+        }
+
+        return -1;
+    }
+
+    private GetKingPlayerId(): number {
+        const playersId = Array.from(this.playersIdInGame.values());
+        for (let i = 0; i < playersId.length; i++) {
+            if (this.players[playersId[i]].isKing) return playersId[i];
+        }
+        return -1;
+    }
+
+
     public ResetTurns(): void {
         Array.from(this.playersIdInGame).forEach(pId => {
             this.players[pId].ResetTurns();
@@ -94,14 +127,6 @@ export class Players {
         });
 
         this.playerPickHeroTurn = 0;
-    }
-
-    private GetKingPlayerId(): number {
-        const playersId = Array.from(this.playersIdInGame.values());
-        for (let i = 0; i < playersId.length; i++) {
-            if (this.players[playersId[i]].isKing) return playersId[i];
-        }
-        return -1;
     }
 
     public RearrangePlayersTurn(): void {
@@ -135,30 +160,6 @@ export class Players {
 
     public IsPlayerHeroPickTurn(playerId: number, heroWeight: number): boolean {
         return this.players[playerId].IsHeroPickTurnCanBeMade(heroWeight);
-    }
-
-    private GetPlayerIdWithTurnNumber(turnNumber: number): number {
-        const playersId = Array.from(this.playersIdInGame);
-
-        for (let i = 0; i < playersId.length; i++) {
-            const player = this.players[playersId[i]];
-            if (player.heroPickTurnNumber === turnNumber)
-                return player.playerId;
-        }
-
-        return -1;
-    }
-
-    private GetPlayerIdWithHeroWeight(weight: number): number {
-        const playersId = Array.from(this.playersIdInGame);
-
-        for (let i = 0; i < playersId.length; i++) {
-            const player = this.players[playersId[i]];
-            if (player.heroWeight === weight)
-                return player.playerId;
-        }
-
-        return -1;
     }
 
     public IsAllPlayersPickedHero(): boolean {
@@ -246,7 +247,7 @@ export class Players {
             this.players[playerId].gold -= card.cost;
             this.players[playerId].placedCards.push(card);
 
-            const newBuildLimit = !!this.players[playerId].buildLimit ? this.players[playerId].buildLimit : undefined;
+            const newBuildLimit = !!this.players[playerId].buildLimit ? this.players[playerId].buildLimit - 1 : undefined;
             if (!!newBuildLimit) this.players[playerId].buildLimit = newBuildLimit;
 
             this.InformPlayersAboutPlayerBuiltDistrict(playerId, card.GetInfo());

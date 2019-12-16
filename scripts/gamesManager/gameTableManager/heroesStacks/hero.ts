@@ -12,7 +12,14 @@ export type heroInfo = {
     description: string;
     ability: heroAbilityTypes | undefined;
     buffs: Array<heroBuffsTypes>;
-    debuffs: Array<heroDebuffsTypes>;
+    debuffs: Array<debuffWithMetadata>;
+}
+
+type debuffWithMetadata = {
+    debuffType: heroDebuffsTypes,
+    fromPlayerId: number,
+    fromHeroId: number,
+    additionData?: any
 }
 
 export abstract class Hero {
@@ -23,10 +30,11 @@ export abstract class Hero {
 
     public abstract readonly abilityType: heroAbilityTypes | undefined;
     public abstract buffs: Array<heroBuffsTypes> = [];
-    public abstract debuffs: Array<heroDebuffsTypes> = [];
+    public abstract debuffs: Array<debuffWithMetadata> = [];
+
 
     get isDead(): boolean {
-        return this.debuffs.some(d => d === "killed");
+        return this.debuffs.some(d => d.debuffType === "killed");
     }
 
     public GetInfo(): heroInfo {
@@ -51,13 +59,26 @@ export abstract class Hero {
         this.buffs.push(buff);
     }
 
-    public AddDebuff(debuff: heroDebuffsTypes): void {
-        this.debuffs.push(debuff);
+    public AddDebuff(debuff: heroDebuffsTypes, fromHero: number, fromPlayerId: number, additionalData?: any): void {
+        this.debuffs.push({
+            "debuffType": debuff,
+            "fromHeroId": fromHero,
+            "fromPlayerId": fromPlayerId,
+            "additionData": additionalData
+        });
     }
 
 
     public InvokeDebuffs(playerId: number, players: Players, heroes: HeroesStack, deck: Deck): void {
+        this.debuffs.forEach(debuff => {
+            switch (debuff.debuffType) {
+                case "robbed":
+                    break;
 
+                case "killed":
+                    break;
+            }
+        });
     }
 
     public InvokeBuffs(playerId: number, players: Players, heroes: HeroesStack, deck: Deck): void {

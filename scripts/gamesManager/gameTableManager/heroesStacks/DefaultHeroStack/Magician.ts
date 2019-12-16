@@ -10,7 +10,7 @@ export class Magician extends Hero {
     public readonly description: string = "";
 
     public readonly abilityType: heroAbilityTypes | undefined = "changeHand";
-    public buffs: Array<heroBuffsTypes> = ["instanceCard"];
+    public buffs: Array<heroBuffsTypes> = ["instanceCard", "overBuild"];
     public debuffs: Array<heroDebuffsTypes> = [];
 
     public ResetBuffs(): void {

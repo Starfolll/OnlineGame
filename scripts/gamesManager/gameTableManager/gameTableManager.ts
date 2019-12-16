@@ -4,7 +4,7 @@ import {Hero} from "./heroesStacks/hero";
 import {Player} from "../player/player";
 import {IsMessageValid} from "../player/communicationWithPlayer/responseMessages";
 import {Card} from "./deck/card";
-import logGameInfo from "../../consoleLoger/logGameInfo";
+import logGameInfo from "../../consoleLogs/logGameInfo";
 import {playerTurnResponse} from "../player/communicationWithPlayer/responseMessagesTypes";
 
 
@@ -45,7 +45,6 @@ export class GameTableManager extends GameTable {
     private AttachPlayerOnDisconnected(player: Player): void {
         const onDisconnected = (event: { wasClean: boolean; code: number; reason: string; target: WebSocket }): void => {
             this.SetPlayerDisconnected(player.playerId);
-            console.log(" | player disconnected : " + player.playerId);
         };
 
         player.Connection.addEventListener("close", onDisconnected);
@@ -59,7 +58,8 @@ export class GameTableManager extends GameTable {
             if (!messageBody["messageType"]) return;
             const messageType = messageBody["messageType"];
 
-            logGameInfo(JSON.stringify(messageBody, null, 2));
+            logGameInfo("");
+            console.log(messageBody);
 
             switch (messageType) {
                 case playerTurnResponse.heroPicked:
@@ -87,7 +87,7 @@ export class GameTableManager extends GameTable {
             }
 
         } catch (e) {
-            console.log(e.message);
+
         }
     }
 

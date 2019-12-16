@@ -142,14 +142,13 @@ export class Player {
 
     public IsInitialPickCardTurnCanBeMade(cardInGameId: number): boolean {
         return !!this.initialTurnCardsToPickFrom &&
-            this.initialTurnCardsToPickFrom.some(c => {
-                return c.gameId === cardInGameId && this.HasEnoughGold(c.cost);
-            });
+            this.initialTurnCardsToPickFrom.some(c => c.gameId === cardInGameId);
     }
 
     public IsDistrictBuildCanBeMade(cardInGameId: number): boolean {
         return !!this.buildLimit &&
-            this.hand.some(c => c.gameId === cardInGameId) &&
+            this.hand.some(c => c.gameId === cardInGameId && this.HasEnoughGold(c.cost)) &&
+            !this.IsMaxDistrictsBuilt() &&
             this.IsDistrictCanBePlaced(cardInGameId);
     }
 
@@ -187,12 +186,12 @@ export class Player {
 
     public RemoveCardFromHand(cardInGameId: number): Card | undefined {
         let card = undefined;
-        this.hand.filter(c => {
-            if (c.gameId === cardInGameId) {
+        this.hand = this.hand.filter(c => {
+            if (cardInGameId === c.gameId) {
                 card = c;
-                return true;
+                return false;
             }
-            return false;
+            return true;
         });
         return card;
     }
@@ -244,10 +243,6 @@ export class Player {
             "heroPickTurnNumber": this.heroPickTurnNumber,
             "heroPickInitialTurnNumber": this.heroPickInitialTurnNumber,
 
-            "heroesWeightToPickFrom": this.heroesWeightToPickFrom,
-            "initialTurnOptionsToPickFrom": this.initialTurnOptionsToPickFrom,
-            "initialTurnCardsToPickFrom": this.initialTurnCardsToPickFrom,
-
             "gold": this.gold,
             "placedCards": this.placedCards,
             "maxSameCardsAmount": this.maxSameCardsAmount,
@@ -264,6 +259,8 @@ export class Player {
             if (!!this.initialTurnCardsToPickFrom) info["initialTurnCardsToPickFrom"] = this.initialTurnCardsToPickFrom;
             if (!!this.buildLimit) info["buildLimit"] = this.buildLimit;
         }
+
+        if (this.isInitialHeroTurnMade) info["pickedHeroWeight"] = this.heroWeight;
 
         return info;
     }

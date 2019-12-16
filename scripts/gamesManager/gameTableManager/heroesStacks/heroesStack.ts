@@ -37,7 +37,7 @@ export class HeroesStack {
 
 
     public IsLeftHeroesHasWeight(heroWeight: number): boolean {
-        return this.leftWeight.filter(hw => hw === heroWeight).length > 0;
+        return this.leftWeight.some(hw => hw === heroWeight);
     }
 
     public RefillLeftHeroes(): void {
@@ -77,7 +77,7 @@ export class HeroesStack {
 
 
     public RemoveLeftHero(heroWeight: number) {
-        this.heroesLeft.filter(hW => hW !== heroWeight);
+        this.heroesLeft = this.heroesLeft.filter(hW => hW !== heroWeight);
     }
 
 

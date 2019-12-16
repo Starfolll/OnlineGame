@@ -10,11 +10,11 @@ export class King extends Hero {
     public readonly description: string = "";
 
     public readonly abilityType: heroAbilityTypes | undefined = undefined;
-    public buffs: Array<heroBuffsTypes> = ["goldForYellowDistricts"];
+    public buffs: Array<heroBuffsTypes> = ["goldForYellowDistricts", "king"];
     public debuffs: Array<heroDebuffsTypes> = [];
 
     public ResetBuffs(): void {
-        this.buffs = ["goldForYellowDistricts"];
+        this.buffs = ["goldForYellowDistricts", "king"];
     }
 
     public ResetDebuffs(): void {

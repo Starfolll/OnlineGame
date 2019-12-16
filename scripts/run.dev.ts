@@ -3,11 +3,12 @@ import express from "express";
 
 import webPageRoute from "./expressRouter/webPageRoute";
 
-import logLetters from "./consoleLoger/logLetters";
-import logInfo from "./consoleLoger/logInfo";
+import logLetters from "./consoleLogs/logLetters";
+import logInfo from "./consoleLogs/logInfo";
+import logLink from "./consoleLogs/logLink";
 
 import {GamesManager} from "./gamesManager/gamesManager";
-import {StartLoggingSystemStatsTimeout} from "./consoleLoger/logSystemInfo";
+import {StartLoggingSystemStatsTimeout} from "./consoleLogs/logSystemInfo";
 import {Decks} from "./gamesManager/gameTableManager/deck/decks";
 import {HeroesStacks} from "./gamesManager/gameTableManager/heroesStacks/heroesStacks";
 
@@ -18,6 +19,7 @@ export async function runDevelopmentBuild(webPort: number, gameWSPort: number) {
     logLetters("dev +_+");
     console.log();
 
+    logLink(`http://localhost:${webPort}`, "Main website");
     logInfo(`Server version: ${process.env.npm_package_version}`);
 
     const app = express();
@@ -29,7 +31,7 @@ export async function runDevelopmentBuild(webPort: number, gameWSPort: number) {
     app.use(webPageRoute);
     app.listen(webPort, () => logInfo(`Web listening at port ${webPort}`));
 
-    StartLoggingSystemStatsTimeout();
+    StartLoggingSystemStatsTimeout(120000 * 3);
 
     gamesManager.CreateNewTable(
         1,

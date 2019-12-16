@@ -3,11 +3,11 @@ import express from "express";
 
 import webPageRoute from "./expressRouter/webPageRoute";
 
-import logLetters from "./consoleLoger/logLetters";
-import logInfo from "./consoleLoger/logInfo";
+import logLetters from "./consoleLogs/logLetters";
+import logInfo from "./consoleLogs/logInfo";
 
 import {GamesManager} from "./gamesManager/gamesManager";
-import {StartLoggingSystemStatsTimeout} from "./consoleLoger/logSystemInfo";
+import {StartLoggingSystemStatsTimeout} from "./consoleLogs/logSystemInfo";
 
 
 export async function runProductionBuild(webPort: number, gameWSPort: number) {

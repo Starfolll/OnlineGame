@@ -7,8 +7,8 @@ import {Card} from "./gameTableManager/deck/card";
 import {IsMessageValid} from "./player/communicationWithPlayer/responseMessages";
 import {playerInitialConnection} from "./player/communicationWithPlayer/responseMessagesTypes";
 
-import logError from "../consoleLoger/logError";
-import logGameInfo from "../consoleLoger/logGameInfo";
+import logError from "../consoleLogs/logError";
+import logGameInfo from "../consoleLogs/logGameInfo";
 
 export class GamesManager {
     private readonly tables: { [id: number]: GameTableManager } = {};
@@ -54,10 +54,7 @@ export class GamesManager {
         cards: Array<Card>,
         heroes: { [heroWeight: number]: Hero }
     ): void {
-        logGameInfo(
-            `New table :` +
-            ` [id : ${tableId}]` +
-            ` [playersId : ${Array.from(playersId).join(", ")}]`);
+        logGameInfo(`New table: ` + tableId);
 
         const onGameEnd = (tableId: number) => this.DropTable(tableId);
 
