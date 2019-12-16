@@ -1,7 +1,10 @@
-import {Hero} from "../hero";
+import {debuffWithMetadata, Hero} from "../hero";
 import {heroAbilityTypes} from "../heroAbilityTypes";
 import {heroDebuffsTypes} from "../heroDebuffsTypes";
 import {heroBuffsTypes} from "../heroBuffsTypes";
+import {Players} from "../../../player/players";
+import {HeroesStack} from "../heroesStack";
+import {Deck} from "../../deck/deck";
 
 export class Merchant extends Hero {
     public readonly id: number = 6;
@@ -11,7 +14,7 @@ export class Merchant extends Hero {
 
     public readonly abilityType: heroAbilityTypes | undefined = undefined;
     public buffs: Array<heroBuffsTypes> = ["goldForGreenDistricts", "instanceGold"];
-    public debuffs: Array<heroDebuffsTypes> = [];
+    public debuffs: Array<debuffWithMetadata> = [];
 
     public ResetBuffs(): void {
         this.buffs = ["goldForGreenDistricts", "instanceGold"];
@@ -19,5 +22,13 @@ export class Merchant extends Hero {
 
     public ResetDebuffs(): void {
         this.debuffs = [];
+    }
+
+    public IsPlayerCanMakeAbilityMove(message: any, playerId: number, players: Players, heroes: HeroesStack, deck: Deck): boolean {
+        return false;
+    }
+
+    public CastPlayerAbility(message: any, playerId: number, players: Players, heroes: HeroesStack, deck: Deck): void {
+
     }
 }
