@@ -1,7 +1,23 @@
-import {Hero} from "../hero";
+import {debuffWithMetadata, Hero} from "../hero";
 import {heroAbilityTypes} from "../heroAbilityTypes";
-import {heroDebuffsTypes} from "../heroDebuffsTypes";
 import {heroBuffsTypes} from "../heroBuffsTypes";
+import {Players} from "../../../player/players";
+import {HeroesStack} from "../heroesStack";
+import {Deck} from "../../deck/deck";
+
+
+type heroKilled = {
+    messageType: string;
+    killedHeroWeight: number;
+}
+
+const GetValidUserMassage = (message: any): heroKilled | undefined => {
+    if (typeof message !== "object") return undefined;
+    if (!message["messageType"] && message["messageType"] !== "heroKilled") return undefined;
+    if (!message["killedHeroWeight"] && typeof message["killedHeroWeight"] !== "number") return undefined;
+    return message as heroKilled;
+};
+
 
 export class Assassin extends Hero {
     public readonly id: number = 1;
@@ -11,7 +27,7 @@ export class Assassin extends Hero {
 
     public readonly abilityType: heroAbilityTypes | undefined = "disableHero";
     public buffs: Array<heroBuffsTypes> = [];
-    public debuffs: Array<heroDebuffsTypes> = [];
+    public debuffs: Array<debuffWithMetadata> = [];
 
     public ResetBuffs(): void {
         this.buffs = [];
@@ -19,5 +35,19 @@ export class Assassin extends Hero {
 
     public ResetDebuffs(): void {
         this.debuffs = [];
+    }
+
+    public IsPlayerCanMakeAbilityMove(message: any, playerId: number, players: Players, heroes: HeroesStack, deck: Deck): boolean {
+        const validMessage = GetValidUserMassage(message);
+
+        if (!validMessage) return false;
+        return heroes.allHeroes.some(h => validMessage.killedHeroWeight === h.weight);
+    }
+
+    public CastPlayerAbility(message: any, playerId: number, players: Players, heroes: HeroesStack, deck: Deck): void {
+        const validMessage = GetValidUserMassage(message)!;
+
+        heroes.AddDebuffOnPlayer(validMessage.killedHeroWeight, "killed", playerId);
+        players.InformAboutDebuffAddedToHero(validMessage.killedHeroWeight, "killed", playerId);
     }
 }

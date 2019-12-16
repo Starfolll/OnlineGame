@@ -1,6 +1,7 @@
 import {Hero, heroInfo} from "./hero";
 import {Players} from "../../player/players";
 import {Deck} from "../deck/deck";
+import {heroDebuffsTypes} from "./heroDebuffsTypes";
 
 export class HeroesStack {
     private readonly heroes: Readonly<{ [heroWeight: number]: Hero }>;
@@ -24,6 +25,10 @@ export class HeroesStack {
 
     get shiftedWeight(): Array<number> {
         return this.heroesShifted;
+    }
+
+    get allHeroes(): Array<Hero> {
+        return Object.keys(this.heroes).map(hW => this.heroes[+hW]);
     }
 
 
@@ -83,6 +88,11 @@ export class HeroesStack {
 
     public IsHeroDead(heroWeight: number): boolean | undefined {
         return this.heroes[heroWeight]?.isDead;
+    }
+
+
+    public AddDebuffOnPlayer(heroWeight: number, debuffType: heroDebuffsTypes, fromPlayerId: number): void {
+        this.heroes[heroWeight].AddDebuff(debuffType, fromPlayerId);
     }
 
 

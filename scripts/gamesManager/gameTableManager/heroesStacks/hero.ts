@@ -15,10 +15,9 @@ export type heroInfo = {
     debuffs: Array<debuffWithMetadata>;
 }
 
-type debuffWithMetadata = {
+export type debuffWithMetadata = {
     debuffType: heroDebuffsTypes,
     fromPlayerId: number,
-    fromHeroId: number,
     additionData?: any
 }
 
@@ -59,20 +58,31 @@ export abstract class Hero {
         this.buffs.push(buff);
     }
 
-    public AddDebuff(debuff: heroDebuffsTypes, fromHero: number, fromPlayerId: number, additionalData?: any): void {
+    public AddDebuff(debuff: heroDebuffsTypes, fromPlayerId: number, additionalData?: any): void {
         this.debuffs.push({
             "debuffType": debuff,
-            "fromHeroId": fromHero,
             "fromPlayerId": fromPlayerId,
             "additionData": additionalData
         });
     }
 
 
+    get IsHeroHasAbility(): boolean {
+        return !!this.abilityType;
+    }
+
+    public abstract IsPlayerCanMakeAbilityMove(message: any, playerId: number, players: Players, heroes: HeroesStack, deck: Deck): boolean;
+
+    public abstract CastPlayerAbility(message: any, playerId: number, players: Players, heroes: HeroesStack, deck: Deck): void;
+
+
     public InvokeDebuffs(playerId: number, players: Players, heroes: HeroesStack, deck: Deck): void {
         this.debuffs.forEach(debuff => {
             switch (debuff.debuffType) {
                 case "robbed":
+                    const gold = players.GetPlayerWithId(playerId).gold;
+                    players.GivePlayerGold(playerId, -gold);
+                    players.GivePlayerGold(debuff.fromPlayerId, gold);
                     break;
 
                 case "killed":

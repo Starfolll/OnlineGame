@@ -4,6 +4,7 @@ import {Card, cardInfo} from "../gameTableManager/deck/card";
 
 import {GetMessage} from "./communicationWithPlayer/informMassages";
 import {tableInfoWithPlayers} from "./players";
+import {heroDebuffsTypes} from "../gameTableManager/heroesStacks/heroDebuffsTypes";
 
 
 export type playerPreGameInfo = {
@@ -340,5 +341,10 @@ export class Player {
     public InformAboutGameEnd(scoreTable: Array<playerEndGameScoreTable>): void {
         if (this.IsConnected)
             this.connection.send(JSON.stringify(GetMessage.GameEnd(scoreTable)));
+    }
+
+    public InformAboutDebuffAddedToHero(heroWeight: number, debuffType: heroDebuffsTypes, fromPlayerId?: number): void {
+        if (this.IsConnected)
+            this.connection.send(JSON.stringify(GetMessage.DebuffAddedToHero(heroWeight, debuffType, fromPlayerId)));
     }
 }

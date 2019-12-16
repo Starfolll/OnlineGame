@@ -1,6 +1,7 @@
 import {playerEndGameScoreTable, playerPreGameInfo} from "../player";
 import {tableInfoWithPlayers} from "../players";
 import {Card, cardInfo} from "../../gameTableManager/deck/card";
+import {heroDebuffsTypes} from "../../gameTableManager/heroesStacks/heroDebuffsTypes";
 
 export type preGameInfo = {
     messageType: string;
@@ -80,4 +81,11 @@ export type playerBuiltDistrict = {
 export type gameEnd = {
     messageType: string;
     scoreTable: Array<playerEndGameScoreTable>;
+}
+
+export type debuffAddedToHero = {
+    messageType: string;
+    debuffType: heroDebuffsTypes;
+    heroWeight: number;
+    fromPlayerId?: number;
 }

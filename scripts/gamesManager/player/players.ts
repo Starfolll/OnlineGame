@@ -1,7 +1,7 @@
-import {playerEndGameScoreTable, Player, playerInfo, playerPreGameInfo} from "./player";
+import {Player, playerInfo, playerPreGameInfo} from "./player";
 import {Card, cardClass, cardInfo} from "../gameTableManager/deck/card";
-import {Hero} from "../gameTableManager/heroesStacks/hero";
 import {tableInfo} from "../gameTableManager/gameTable";
+import {heroDebuffsTypes} from "../gameTableManager/heroesStacks/heroDebuffsTypes";
 
 
 export type tableInfoWithPlayers = {
@@ -415,6 +415,12 @@ export class Players {
     public InformPlayersAboutPlayerReceivedCard(playerId: number, card: Card): void {
         Array.from(this.playersIdInGame).forEach(pId => {
             this.players[pId].InformAboutPlayerReceivedCard(playerId, playerId === pId ? card : undefined);
+        });
+    }
+
+    public InformAboutDebuffAddedToHero(heroWeight: number, debuffType: heroDebuffsTypes, fromPlayerId?: number): void {
+        Array.from(this.playersIdInGame).forEach(pId => {
+            this.players[pId].InformAboutDebuffAddedToHero(heroWeight, debuffType, fromPlayerId);
         });
     }
 

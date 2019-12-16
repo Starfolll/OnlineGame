@@ -2,21 +2,23 @@ import {playerEndGameScoreTable, playerPreGameInfo} from "../player";
 import {tableInfoWithPlayers} from "../players";
 import {Card, cardInfo} from "../../gameTableManager/deck/card";
 import {
-    playerDisconnected,
-    playerInitialConnection,
-    preGameInfo,
-    playerPickingHero,
-    playerReceivedGold,
-    gameTable,
+    debuffAddedToHero,
     gameEnd,
+    gameTable,
     heroBuildTurnStarted,
     heroInitialTurnStarted,
     heroPickTurnStart,
     pickOneOfProposedCards,
     playerBuiltDistrict,
     playerConnected,
-    playerReceivedCard
+    playerDisconnected,
+    playerInitialConnection,
+    playerPickingHero,
+    playerReceivedCard,
+    playerReceivedGold,
+    preGameInfo
 } from "./informMassagesTypes";
+import {heroDebuffsTypes} from "../../gameTableManager/heroesStacks/heroDebuffsTypes";
 
 
 export class GetMessage {
@@ -126,6 +128,15 @@ export class GetMessage {
         return {
             "messageType": "gameEnd",
             "scoreTable": scoreTable
+        }
+    }
+
+    static DebuffAddedToHero(heroWeight: number, debuffType: heroDebuffsTypes, fromPlayerId?: number): debuffAddedToHero {
+        return {
+            "messageType": "debuffAddedToHero",
+            "debuffType": debuffType,
+            "heroWeight": heroWeight,
+            "fromPlayerId": fromPlayerId
         }
     }
 }
