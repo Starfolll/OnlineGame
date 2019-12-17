@@ -7,6 +7,8 @@ import logLetters from "./consoleLogs/logLetters";
 import logInfo from "./consoleLogs/logInfo";
 import logLink from "./consoleLogs/logLink";
 
+import {prisma} from "../generated/prisma-client";
+
 import {GamesManager} from "./gamesManager/gamesManager";
 import {StartLoggingSystemStatsTimeout} from "./consoleLogs/logSystemInfo";
 import {Decks} from "./gamesManager/gameTableManager/deck/decks";
@@ -39,4 +41,10 @@ export async function runDevelopmentBuild(webPort: number, gameWSPort: number) {
         Decks.defaultDeck,
         HeroesStacks.defaultStack
     );
+
+    // const newUser = await prisma.createUser({name: "Alice"});
+    // console.log(newUser);
+
+    const allUsers = await prisma.users({where: {name: "Alice"}});
+    console.log(allUsers)
 }

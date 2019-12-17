@@ -6,6 +6,7 @@ import {
     districtBuilt,
     districtDestroyed,
     gameEnd,
+    gameMessage,
     gameTable,
     heroAbilityTurnStarted,
     heroBuildTurnStarted,
@@ -23,6 +24,7 @@ import {
 } from "./informMassagesTypes";
 import {heroDebuffsTypes} from "../../gameTableManager/heroesStacks/heroDebuffsTypes";
 import {heroAbilityTypes} from "../../gameTableManager/heroesStacks/heroAbilityTypes";
+import {gameChatMessageInfo} from "../../gameTableManager/gameChatMessage";
 
 
 export class GetMessage {
@@ -166,6 +168,13 @@ export class GetMessage {
             "playerId": playerId,
             "handLength": newHandLength,
             "hand": hand,
+        }
+    }
+
+    static ChatMessage(message: gameChatMessageInfo): gameMessage {
+        return {
+            "messageType": "informGameChatMessage",
+            "message": message
         }
     }
 }

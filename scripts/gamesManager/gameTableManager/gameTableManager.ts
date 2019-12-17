@@ -1,10 +1,10 @@
 import WebSocket from "ws";
 import {GameTable} from "./gameTable";
 import {Hero} from "./heroesStacks/hero";
-import {Player} from "../player/player";
-import {IsMessageValid} from "../player/communicationWithPlayer/responseMessages";
+import {Player} from "../players/player";
+import {IsMessageValid} from "../players/communicationWithPlayer/responseMessages";
 import {Card} from "./deck/card";
-import {playerTurnResponse} from "../player/communicationWithPlayer/responseMessagesTypes";
+import {playerTurnResponse} from "../players/communicationWithPlayer/responseMessagesTypes";
 
 
 export class GameTableManager extends GameTable {
@@ -33,7 +33,7 @@ export class GameTableManager extends GameTable {
 
 
     private AttachPlayerOnMessageSend(player: Player): void {
-        const playerId = player.playerId;
+        const playerId = player.userId;
         const onMessageHandler = (event: { data: any; type: string; target: WebSocket }): void => {
             this.ReadPlayerResponse(playerId, event.data);
         };
@@ -43,7 +43,7 @@ export class GameTableManager extends GameTable {
 
     private AttachPlayerOnDisconnected(player: Player): void {
         const onDisconnected = (event: { wasClean: boolean; code: number; reason: string; target: WebSocket }): void => {
-            this.SetPlayerDisconnected(player.playerId);
+            this.SetPlayerDisconnected(player.userId);
         };
 
         player.Connection.addEventListener("close", onDisconnected);
@@ -87,6 +87,7 @@ export class GameTableManager extends GameTable {
                     break;
 
                 case playerTurnResponse.chatMessage:
+                    this.PlaySendChatMessage(playerId, messageBody);
                     break;
             }
 
@@ -149,5 +150,12 @@ export class GameTableManager extends GameTable {
 
         if (this.PlayerCanEndBuildTurn(playerId))
             this.EndPlayerBuildTurn(playerId);
+    }
+
+    private PlaySendChatMessage(playerId: number, messageBody: any): void {
+        const validMessage = IsMessageValid.GetValidChatMessage(messageBody, 120);
+        if (!validMessage) return;
+
+        this.AddChatMessage(playerId, validMessage.message);
     }
 }

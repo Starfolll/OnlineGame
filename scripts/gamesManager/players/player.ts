@@ -6,6 +6,8 @@ import {GetMessage} from "./communicationWithPlayer/informMassages";
 import {tableInfoWithPlayers} from "./players";
 import {heroDebuffsTypes} from "../gameTableManager/heroesStacks/heroDebuffsTypes";
 import {heroAbilityTypes} from "../gameTableManager/heroesStacks/heroAbilityTypes";
+import {gameChatMessageInfo} from "../gameTableManager/gameChatMessage";
+import User from "../../coreFragments/user";
 
 
 export type playerPreGameInfo = {
@@ -22,7 +24,7 @@ export type playerEndGameScoreTable = {
 }
 
 export type playerInfo = {
-    id: number;
+    userId: number;
     name: string;
 
     isPlayerDisconnected: boolean;
@@ -51,10 +53,7 @@ export type playerInfo = {
     cardsAmountInHand: number;
 };
 
-export class Player {
-    public readonly playerId: number;
-    public readonly name: string;
-    public readonly token: string;
+export class Player extends User {
     public readonly tableId: number;
 
     private isPlayerDisconnected: boolean = false;
@@ -83,10 +82,8 @@ export class Player {
     public maxSameCardsAmount: number = 10;
 
 
-    constructor(playerId: number, name: string, token: string, tableId: number, connection: WebSocket) {
-        this.playerId = playerId;
-        this.name = name;
-        this.token = token;
+    constructor(userId: number, name: string, token: string, tableId: number, connection: WebSocket) {
+        super(userId, name, token);
         this.tableId = tableId;
         this.connection = connection;
     }
@@ -228,7 +225,7 @@ export class Player {
         return {
             isWinner: false,
             place: 0,
-            playerId: this.playerId,
+            playerId: this.userId,
             score: score
         }
     }
@@ -241,7 +238,7 @@ export class Player {
 
     public GetPreGameInfo(): playerPreGameInfo {
         return {
-            "id": this.playerId,
+            "id": this.userId,
             "name": this.name,
             "isConnected": this.IsConnected
         }
@@ -249,7 +246,7 @@ export class Player {
 
     public GetInfo(privateInfo: boolean): playerInfo {
         const info: playerInfo = {
-            "id": this.playerId,
+            "userId": this.userId,
             "name": this.name,
 
             "isPlayerDisconnected": this.IsConnected,
@@ -374,6 +371,12 @@ export class Player {
     public InformAboutPlayerHandChanged(playerId: number, newHandLength: number, hand?: Array<Card>): void {
         if (this.IsConnected)
             this.connection.send(JSON.stringify(GetMessage.PlayerHandChanged(playerId, newHandLength, hand)));
+    }
+
+
+    public InformAboutChatMessage(message: gameChatMessageInfo): void {
+        if (this.IsConnected)
+            this.connection.send(JSON.stringify(GetMessage.ChatMessage(message)));
     }
 
 

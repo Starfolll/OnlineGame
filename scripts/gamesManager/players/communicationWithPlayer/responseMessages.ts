@@ -1,6 +1,7 @@
 import {
     buildTurnMade,
     builtDistrict,
+    gameChatMessage,
     heroAbilityUsed,
     heroPicked,
     initialHeroCardPicked,
@@ -60,5 +61,13 @@ export class IsMessageValid {
         if (typeof message !== "object") return undefined;
         if (!message["messageType"] && message["messageType"] !== "buildTurnMade") return undefined;
         return message as buildTurnMade;
+    }
+
+    static GetValidChatMessage(message: any, messageLengthLimit: number): gameChatMessage | undefined {
+        if (typeof message !== "object") return undefined;
+        if (!message["messageType"] && message["messageType"] !== "chatMessage") return undefined;
+        if (!message["message"] && typeof message["message"] !== "string") return undefined;
+        if (message["message"].length > messageLengthLimit) return undefined;
+        return message as gameChatMessage;
     }
 }

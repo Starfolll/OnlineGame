@@ -1,10 +1,10 @@
 import {heroDebuffsTypes} from "./heroDebuffsTypes";
 import {heroAbilityTypes} from "./heroAbilityTypes";
 import {heroBuffsTypes} from "./heroBuffsTypes";
-import {Players} from "../../player/players";
+import {Players} from "../../players/players";
 import {HeroesStack} from "./heroesStack";
 import {Deck} from "../deck/deck";
-import {Player} from "../../player/player";
+import {Player} from "../../players/player";
 
 export type heroInfo = {
     id: number;

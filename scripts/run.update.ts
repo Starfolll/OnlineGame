@@ -3,6 +3,7 @@ import readline from "readline";
 import chalk from "chalk";
 
 export async function runUpdate() {
+    console.clear();
     const rl = readline.createInterface({
         input: process.stdin,
         output: process.stdout,

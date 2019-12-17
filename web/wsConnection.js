@@ -59,6 +59,13 @@ const endBuildTurn = () => {
    }));
 };
 
+const sendChatMessage = (message) => {
+   socket.send(JSON.stringify({
+      "messageType": "chatMessage",
+      "message": message
+   }));
+};
+
 const useAbility = {
    "killHero": (heroWeight) => {
       socket.send(JSON.stringify({

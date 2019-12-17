@@ -3,6 +3,7 @@ import {Card, cardClass, cardInfo} from "../gameTableManager/deck/card";
 import {tableInfo} from "../gameTableManager/gameTable";
 import {heroDebuffsTypes} from "../gameTableManager/heroesStacks/heroDebuffsTypes";
 import {heroAbilityTypes} from "../gameTableManager/heroesStacks/heroAbilityTypes";
+import {gameChatMessageInfo} from "../gameTableManager/gameChatMessage";
 
 
 export type tableInfoWithPlayers = {
@@ -86,7 +87,7 @@ export class Players {
         for (let i = 0; i < playersId.length; i++) {
             const player = this.players[playersId[i]];
             if (player.heroPickTurnNumber === turnNumber)
-                return player.playerId;
+                return player.userId;
         }
 
         return -1;
@@ -98,7 +99,7 @@ export class Players {
         for (let i = 0; i < playersId.length; i++) {
             const player = this.players[playersId[i]];
             if (player.heroWeight === weight)
-                return player.playerId;
+                return player.userId;
         }
 
         return -1;
@@ -243,7 +244,7 @@ export class Players {
         this.players[this.GetPlayerIdWithHeroWeight(this.playerHeroWeightTurn)].SetAbilityTurnMade();
     }
 
-    // player buildTurn
+    // players buildTurn
     public SetHeroBuildTurnStart(buildLimit: number): void {
         const playerIdWithHero = this.GetPlayerIdWithHeroWeight(this.playerHeroWeightTurn);
 
@@ -293,13 +294,13 @@ export class Players {
     }
 
     //------------//
-    // player connection
+    // players connection
     public IsPlayerBelongToGame(player: Player): boolean {
-        return this.playersIdInGame.has(player.playerId);
+        return this.playersIdInGame.has(player.userId);
     }
 
     public AddPlayer(player: Player): void {
-        this.players[player.playerId] = player;
+        this.players[player.userId] = player;
     }
 
     public IsAllPlayerConnected(): boolean {
@@ -309,14 +310,14 @@ export class Players {
     public IsPlayerCreated(player: Player): boolean {
         return Object.keys(this.players).some(pId => {
             const p = this.players[+pId];
-            return player.playerId === p.playerId && player.token === p.token && !p.IsConnected;
+            return player.userId === p.userId && player.token === p.token && !p.IsConnected;
         });
     }
 
     public ResetPlayerConnection(player: Player) {
         Object.keys(this.players).forEach(pId => {
             const p = this.players[+pId];
-            if (p.playerId === player.playerId && p.token === player.token) {
+            if (p.userId === player.userId && p.token === player.token) {
                 this.players[+pId].Connection = player.Connection;
             }
         });
@@ -325,13 +326,13 @@ export class Players {
     public IsPlayerClone(player: Player): boolean {
         return Object.keys(this.players).some(pId => {
             const p = this.players[+pId];
-            return (player.playerId === p.playerId && player.token === p.token && p.IsConnected);
+            return (player.userId === p.userId && player.token === p.token && p.IsConnected);
         });
     }
 
     public SetPlayerDisconnected(playerId: number): void {
         Object.keys(this.players).forEach(pId => {
-            if (this.players[+pId].playerId === playerId)
+            if (this.players[+pId].userId === playerId)
                 this.players[+pId].SetDisconnected();
         });
     }
@@ -357,7 +358,7 @@ export class Players {
 
 
     public InformPlayersAboutGameStart(tableInfo: tableInfo): void {
-        Array.from(this.playersIdInGame).forEach(pId => {
+        this.playersId.forEach(pId => {
             this.InformPlayerAboutGameTable(pId, tableInfo);
         });
     }
@@ -366,8 +367,8 @@ export class Players {
     public InformPlayersAboutHeroPickTurnStart(shiftedHeroesWeight: Array<number>, heroesWeightLeft: Array<number>): void {
         const playerTurnId = this.GetPlayerIdWithTurnNumber(this.playerPickHeroTurn);
 
-        Object.keys(this.players).forEach(pId => {
-            if (this.players[+pId].playerId === playerTurnId)
+        this.playersId.forEach(pId => {
+            if (this.players[+pId].userId === playerTurnId)
                 this.players[+pId].heroesWeightToPickFrom = heroesWeightLeft;
 
             this.players[+pId].InformAboutHeroPickTurnStart(
@@ -381,8 +382,8 @@ export class Players {
     public InformPlayersAboutPlayerPickingHero(heroesWeightLeft: Array<number>): void {
         const playerTurnId = this.GetPlayerIdWithTurnNumber(this.playerPickHeroTurn);
 
-        Object.keys(this.players).forEach(pId => {
-            if (this.players[+pId].playerId === playerTurnId)
+        this.playersId.forEach(pId => {
+            if (this.players[+pId].userId === playerTurnId)
                 this.players[+pId].heroesWeightToPickFrom = heroesWeightLeft;
 
             this.players[+pId].InformAboutPickHeroTurn(
@@ -415,7 +416,7 @@ export class Players {
     public InformPlayersAboutNextHeroInitialTurnStart(): void {
         const playerIdTurn = this.GetPlayerIdWithHeroWeight(this.playerHeroWeightTurn);
 
-        Array.from(this.playersIdInGame).forEach(pId => {
+        this.playersId.forEach(pId => {
             this.players[pId].InformAboutInitialHeroTurn(
                 this.playerHeroWeightTurn,
                 playerIdTurn
@@ -426,7 +427,7 @@ export class Players {
     public InformPlayersAboutHeroBuildTurnStart(): void {
         const playerIdTurn = this.GetPlayerIdWithHeroWeight(this.playerHeroWeightTurn);
 
-        Array.from(this.playersIdInGame).forEach(pId => {
+        this.playersId.forEach(pId => {
             this.players[pId].InformAboutBuildTurnStart(
                 this.playerHeroWeightTurn,
                 playerIdTurn
@@ -436,32 +437,32 @@ export class Players {
 
 
     public InformPlayersAboutDistrictBuilt(playerId: number, cardInfo: cardInfo): void {
-        Array.from(this.playersIdInGame).forEach(pId => {
+        this.playersId.forEach(pId => {
             this.players[pId].InformAboutPlayerBuiltDistrict(playerId, cardInfo);
         });
     }
 
     public InformPlayersAboutDistrictDestroyed(playerId: number, cardInGameId: number): void {
-        Array.from(this.playersIdInGame).forEach(pId => {
+        this.playersId.forEach(pId => {
             this.players[pId].InformAboutPlayerDistrictDestroyed(playerId, cardInGameId);
         });
     }
 
 
     public InformPlayersAboutPlayerReceivedGold(playerId: number, count: number): void {
-        Array.from(this.playersIdInGame).forEach(pId => {
+        this.playersId.forEach(pId => {
             this.players[pId].InformAboutPlayerReceivedGold(playerId, count);
         });
     }
 
     public InformPlayersAboutPlayerReceivedCard(playerId: number, card: Card): void {
-        Array.from(this.playersIdInGame).forEach(pId => {
+        this.playersId.forEach(pId => {
             this.players[pId].InformAboutPlayerReceivedCard(playerId, playerId === pId ? card : undefined);
         });
     }
 
     public InformAboutDebuffAddedToHero(heroWeight: number, debuffType: heroDebuffsTypes, fromPlayerId?: number): void {
-        Array.from(this.playersIdInGame).forEach(pId => {
+        this.playersId.forEach(pId => {
             this.players[pId].InformAboutDebuffAddedToHero(heroWeight, debuffType, fromPlayerId);
         });
     }
@@ -485,6 +486,13 @@ export class Players {
     }
 
 
+    public InformPlayersAboutChatMessage(message: gameChatMessageInfo): void {
+        this.playersId.forEach(pId => {
+            if (pId !== message.playerId) this.players[pId].InformAboutChatMessage(message);
+        });
+    }
+
+
     public InformPlayerAboutPreGameInfo(playerId: number): void {
         this.players[playerId].InformAboutPreGameInfo(
             Object.keys(this.players).map(pId => {
@@ -500,7 +508,7 @@ export class Players {
         const tableInfoWithPlayers: tableInfoWithPlayers = {
             "tableInfo": tableInfo,
             "players": Array.from(this.playersIdInGame).map(pId => {
-                return this.players[pId].GetInfo(player.playerId === pId);
+                return this.players[pId].GetInfo(player.userId === pId);
             })
         };
 

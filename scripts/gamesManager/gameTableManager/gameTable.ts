@@ -1,10 +1,11 @@
-import {Player} from "../player/player";
-import {Players} from "../player/players";
+import {Player} from "../players/player";
+import {Players} from "../players/players";
 import {Deck} from "./deck/deck";
 import {Hero, heroInfo} from "./heroesStacks/hero";
 import {HeroesStack} from "./heroesStacks/heroesStack";
 import {Card} from "./deck/card";
-import {initialHeroTurnOptions} from "../player/communicationWithPlayer/responseMessagesTypes";
+import {initialHeroTurnOptions} from "../players/communicationWithPlayer/responseMessagesTypes";
+import GameChatMessage, {gameChatMessageInfo} from "./gameChatMessage";
 
 type turnsType =
     "waitingForPlayers" |
@@ -24,6 +25,8 @@ export type tableInfo = {
     currentTurnType: turnsType;
 
     cardsInDeck: number;
+
+    chatMessages: Array<gameChatMessageInfo>;
 };
 
 export class GameTable {
@@ -36,6 +39,8 @@ export class GameTable {
     private readonly deck: Deck;
     private readonly players: Players;
     private readonly heroes: HeroesStack;
+    private readonly chatMessages: Array<GameChatMessage> = [];
+    private readonly chatMessagesLimit: number = 30;
 
     private readonly onGameEndCallback: (tableId: number) => void;
 
@@ -56,7 +61,7 @@ export class GameTable {
     }
 
 
-    // player auth
+    // players auth
     protected IsPlayerCanBeConnected(player: Player): boolean {
         if (!this.players.IsPlayerBelongToGame(player)) {
             this.DisconnectIllegalPlayer(player, 1000, "not in game");
@@ -72,11 +77,11 @@ export class GameTable {
             this.players.InformPlayersAboutInitialPlayerConnection(player.GetPreGameInfo());
         } else {
             this.players.ResetPlayerConnection(player);
-            this.players.InformPlayersAboutPlayerConnected(player.playerId);
+            this.players.InformPlayersAboutPlayerConnected(player.userId);
         }
 
-        if (this.isGameStarted) this.players.InformPlayerAboutGameTable(player.playerId, this.GetTableInfo());
-        else this.players.InformPlayerAboutPreGameInfo(player.playerId);
+        if (this.isGameStarted) this.players.InformPlayerAboutGameTable(player.userId, this.GetTableInfo());
+        else this.players.InformPlayerAboutPreGameInfo(player.userId);
 
         return true;
     }
@@ -131,7 +136,7 @@ export class GameTable {
     }
 
 
-    // player hero pick sickle
+    // players hero pick sickle
     protected BeginChoosingHeroSickle(): void {
         this.currentTurnType = "heroPickTurn";
 
@@ -328,16 +333,29 @@ export class GameTable {
         }, 6000);
     }
 
+    // chat message
+    protected AddChatMessage(playerId: number, message: string): void {
+        const chatMessage = new GameChatMessage(playerId, message);
+        this.chatMessages.push(chatMessage);
+        this.players.InformPlayersAboutChatMessage(chatMessage.GetMessageInfo());
+
+        if (this.chatMessages.length > this.chatMessagesLimit) this.chatMessages.pop();
+    }
 
     // table info
     protected GetTableInfo(): tableInfo {
         return {
-            "cardsInDeck": this.deck.cardsLeft,
-            "currentTurnType": this.currentTurnType,
-            "heroes": this.heroes.GetHeroesInfo(),
             "isGameStarted": this.isGameStarted,
             "isGameEnd": this.isGameEnd,
-            "shiftedHeroesWeight": this.heroes.shiftedWeight
+
+            "heroes": this.heroes.GetHeroesInfo(),
+            "shiftedHeroesWeight": this.heroes.shiftedWeight,
+
+            "cardsInDeck": this.deck.cardsLeft,
+
+            "currentTurnType": this.currentTurnType,
+
+            "chatMessages": this.chatMessages.map(m => m.GetMessageInfo())
         }
     }
 }

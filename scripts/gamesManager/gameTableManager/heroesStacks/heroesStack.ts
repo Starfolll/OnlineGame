@@ -1,5 +1,5 @@
 import {Hero, heroInfo} from "./hero";
-import {Players} from "../../player/players";
+import {Players} from "../../players/players";
 import {Deck} from "../deck/deck";
 import {heroDebuffsTypes} from "./heroDebuffsTypes";
 import {heroAbilityTypes} from "./heroAbilityTypes";

@@ -47,3 +47,9 @@ export type builtDistrict = {
 export type buildTurnMade = {
     messageType: string;
 }
+
+export type gameChatMessage = {
+    messageType: string;
+    playerId: number;
+    message: string;
+}

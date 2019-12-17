@@ -1,11 +1,11 @@
 import WebSocket from "ws";
 
 import {GameTableManager} from "./gameTableManager/gameTableManager";
-import {Player} from "./player/player";
+import {Player} from "./players/player";
 import {Hero} from "./gameTableManager/heroesStacks/hero";
 import {Card} from "./gameTableManager/deck/card";
-import {IsMessageValid} from "./player/communicationWithPlayer/responseMessages";
-import {playerInitialConnection} from "./player/communicationWithPlayer/responseMessagesTypes";
+import {IsMessageValid} from "./players/communicationWithPlayer/responseMessages";
+import {playerInitialConnection} from "./players/communicationWithPlayer/responseMessagesTypes";
 
 import logError from "../consoleLogs/logError";
 import logGameInfo from "../consoleLogs/logGameInfo";

@@ -2,7 +2,7 @@ import {debuffWithMetadata, Hero} from "../hero";
 import {heroAbilityTypes} from "../heroAbilityTypes";
 import {heroDebuffsTypes} from "../heroDebuffsTypes";
 import {heroBuffsTypes} from "../heroBuffsTypes";
-import {Players} from "../../../player/players";
+import {Players} from "../../../players/players";
 import {HeroesStack} from "../heroesStack";
 import {Deck} from "../../deck/deck";
 
