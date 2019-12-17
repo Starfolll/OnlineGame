@@ -11,16 +11,17 @@ export async function runUpdate() {
 
     console.log(` | ${chalk.greenBright("Write commit name")}`);
     for await (const line of rl) {
+        if (line === "") return;
         console.log();
 
-        const addStdout = execSync(`git add .`);
-        console.log(addStdout + "\n");
+        execSync(`git add .`);
+        console.log("Added files to git ." + "\n");
 
         const commitStdout = execSync(`git commit -m "${line}"`);
-        console.log(commitStdout + "\n");
+        console.log(commitStdout);
 
         const pushStdout = execSync("git push");
-        console.log(pushStdout + "\n");
-        break;
+        console.log(pushStdout);
+        return;
     }
 }
