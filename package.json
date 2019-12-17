@@ -13,7 +13,7 @@
     "start": "node ./scripts/build/server.js",
     "dev": "ts-node server.ts --dev",
     "bs": "tsc && npm start",
-    "hotfix": "git add . && git commit -m 'hotfix' && git push"
+    "update": "ts-node server.ts --update"
   },
   "engines": {
     "node": ">=12.x.x"
