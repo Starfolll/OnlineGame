@@ -18,10 +18,11 @@ export async function runUpdate() {
         console.log("Added files to git ." + "\n");
 
         const commitStdout = execSync(`git commit -m "${line}"`);
-        console.log(commitStdout);
+        console.log(commitStdout.toString());
 
         const pushStdout = execSync("git push");
-        console.log(pushStdout);
+        console.log(pushStdout.toString());
+
         return;
     }
 }
