@@ -2,6 +2,7 @@ import {Hero, heroInfo} from "./hero";
 import {Players} from "../../player/players";
 import {Deck} from "../deck/deck";
 import {heroDebuffsTypes} from "./heroDebuffsTypes";
+import {heroAbilityTypes} from "./heroAbilityTypes";
 
 export class HeroesStack {
     private readonly heroes: Readonly<{ [heroWeight: number]: Hero }>;
@@ -81,6 +82,14 @@ export class HeroesStack {
     }
 
 
+    public GetHeroAbilityType(heroWeight: number): heroAbilityTypes | undefined {
+        return this.heroes[heroWeight].abilityType;
+    }
+
+    public IsHeroHasAbility(heroWeight: number): boolean {
+        return this.heroes[heroWeight].HasAbility();
+    }
+
     public IsHeroCanUseAbility(heroWeight: number, message: any, playerId: number, players: Players, heroes: HeroesStack, deck: Deck): boolean {
         return this.heroes[heroWeight].IsPlayerCanMakeAbilityMove(message, playerId, players, heroes, deck);
     }
@@ -95,8 +104,8 @@ export class HeroesStack {
     }
 
 
-    public IsHeroDead(heroWeight: number): boolean | undefined {
-        return this.heroes[heroWeight]?.isDead;
+    public IsHeroDead(heroWeight: number): boolean {
+        return this.heroes[heroWeight].isDead;
     }
 
 

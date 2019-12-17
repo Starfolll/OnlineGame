@@ -2,6 +2,7 @@ import {playerEndGameScoreTable, playerPreGameInfo} from "../player";
 import {tableInfoWithPlayers} from "../players";
 import {Card, cardInfo} from "../../gameTableManager/deck/card";
 import {heroDebuffsTypes} from "../../gameTableManager/heroesStacks/heroDebuffsTypes";
+import {heroAbilityTypes} from "../../gameTableManager/heroesStacks/heroAbilityTypes";
 
 export type preGameInfo = {
     messageType: string;
@@ -64,6 +65,12 @@ export type playerReceivedCard = {
 export type pickOneOfProposedCards = {
     messageType: string;
     cards: Array<cardInfo>;
+}
+
+export type heroAbilityTurnStarted = {
+    messageType: string;
+    heroAbilityType: heroAbilityTypes;
+    playerId: number;
 }
 
 export type heroBuildTurnStarted = {

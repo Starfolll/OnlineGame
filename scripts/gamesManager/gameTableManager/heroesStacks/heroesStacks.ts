@@ -12,14 +12,14 @@ import {Condottier} from "./DefaultHeroStack/Condottier";
 export class HeroesStacks {
     static get defaultStack(): { [heroesWeight: number]: Hero } {
         return {
-            "1": new Assassin(),
-            "2": new Thief(),
-            "3": new Magician(),
-            "4": new King(),
-            "5": new Bishop(),
-            "6": new Merchant(),
-            "7": new Architect(),
-            "8": new Condottier(),
+            1: new Assassin(),
+            2: new Thief(),
+            3: new Magician(),
+            4: new King(),
+            5: new Bishop(),
+            6: new Merchant(),
+            7: new Architect(),
+            8: new Condottier(),
         };
     }
 }

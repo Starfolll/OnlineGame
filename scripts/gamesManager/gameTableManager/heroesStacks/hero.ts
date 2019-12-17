@@ -68,7 +68,8 @@ export abstract class Hero {
     }
 
 
-    public IsHeroHasAbility(): boolean {
+    public HasAbility(): boolean {
+        console.log(this.abilityType);
         return !!this.abilityType;
     }
 

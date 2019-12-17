@@ -58,3 +58,24 @@ const endBuildTurn = () => {
       "messageType": "buildTurnMade",
    }));
 };
+
+const useAbility = {
+   "killHero": (heroWeight) => {
+      socket.send(JSON.stringify({
+         "messageType": "heroAbilityUsed",
+         "abilityData": {
+            "messageType": "heroKilled",
+            "killedHeroWeight": heroWeight
+         }
+      }));
+   },
+   "changeHand": (playerId) => {
+      socket.send(JSON.stringify({
+         "messageType": "heroAbilityUsed",
+         "abilityData": {
+            "messageType": "changeHand",
+            "playerId": playerId
+         }
+      }));
+   }
+};

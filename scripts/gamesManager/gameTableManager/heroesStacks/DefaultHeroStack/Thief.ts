@@ -41,6 +41,7 @@ export class Thief extends Hero {
         const validMessage = GetValidUserMassage(message);
         if (!validMessage) return false;
 
+        if (!this.IsPlayerCanUseAbility(players.GetPlayerWithId(playerId))) return false;
         if (!heroes.allHeroes.some(h => h.weight === validMessage.heroWeight)) return false;
         return validMessage.heroWeight > this.weight;
     }

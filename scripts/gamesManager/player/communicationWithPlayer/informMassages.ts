@@ -7,6 +7,7 @@ import {
     districtDestroyed,
     gameEnd,
     gameTable,
+    heroAbilityTurnStarted,
     heroBuildTurnStarted,
     heroInitialTurnStarted,
     heroPickTurnStart,
@@ -21,6 +22,7 @@ import {
     preGameInfo
 } from "./informMassagesTypes";
 import {heroDebuffsTypes} from "../../gameTableManager/heroesStacks/heroDebuffsTypes";
+import {heroAbilityTypes} from "../../gameTableManager/heroesStacks/heroAbilityTypes";
 
 
 export class GetMessage {
@@ -91,6 +93,14 @@ export class GetMessage {
         return {
             "messageType": "pickOneOfProposedCards",
             "cards": cards
+        }
+    }
+
+    static HeroAbilityTurnStarted(abilityType: heroAbilityTypes, playerId: number): heroAbilityTurnStarted {
+        return {
+            "messageType": "heroAbilityTurnStarted",
+            "heroAbilityType": abilityType,
+            "playerId": playerId
         }
     }
 

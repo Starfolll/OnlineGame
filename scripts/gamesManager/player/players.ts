@@ -2,6 +2,7 @@ import {Player, playerInfo, playerPreGameInfo} from "./player";
 import {Card, cardClass, cardInfo} from "../gameTableManager/deck/card";
 import {tableInfo} from "../gameTableManager/gameTable";
 import {heroDebuffsTypes} from "../gameTableManager/heroesStacks/heroDebuffsTypes";
+import {heroAbilityTypes} from "../gameTableManager/heroesStacks/heroAbilityTypes";
 
 
 export type tableInfoWithPlayers = {
@@ -65,6 +66,11 @@ export class Players {
             if (c.cardClass === "all" || c.cardClass === cardClass) additionGold++;
         });
         if (additionGold > 0) this.GivePlayerGold(playerId, additionGold);
+    }
+
+    public SetPlayerHand(playerId: number, newHand: Array<Card>): void {
+        this.players[playerId].hand = newHand;
+        this.InformPlayersAboutPlayerHandChanged(playerId);
     }
 
     public AttachHeroWeightToPlayer(playerId: number, heroWeight: number): void {
@@ -224,16 +230,20 @@ export class Players {
         this.players[playerId].SetInitialTurnMade();
     }
 
-    public IsAllPlayersPickedInitialTurnOptions(): boolean {
-        return Array.from(this.playersIdInGame).every(pId => {
-            return this.players[pId].isBuildTurnMade && this.players[pId].isInitialHeroTurnMade;
-        });
+    public IsAllHeroesPlayedTurn(): boolean {
+        return this.playerHeroWeightTurn === -1;
+        // return Array.from(this.playersIdInGame).every(pId => {
+        //     return this.players[pId].isBuildTurnMade && this.players[pId].isInitialHeroTurnMade;
+        // });
     }
 
     // hero ability
-    public SetPlayerHand(playerId: number, newHand: Array<Card>): void {
-        this.players[playerId].hand = newHand;
-        this.InformPlayersAboutPlayerHandChanged(playerId);
+    public SetHeroAbilityTurnStart(heroAbilityType: heroAbilityTypes): void {
+        this.players[this.GetPlayerIdWithHeroWeight(this.playerHeroWeightTurn)].abilityTurnType = heroAbilityType;
+    }
+
+    public SetHeroAbilityTurnMade(playerId: number) {
+        this.players[this.GetPlayerIdWithHeroWeight(this.playerHeroWeightTurn)].SetAbilityTurnMade();
     }
 
     // player buildTurn
@@ -382,6 +392,14 @@ export class Players {
                 playerTurnId,
                 +pId === playerTurnId ? heroesWeightLeft : undefined
             );
+        });
+    }
+
+
+    public InformPlayersAboutHeroAbilityTurnStart(heroAbilityType: heroAbilityTypes): void {
+        const playerId = this.GetPlayerIdWithHeroWeight(this.playerHeroWeightTurn);
+        this.playersId.forEach(pId => {
+            this.players[pId].InformAboutHeroAbilityTurnStart(heroAbilityType, playerId);
         });
     }
 

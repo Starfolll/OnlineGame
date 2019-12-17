@@ -340,7 +340,13 @@ export class Player {
 
     public InformAboutBuildTurnStart(heroWeight: number, playerId: number): void {
         if (this.IsConnected)
-            this.connection.send(JSON.stringify(GetMessage.HeroBuildTurnStarted(heroWeight, playerId)))
+            this.connection.send(JSON.stringify(GetMessage.HeroBuildTurnStarted(heroWeight, playerId)));
+    }
+
+
+    public InformAboutHeroAbilityTurnStart(abilityType: heroAbilityTypes, playerId: number): void {
+        if (this.IsConnected)
+            this.connection.send(JSON.stringify(GetMessage.HeroAbilityTurnStarted(abilityType, playerId)));
     }
 
 

@@ -43,12 +43,13 @@ export class Condottier extends Hero {
         const validMessage = GetValidUserMassage(message);
         if (!validMessage) return false;
 
-        const player = players.GetPlayerWithId(validMessage.playerIdWhichDistrictDestroyed);
+        const player = players.GetPlayerWithId(playerId);
         const playerToDestroy = players.GetPlayerWithId(validMessage.playerIdWhichDistrictDestroyed);
 
-        if (!player) return false;
+        if (!playerToDestroy) return false;
+        if (!this.IsPlayerCanUseAbility(player)) return false;
         if (!playerToDestroy.placedCards.some(c => c.gameId === validMessage.districtInGameId && player.HasEnoughGold(c.cost - 1))) return false;
-        return player.placedCards.some(c => c.gameId === validMessage.districtInGameId);
+        return playerToDestroy.placedCards.some(c => c.gameId === validMessage.districtInGameId);
     }
 
     public CastPlayerAbility(message: any, playerId: number, players: Players, heroes: HeroesStack, deck: Deck): void {

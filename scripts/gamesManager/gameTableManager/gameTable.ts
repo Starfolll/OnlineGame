@@ -6,7 +6,13 @@ import {HeroesStack} from "./heroesStacks/heroesStack";
 import {Card} from "./deck/card";
 import {initialHeroTurnOptions} from "../player/communicationWithPlayer/responseMessagesTypes";
 
-type turnsType = "waitingForPlayers" | "gameStarted" | "heroPickTurn" | "initialTurn" | "buildTurn";
+type turnsType =
+    "waitingForPlayers" |
+    "gameStarted" |
+    "heroPickTurn" |
+    "initialTurn" |
+    "heroAbilityTurn" |
+    "buildTurn";
 
 export type tableInfo = {
     isGameStarted: boolean;
@@ -169,31 +175,45 @@ export class GameTable {
         this.currentTurnType = "initialTurn";
 
         this.players.ResetCurrentHeroTurn();
-        this.players.SetNextHeroTurn();
+        this.GiveNextPlayerPickInitialTurnOptions();
+    }
 
-        this.InvokeHeroBuffsAndBeginInitialTurn();
+    protected GiveNextPlayerPickInitialTurnOptions(): void {
+        this.players.SetNextHeroTurn();
+        if (!this.players.IsAllHeroesPlayedTurn()) {
+            if (this.IsPlayerCanMakeInitialHeroTurn()) this.InvokeHeroBuffsAndBeginInitialTurn();
+            else this.GiveNextPlayerPickInitialTurnOptions();
+        } else {
+            if (!this.players.IsMaxDistrictsWasBuilt()) {
+                this.BeginChoosingHeroSickle();
+            } else {
+                this.EndGame();
+            }
+        }
+    }
+
+    protected IsPlayerCanMakeInitialHeroTurn(): boolean {
+        return !this.heroes.IsHeroDead(this.players.GetCurrentHeroWeightTurn());
     }
 
     protected InvokeHeroBuffsAndBeginInitialTurn(): void {
-        if (!this.heroes.IsHeroDead(this.players.GetCurrentHeroWeightTurn())) {
-            this.heroes.InvokeHeroDebuffs(
-                this.players.GetCurrentHeroWeightTurn(),
-                this.players.GetCurrentPlayerIdTurn(),
-                this.players,
-                this.heroes,
-                this.deck
-            );
-            this.heroes.InvokeHeroBuffs(
-                this.players.GetCurrentHeroWeightTurn(),
-                this.players.GetCurrentPlayerIdTurn(),
-                this.players,
-                this.heroes,
-                this.deck
-            );
+        this.heroes.InvokeHeroDebuffs(
+            this.players.GetCurrentHeroWeightTurn(),
+            this.players.GetCurrentPlayerIdTurn(),
+            this.players,
+            this.heroes,
+            this.deck
+        );
+        this.heroes.InvokeHeroBuffs(
+            this.players.GetCurrentHeroWeightTurn(),
+            this.players.GetCurrentPlayerIdTurn(),
+            this.players,
+            this.heroes,
+            this.deck
+        );
 
-            this.players.SetHeroInitialTurnOptions(Array.from(initialHeroTurnOptions));
-            this.players.InformPlayersAboutNextHeroInitialTurnStart();
-        } else this.GiveNextPlayerPickInitialTurnOptions();
+        this.players.SetHeroInitialTurnOptions(Array.from(initialHeroTurnOptions));
+        this.players.InformPlayersAboutNextHeroInitialTurnStart();
     }
 
     protected IsPlayerCanPickHeroInitialOptions(playerId: number, option: string): boolean {
@@ -203,7 +223,7 @@ export class GameTable {
     protected HeroPickedInitialTurnOptionGold(playerId: number): void {
         this.players.GivePlayerGold(playerId, 2);
         this.players.SetPlayerInitialTurnMade(playerId);
-        this.BeginBuildHeroTurn();
+        this.GivePlayerHeroAbilityTurn();
     }
 
     protected HeroPickedInitialTurnOptionCards(playerId: number): void {
@@ -226,10 +246,25 @@ export class GameTable {
         const card = this.players.GetPlayerChosenCard(playerId, cardInGameId);
         if (!!card) this.players.GivePlayerCard(playerId, card);
         this.players.SetPlayerInitialTurnMade(playerId);
-        this.BeginBuildHeroTurn();
+        this.GivePlayerHeroAbilityTurn();
     }
 
+
     // hero ability turn
+    protected GivePlayerHeroAbilityTurn(): void {
+        this.currentTurnType = "heroAbilityTurn";
+
+        console.log(this.heroes.IsHeroHasAbility(this.players.GetCurrentHeroWeightTurn()));
+        if (this.heroes.IsHeroHasAbility(this.players.GetCurrentHeroWeightTurn())) {
+            const abilityType = this.heroes.GetHeroAbilityType(this.players.GetCurrentHeroWeightTurn())!;
+            this.players.SetHeroAbilityTurnStart(abilityType);
+            this.players.InformPlayersAboutHeroAbilityTurnStart(abilityType);
+        } else {
+            this.players.SetHeroAbilityTurnMade(this.players.GetCurrentPlayerIdTurn());
+            this.BeginBuildHeroTurn();
+        }
+    }
+
     protected IsPlayerCanUseHeroAbility(playerId: number, abilityData: any): boolean {
         return this.heroes.IsHeroCanUseAbility(
             this.players.GetCurrentHeroWeightTurn(),
@@ -250,7 +285,11 @@ export class GameTable {
             this.heroes,
             this.deck
         );
+
+        this.players.SetHeroAbilityTurnMade(this.players.GetCurrentPlayerIdTurn());
+        this.BeginBuildHeroTurn();
     }
+
 
     // hero build turn
     protected BeginBuildHeroTurn(): void {
@@ -276,20 +315,6 @@ export class GameTable {
         this.players.EndPlayerBuildTurn(playerId);
         this.GiveNextPlayerPickInitialTurnOptions();
     }
-
-    protected GiveNextPlayerPickInitialTurnOptions(): void {
-        this.players.SetNextHeroTurn();
-        if (!this.players.IsAllPlayersPickedInitialTurnOptions()) {
-            this.InvokeHeroBuffsAndBeginInitialTurn();
-        } else {
-            if (!this.players.IsMaxDistrictsWasBuilt()) {
-                this.BeginChoosingHeroSickle();
-            } else {
-                this.EndGame();
-            }
-        }
-    }
-
 
     // end game
     protected EndGame(): void {
