@@ -4,7 +4,6 @@ import {Hero} from "./heroesStacks/hero";
 import {Player} from "../player/player";
 import {IsMessageValid} from "../player/communicationWithPlayer/responseMessages";
 import {Card} from "./deck/card";
-import logGameInfo from "../../consoleLogs/logGameInfo";
 import {playerTurnResponse} from "../player/communicationWithPlayer/responseMessagesTypes";
 
 
@@ -52,34 +51,39 @@ export class GameTableManager extends GameTable {
 
 
     private ReadPlayerResponse(playerId: number, message: string): void {
+        if (this.isGameEnd) return;
+
         try {
             let messageBody = JSON.parse(message);
 
             if (!messageBody["messageType"]) return;
             const messageType = messageBody["messageType"];
 
-            logGameInfo("");
             console.log(messageBody);
 
             switch (messageType) {
                 case playerTurnResponse.heroPicked:
-                    if (!this.isGameEnd) this.PlayHeroPickTurn(playerId, messageBody);
+                    this.PlayHeroPickTurn(playerId, messageBody);
                     break;
 
                 case playerTurnResponse.initialHeroTurnOptionPicked:
-                    if (!this.isGameEnd) this.PlayInitialHeroTurnOption(playerId, messageBody);
+                    this.PlayInitialHeroTurnOption(playerId, messageBody);
                     break;
 
                 case playerTurnResponse.initialHeroCardPicked:
-                    if (!this.isGameEnd) this.PlayInitialHeroCard(playerId, messageBody);
+                    this.PlayInitialHeroCard(playerId, messageBody);
+                    break;
+
+                case playerTurnResponse.heroAbilityUsed:
+                    this.PlayerHeroAbility(playerId, messageBody);
                     break;
 
                 case playerTurnResponse.buildDistrict:
-                    if (!this.isGameEnd) this.PlayBuildDistrict(playerId, messageBody);
+                    this.PlayBuildDistrict(playerId, messageBody);
                     break;
 
                 case playerTurnResponse.buildTurnMade:
-                    if (!this.isGameEnd) this.PlayEndOfBuildTurn(playerId, messageBody);
+                    this.PlayEndOfBuildTurn(playerId, messageBody);
                     break;
 
                 case playerTurnResponse.chatMessage:
@@ -96,50 +100,54 @@ export class GameTableManager extends GameTable {
         const validMessage = IsMessageValid.GetValidHeroPickedMessage(messageBody);
         if (!validMessage) return;
 
-        if (!this.IsPlayerCanPickHero(playerId, validMessage.heroWeight)) return;
-        this.AttachHeroToPlayer(playerId, validMessage.heroWeight);
+        if (this.IsPlayerCanPickHero(playerId, validMessage.heroWeight))
+            this.AttachHeroToPlayer(playerId, validMessage.heroWeight);
     }
 
     private PlayInitialHeroTurnOption(playerId: number, messageBody: any): void {
         const validMessage = IsMessageValid.GetValidInitialHeroTurnOptionPicked(messageBody);
         if (!validMessage) return;
 
-        if (!this.IsPlayerCanPickHeroInitialOptions(playerId, validMessage.pickedOption)) return;
-
-        switch (validMessage.pickedOption) {
-            case "gold":
-                this.HeroPickedInitialTurnOptionGold(playerId);
-                break;
-            case "cards":
-                this.HeroPickedInitialTurnOptionCards(playerId);
-                break;
-        }
+        if (this.IsPlayerCanPickHeroInitialOptions(playerId, validMessage.pickedOption))
+            switch (validMessage.pickedOption) {
+                case "gold":
+                    this.HeroPickedInitialTurnOptionGold(playerId);
+                    break;
+                case "cards":
+                    this.HeroPickedInitialTurnOptionCards(playerId);
+                    break;
+            }
     }
 
     private PlayInitialHeroCard(playerId: number, messageBody: any): void {
         const validMessage = IsMessageValid.GetValidInitialHeroCardPicked(messageBody);
         if (!validMessage) return;
 
-        if (!this.IsPlayerCanPickHeroInitialCard(playerId, validMessage.cardInGameId)) return;
+        if (this.IsPlayerCanPickHeroInitialCard(playerId, validMessage.cardInGameId))
+            this.HeroPickedInitialTurnCard(playerId, validMessage.cardInGameId);
+    }
 
-        this.HeroPickedInitialTurnCard(playerId, validMessage.cardInGameId);
+    private PlayerHeroAbility(playerId: number, messageBody: any): void {
+        const validMessage = IsMessageValid.GetValidHeroAbilityUsed(messageBody);
+        if (!validMessage) return;
+
+        if (this.IsPlayerCanUseHeroAbility(playerId, validMessage.abilityData))
+            this.UsePlayerHeroAbility(playerId, validMessage.abilityData);
     }
 
     private PlayBuildDistrict(playerId: number, messageBody: any): void {
         const validMessage = IsMessageValid.GetValidBuiltDistrict(messageBody);
         if (!validMessage) return;
 
-        if (!this.IsPlayerCanBuildDistrict(playerId, validMessage.cardInGameId)) return;
-
-        this.PlayerBuildDistrict(playerId, validMessage.cardInGameId);
+        if (this.IsPlayerCanBuildDistrict(playerId, validMessage.cardInGameId))
+            this.PlayerBuildDistrict(playerId, validMessage.cardInGameId);
     }
 
     private PlayEndOfBuildTurn(playerId: number, messageBody: any): void {
         const validMessage = IsMessageValid.GetValidBuildTurnMade(messageBody);
         if (!validMessage) return;
 
-        if (!this.PlayerCanEndBuildTurn(playerId)) return;
-
-        this.EndPlayerBuildTurn(playerId);
+        if (this.PlayerCanEndBuildTurn(playerId))
+            this.EndPlayerBuildTurn(playerId);
     }
 }

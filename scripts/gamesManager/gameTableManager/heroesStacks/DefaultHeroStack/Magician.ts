@@ -5,6 +5,20 @@ import {Players} from "../../../player/players";
 import {HeroesStack} from "../heroesStack";
 import {Deck} from "../../deck/deck";
 
+
+type changeHand = {
+    messageType: string;
+    playerId: number;
+}
+
+const GetValidUserMassage = (message: any): changeHand | undefined => {
+    if (typeof message !== "object") return undefined;
+    if (!message["messageType"] && message["messageType"] !== "heroKilled") return undefined;
+    if (!message["playerId"] && typeof message["playerId"] !== "number") return undefined;
+    return message as changeHand;
+};
+
+
 export class Magician extends Hero {
     public readonly id: number = 3;
     public readonly name: string = "Magician";
@@ -24,10 +38,19 @@ export class Magician extends Hero {
     }
 
     public IsPlayerCanMakeAbilityMove(message: any, playerId: number, players: Players, heroes: HeroesStack, deck: Deck): boolean {
-        return false;
+        const validMessage = GetValidUserMassage(message);
+        if (!validMessage) return false;
+
+        return players.playersId.has(validMessage.playerId);
     }
 
     public CastPlayerAbility(message: any, playerId: number, players: Players, heroes: HeroesStack, deck: Deck): void {
+        const validMessage = GetValidUserMassage(message)!;
 
+        const player1Hand = players.GetPlayerWithId(playerId).hand;
+        const player2Hand = players.GetPlayerWithId(validMessage.playerId).hand;
+
+        players.SetPlayerHand(playerId, player2Hand);
+        players.SetPlayerHand(validMessage.playerId, player1Hand);
     }
 }

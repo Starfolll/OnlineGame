@@ -229,6 +229,28 @@ export class GameTable {
         this.BeginBuildHeroTurn();
     }
 
+    // hero ability turn
+    protected IsPlayerCanUseHeroAbility(playerId: number, abilityData: any): boolean {
+        return this.heroes.IsHeroCanUseAbility(
+            this.players.GetCurrentHeroWeightTurn(),
+            abilityData,
+            playerId,
+            this.players,
+            this.heroes,
+            this.deck
+        );
+    }
+
+    protected UsePlayerHeroAbility(playerId: number, abilityData: any): void {
+        this.heroes.UseHeroAbility(
+            this.players.GetCurrentHeroWeightTurn(),
+            abilityData,
+            playerId,
+            this.players,
+            this.heroes,
+            this.deck
+        );
+    }
 
     // hero build turn
     protected BeginBuildHeroTurn(): void {

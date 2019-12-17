@@ -1,11 +1,12 @@
 import {
-    playerInitialConnection,
-    initialHeroTurnOptions,
+    buildTurnMade,
+    builtDistrict,
+    heroAbilityUsed,
+    heroPicked,
     initialHeroCardPicked,
     initialHeroTurnOptionPicked,
-    heroPicked,
-    buildTurnMade,
-    builtDistrict
+    initialHeroTurnOptions,
+    playerInitialConnection
 } from "./responseMessagesTypes";
 
 
@@ -39,6 +40,13 @@ export class IsMessageValid {
         if (!message["messageType"] && message["messageType"] !== "initialHeroCardPicked") return undefined;
         if (!message["cardInGameId"] && typeof message["cardInGameId"] !== "number") return undefined;
         return message as initialHeroCardPicked;
+    }
+
+    static GetValidHeroAbilityUsed(message: any): heroAbilityUsed | undefined {
+        if (typeof message !== "object") return undefined;
+        if (!message["messageType"] && message["messageType"] !== "heroAbilityUsed") return undefined;
+        if (!message["abilityData"]) return undefined;
+        return message as heroAbilityUsed;
     }
 
     static GetValidBuiltDistrict(message: any): builtDistrict | undefined {

@@ -3,15 +3,17 @@ import {tableInfoWithPlayers} from "../players";
 import {Card, cardInfo} from "../../gameTableManager/deck/card";
 import {
     debuffAddedToHero,
+    districtBuilt,
+    districtDestroyed,
     gameEnd,
     gameTable,
     heroBuildTurnStarted,
     heroInitialTurnStarted,
     heroPickTurnStart,
     pickOneOfProposedCards,
-    playerBuiltDistrict,
     playerConnected,
     playerDisconnected,
+    playerHandChanged,
     playerInitialConnection,
     playerPickingHero,
     playerReceivedCard,
@@ -100,11 +102,19 @@ export class GetMessage {
         }
     }
 
-    static PlayerBuiltDistrict(playerId: number, cardInfo: cardInfo): playerBuiltDistrict {
+    static DistrictBuilt(playerId: number, cardInfo: cardInfo): districtBuilt {
         return {
             "messageType": "playerBuiltDistrict",
             "playerId": playerId,
             "card": cardInfo
+        }
+    }
+
+    static DistrictDestroyed(playerId: number, cardInGameId: number): districtDestroyed {
+        return {
+            "messageType": "districtDestroyed",
+            "cardInGameId": cardInGameId,
+            "playerId": playerId
         }
     }
 
@@ -137,6 +147,15 @@ export class GetMessage {
             "debuffType": debuffType,
             "heroWeight": heroWeight,
             "fromPlayerId": fromPlayerId
+        }
+    }
+
+    static PlayerHandChanged(playerId: number, newHandLength: number, hand?: Array<Card>): playerHandChanged {
+        return {
+            "messageType": "playerHandChanged",
+            "playerId": playerId,
+            "handLength": newHandLength,
+            "hand": hand,
         }
     }
 }

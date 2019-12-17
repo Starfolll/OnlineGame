@@ -41,13 +41,14 @@ export class Assassin extends Hero {
         const validMessage = GetValidUserMassage(message);
 
         if (!validMessage) return false;
+        if (validMessage.killedHeroWeight <= this.weight) return false;
         return heroes.allHeroes.some(h => validMessage.killedHeroWeight === h.weight);
     }
 
     public CastPlayerAbility(message: any, playerId: number, players: Players, heroes: HeroesStack, deck: Deck): void {
         const validMessage = GetValidUserMassage(message)!;
 
-        heroes.AddDebuffOnPlayer(validMessage.killedHeroWeight, "killed", playerId);
+        heroes.ApplyDebuffOnHero(validMessage.killedHeroWeight, "killed", playerId);
         players.InformAboutDebuffAddedToHero(validMessage.killedHeroWeight, "killed", playerId);
     }
 }

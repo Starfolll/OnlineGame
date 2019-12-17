@@ -5,6 +5,7 @@ import {Card, cardInfo} from "../gameTableManager/deck/card";
 import {GetMessage} from "./communicationWithPlayer/informMassages";
 import {tableInfoWithPlayers} from "./players";
 import {heroDebuffsTypes} from "../gameTableManager/heroesStacks/heroDebuffsTypes";
+import {heroAbilityTypes} from "../gameTableManager/heroesStacks/heroAbilityTypes";
 
 
 export type playerPreGameInfo = {
@@ -29,6 +30,7 @@ export type playerInfo = {
     isKing: boolean;
     isHeroPickTurnMade: boolean;
     isInitialHeroTurnMade: boolean;
+    isAbilityTurnMade: boolean;
     isBuildTurnMade: boolean;
     isMyTurn: boolean;
 
@@ -38,6 +40,7 @@ export type playerInfo = {
     heroesWeightToPickFrom?: Array<number> | undefined;
     initialTurnOptionsToPickFrom?: Array<string> | undefined;
     initialTurnCardsToPickFrom?: Array<cardInfo> | undefined;
+    abilityTurnType?: heroAbilityTypes | undefined;
     buildLimit?: number;
 
     hand?: Array<cardInfo>;
@@ -61,6 +64,7 @@ export class Player {
     public isKing: boolean = false;
     public isHeroPickTurnMade: boolean = false;
     public isInitialHeroTurnMade: boolean = false;
+    public isAbilityTurnMade: boolean = false;
     public isBuildTurnMade: boolean = false;
 
     public heroPickTurnNumber: number | undefined = undefined;
@@ -69,6 +73,7 @@ export class Player {
     public heroesWeightToPickFrom: Array<number> | undefined = undefined;
     public initialTurnOptionsToPickFrom: Array<string> | undefined = undefined;
     public initialTurnCardsToPickFrom: Array<Card> | undefined = undefined;
+    public abilityTurnType: heroAbilityTypes | undefined = undefined;
     public buildLimit: number = 1;
 
     public hand: Array<Card> = [];
@@ -110,6 +115,7 @@ export class Player {
         this.buildLimit = 1;
         this.isHeroPickTurnMade = false;
         this.isInitialHeroTurnMade = false;
+        this.isAbilityTurnMade = false;
         this.isBuildTurnMade = false;
     }
 
@@ -123,6 +129,11 @@ export class Player {
         this.isInitialHeroTurnMade = true;
         this.initialTurnOptionsToPickFrom = undefined;
         this.initialTurnCardsToPickFrom = undefined;
+    }
+
+    public SetAbilityTurnMade(): void {
+        this.abilityTurnType = undefined;
+        this.isAbilityTurnMade = true;
     }
 
     public SetBuildTurnMade(): void {
@@ -197,6 +208,18 @@ export class Player {
         return card;
     }
 
+    public RemovePlacedCard(cardInGameId: number): Card | undefined {
+        let card = undefined;
+        this.placedCards = this.placedCards.filter(c => {
+            if (cardInGameId === c.gameId) {
+                card = c;
+                return false;
+            }
+            return true;
+        });
+        return card;
+    }
+
 
     public GetScore(): playerEndGameScoreTable {
         let score = 0;
@@ -235,10 +258,12 @@ export class Player {
             "isHeroPickTurnMade": this.isHeroPickTurnMade,
             "isInitialHeroTurnMade": this.isInitialHeroTurnMade,
             "isBuildTurnMade": this.isBuildTurnMade,
+            "isAbilityTurnMade": this.isAbilityTurnMade,
             "isMyTurn":
                 !!this.heroesWeightToPickFrom ||
                 !!this.initialTurnOptionsToPickFrom ||
                 !!this.initialTurnCardsToPickFrom ||
+                !!this.abilityTurnType ||
                 !!this.buildLimit,
 
             "heroPickTurnNumber": this.heroPickTurnNumber,
@@ -262,13 +287,13 @@ export class Player {
         }
 
         if (this.isInitialHeroTurnMade) info["pickedHeroWeight"] = this.heroWeight;
+        if (!!this.abilityTurnType) info["abilityTurnType"] = this.abilityTurnType;
 
         return info;
     }
 
 
     // informatory
-
     public InformAboutPlayerDisconnected(playerId: number): void {
         if (this.IsConnected)
             this.connection.send(JSON.stringify(GetMessage.PlayerDisconnected(playerId)));
@@ -318,10 +343,17 @@ export class Player {
             this.connection.send(JSON.stringify(GetMessage.HeroBuildTurnStarted(heroWeight, playerId)))
     }
 
+
     public InformAboutPlayerBuiltDistrict(playerId: number, cardInfo: cardInfo): void {
         if (this.IsConnected)
-            this.connection.send(JSON.stringify(GetMessage.PlayerBuiltDistrict(playerId, cardInfo)))
+            this.connection.send(JSON.stringify(GetMessage.DistrictBuilt(playerId, cardInfo)));
     }
+
+    public InformAboutPlayerDistrictDestroyed(playerId: number, cardInGameId: number): void {
+        if (this.IsConnected)
+            this.connection.send(JSON.stringify(GetMessage.DistrictDestroyed(playerId, cardInGameId)));
+    }
+
 
     public InformAboutPlayerReceivedGold(playerId: number, count: number): void {
         if (this.IsConnected)
@@ -332,6 +364,12 @@ export class Player {
         if (this.IsConnected)
             this.connection.send(JSON.stringify(GetMessage.PlayerReceivedCard(playerId, card)));
     }
+
+    public InformAboutPlayerHandChanged(playerId: number, newHandLength: number, hand?: Array<Card>): void {
+        if (this.IsConnected)
+            this.connection.send(JSON.stringify(GetMessage.PlayerHandChanged(playerId, newHandLength, hand)));
+    }
+
 
     public InformAboutMoveToPickOneOfProposedCards(cards: Array<cardInfo>): void {
         if (this.IsConnected)

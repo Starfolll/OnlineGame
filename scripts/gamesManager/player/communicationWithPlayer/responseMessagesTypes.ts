@@ -4,7 +4,8 @@ export enum playerTurnResponse {
     initialHeroCardPicked = "initialHeroCardPicked",
     buildDistrict = "buildDistrict",
     buildTurnMade = "buildTurnMade",
-    chatMessage = "chatMessage"
+    chatMessage = "chatMessage",
+    heroAbilityUsed = "heroAbilityUsed",
 }
 
 
@@ -32,6 +33,11 @@ export type initialHeroCardPicked = {
     messageType: string;
     cardInGameId: number;
 }
+
+export type heroAbilityUsed = {
+    messageType: string;
+    abilityData: any;
+};
 
 export type builtDistrict = {
     messageType: string;

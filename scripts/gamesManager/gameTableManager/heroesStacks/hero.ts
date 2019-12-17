@@ -4,6 +4,7 @@ import {heroBuffsTypes} from "./heroBuffsTypes";
 import {Players} from "../../player/players";
 import {HeroesStack} from "./heroesStack";
 import {Deck} from "../deck/deck";
+import {Player} from "../../player/player";
 
 export type heroInfo = {
     id: number;
@@ -67,8 +68,12 @@ export abstract class Hero {
     }
 
 
-    get IsHeroHasAbility(): boolean {
+    public IsHeroHasAbility(): boolean {
         return !!this.abilityType;
+    }
+
+    public IsPlayerCanUseAbility(player: Player): boolean {
+        return player.abilityTurnType === this.abilityType;
     }
 
     public abstract IsPlayerCanMakeAbilityMove(message: any, playerId: number, players: Players, heroes: HeroesStack, deck: Deck): boolean;

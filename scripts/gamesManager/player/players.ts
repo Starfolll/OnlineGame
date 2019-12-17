@@ -230,6 +230,12 @@ export class Players {
         });
     }
 
+    // hero ability
+    public SetPlayerHand(playerId: number, newHand: Array<Card>): void {
+        this.players[playerId].hand = newHand;
+        this.InformPlayersAboutPlayerHandChanged(playerId);
+    }
+
     // player buildTurn
     public SetHeroBuildTurnStart(buildLimit: number): void {
         const playerIdWithHero = this.GetPlayerIdWithHeroWeight(this.playerHeroWeightTurn);
@@ -250,7 +256,7 @@ export class Players {
             const newBuildLimit = !!this.players[playerId].buildLimit ? this.players[playerId].buildLimit - 1 : undefined;
             if (!!newBuildLimit) this.players[playerId].buildLimit = newBuildLimit;
 
-            this.InformPlayersAboutPlayerBuiltDistrict(playerId, card.GetInfo());
+            this.InformPlayersAboutDistrictBuilt(playerId, card.GetInfo());
         }
     }
 
@@ -260,6 +266,10 @@ export class Players {
 
     public EndPlayerBuildTurn(playerId: number): void {
         this.players[playerId].SetBuildTurnMade();
+    }
+
+    public DestroyPlayerDistrict(playerId: number, districtInGameId: number): void {
+        this.players[playerId].RemovePlacedCard(districtInGameId);
     }
 
     // end game
@@ -320,7 +330,6 @@ export class Players {
     }
 
     // players informant
-
     public InformPlayersAboutInitialPlayerConnection(playerInfo: playerPreGameInfo): void {
         Object.keys(this.players).forEach(pId => {
             if (+pId !== playerInfo.id) this.players[+pId].InformAboutPlayerInitialConnected(playerInfo);
@@ -377,6 +386,17 @@ export class Players {
     }
 
 
+    public InformPlayersAboutPlayerHandChanged(playerId: number): void {
+        const newHand = this.players[playerId].hand;
+        const handLength = newHand.length;
+
+        this.playersId.forEach(pId => {
+            if (pId === playerId) this.players[pId].InformAboutPlayerHandChanged(playerId, handLength, newHand);
+            else this.players[pId].InformAboutPlayerHandChanged(playerId, handLength);
+        });
+    }
+
+
     public InformPlayersAboutNextHeroInitialTurnStart(): void {
         const playerIdTurn = this.GetPlayerIdWithHeroWeight(this.playerHeroWeightTurn);
 
@@ -399,9 +419,16 @@ export class Players {
         });
     }
 
-    public InformPlayersAboutPlayerBuiltDistrict(playerId: number, cardInfo: cardInfo): void {
+
+    public InformPlayersAboutDistrictBuilt(playerId: number, cardInfo: cardInfo): void {
         Array.from(this.playersIdInGame).forEach(pId => {
             this.players[pId].InformAboutPlayerBuiltDistrict(playerId, cardInfo);
+        });
+    }
+
+    public InformPlayersAboutDistrictDestroyed(playerId: number, cardInGameId: number): void {
+        Array.from(this.playersIdInGame).forEach(pId => {
+            this.players[pId].InformAboutPlayerDistrictDestroyed(playerId, cardInGameId);
         });
     }
 

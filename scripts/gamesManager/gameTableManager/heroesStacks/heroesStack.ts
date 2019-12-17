@@ -81,6 +81,15 @@ export class HeroesStack {
     }
 
 
+    public IsHeroCanUseAbility(heroWeight: number, message: any, playerId: number, players: Players, heroes: HeroesStack, deck: Deck): boolean {
+        return this.heroes[heroWeight].IsPlayerCanMakeAbilityMove(message, playerId, players, heroes, deck);
+    }
+
+    public UseHeroAbility(heroWeight: number, message: any, playerId: number, players: Players, heroes: HeroesStack, deck: Deck): void {
+        this.heroes[heroWeight].CastPlayerAbility(message, playerId, players, heroes, deck);
+    }
+
+
     public RemoveLeftHero(heroWeight: number) {
         this.heroesLeft = this.heroesLeft.filter(hW => hW !== heroWeight);
     }
@@ -91,7 +100,7 @@ export class HeroesStack {
     }
 
 
-    public AddDebuffOnPlayer(heroWeight: number, debuffType: heroDebuffsTypes, fromPlayerId: number): void {
+    public ApplyDebuffOnHero(heroWeight: number, debuffType: heroDebuffsTypes, fromPlayerId: number): void {
         this.heroes[heroWeight].AddDebuff(debuffType, fromPlayerId);
     }
 

@@ -72,10 +72,16 @@ export type heroBuildTurnStarted = {
     heroId: number;
 }
 
-export type playerBuiltDistrict = {
+export type districtBuilt = {
     messageType: string;
     playerId: number;
     card: cardInfo;
+}
+
+export type districtDestroyed = {
+    messageType: string;
+    playerId: number;
+    cardInGameId: number;
 }
 
 export type gameEnd = {
@@ -88,4 +94,11 @@ export type debuffAddedToHero = {
     debuffType: heroDebuffsTypes;
     heroWeight: number;
     fromPlayerId?: number;
+}
+
+export type playerHandChanged = {
+    messageType: string;
+    playerId: number;
+    handLength: number;
+    hand?: Array<Card>;
 }
