@@ -42,6 +42,7 @@ export class Assassin extends Hero {
 
         if (!validMessage) return false;
         if (!this.IsPlayerCanUseAbility(players.GetPlayerWithId(playerId))) return false;
+        if (!heroes.allHeroes.some(h => h.weight === validMessage.killedHeroWeight)) return false;
         if (validMessage.killedHeroWeight <= this.weight) return false;
         return heroes.allHeroes.some(h => validMessage.killedHeroWeight === h.weight);
     }

@@ -6,18 +6,18 @@ import {HeroesStack} from "../heroesStack";
 import {Deck} from "../../deck/deck";
 
 
-type districtDestroyed = {
+type destroyDistrict = {
     messageType: string;
-    playerIdWhichDistrictDestroyed: number;
+    playerId: number;
     districtInGameId: number;
 }
 
-const GetValidUserMassage = (message: any): districtDestroyed | undefined => {
+const GetValidUserMassage = (message: any): destroyDistrict | undefined => {
     if (typeof message !== "object") return undefined;
     if (!message["messageType"] && message["messageType"] !== "districtDestroyed") return undefined;
-    if (!message["playerIdWhichDistrictDestroyed"] && typeof message["playerIdWhichDistrictDestroyed"] !== "number") return undefined;
+    if (!message["playerId"] && typeof message["playerId"] !== "number") return undefined;
     if (!message["districtInGameId"] && typeof message["districtInGameId"] !== "number") return undefined;
-    return message as districtDestroyed;
+    return message as destroyDistrict;
 };
 
 
@@ -44,10 +44,10 @@ export class Condottier extends Hero {
         if (!validMessage) return false;
 
         const player = players.GetPlayerWithId(playerId);
-        const playerToDestroy = players.GetPlayerWithId(validMessage.playerIdWhichDistrictDestroyed);
+        const playerToDestroy = players.GetPlayerWithId(validMessage.playerId);
 
-        if (!playerToDestroy) return false;
         if (!this.IsPlayerCanUseAbility(player)) return false;
+        if (!playerToDestroy) return false;
         if (!playerToDestroy.placedCards.some(c => c.gameId === validMessage.districtInGameId && player.HasEnoughGold(c.cost - 1))) return false;
         return playerToDestroy.placedCards.some(c => c.gameId === validMessage.districtInGameId);
     }
@@ -55,12 +55,12 @@ export class Condottier extends Hero {
     public CastPlayerAbility(message: any, playerId: number, players: Players, heroes: HeroesStack, deck: Deck): void {
         const validMessage = GetValidUserMassage(message)!;
 
-        players.GetPlayerWithId(validMessage.playerIdWhichDistrictDestroyed).placedCards
+        players.GetPlayerWithId(validMessage.playerId).placedCards
             .forEach(c => {
-                if (c.gameId === playerId) players.GivePlayerGold(playerId, -c.cost);
+                if (c.gameId === validMessage.districtInGameId) players.GivePlayerGold(playerId, -c.cost, false);
             });
 
-        players.DestroyPlayerDistrict(validMessage.playerIdWhichDistrictDestroyed, validMessage.districtInGameId);
-        players.InformPlayersAboutDistrictDestroyed(validMessage.playerIdWhichDistrictDestroyed, validMessage.districtInGameId);
+        players.DestroyPlayerDistrict(validMessage.playerId, validMessage.districtInGameId);
+        players.InformPlayersAboutDistrictDestroyed(validMessage.playerId, validMessage.districtInGameId);
     }
 }

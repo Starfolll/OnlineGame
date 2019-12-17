@@ -26,11 +26,11 @@ export class Magician extends Hero {
     public readonly description: string = "";
 
     public readonly abilityType: heroAbilityTypes | undefined = "changeHand";
-    public buffs: Array<heroBuffsTypes> = ["instanceCard", "overBuild"];
+    public buffs: Array<heroBuffsTypes> = [];
     public debuffs: Array<debuffWithMetadata> = [];
 
     public ResetBuffs(): void {
-        this.buffs = ["instanceCard"];
+        this.buffs = [];
     }
 
     public ResetDebuffs(): void {
@@ -54,6 +54,9 @@ export class Magician extends Hero {
 
             players.SetPlayerHand(playerId, player2Hand);
             players.SetPlayerHand(validMessage.playerId, player1Hand);
+        } else {
+            const card = deck.GetTopCard();
+            if (!!card) players.GivePlayerCard(playerId, card);
         }
     }
 }

@@ -232,9 +232,6 @@ export class Players {
 
     public IsAllHeroesPlayedTurn(): boolean {
         return this.playerHeroWeightTurn === -1;
-        // return Array.from(this.playersIdInGame).every(pId => {
-        //     return this.players[pId].isBuildTurnMade && this.players[pId].isInitialHeroTurnMade;
-        // });
     }
 
     // hero ability

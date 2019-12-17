@@ -6,16 +6,16 @@ import {HeroesStack} from "../heroesStack";
 import {Deck} from "../../deck/deck";
 
 
-type robbedHero = {
+type robbHero = {
     messageType: string;
     heroWeight: number;
 }
 
-const GetValidUserMassage = (message: any): robbedHero | undefined => {
+const GetValidUserMassage = (message: any): robbHero | undefined => {
     if (typeof message !== "object") return undefined;
-    if (!message["messageType"] && message["messageType"] !== "robbedHero") return undefined;
+    if (!message["messageType"] && message["messageType"] !== "robbHero") return undefined;
     if (!message["heroWeight"] && typeof message["heroWeight"] !== "number") return undefined;
-    return message as robbedHero;
+    return message as robbHero;
 };
 
 

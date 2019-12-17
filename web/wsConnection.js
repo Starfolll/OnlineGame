@@ -69,12 +69,31 @@ const useAbility = {
          }
       }));
    },
+   "robbHero": (heroWeight) => {
+      socket.send(JSON.stringify({
+         "messageType": "heroAbilityUsed",
+         "abilityData": {
+            "messageType": "robbHero",
+            "heroWeight": heroWeight
+         }
+      }));
+   },
    "changeHand": (playerId) => {
       socket.send(JSON.stringify({
          "messageType": "heroAbilityUsed",
          "abilityData": {
             "messageType": "changeHand",
             "playerId": playerId
+         }
+      }));
+   },
+   "districtDestroyed": (playerId, districtInGameId) => {
+      socket.send(JSON.stringify({
+         "messageType": "heroAbilityUsed",
+         "abilityData": {
+            "messageType": "districtDestroyed",
+            "playerId": playerId,
+            "districtInGameId": districtInGameId
          }
       }));
    }
