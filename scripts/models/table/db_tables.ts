@@ -2,6 +2,7 @@ import {prisma} from "../../../generated/prisma-client";
 import logGameInfo from "../../consoleLogs/logGameInfo";
 import {tableData} from "./table";
 import logError from "../../consoleLogs/logError";
+import {userUniqueData} from "../user/user";
 
 export default class DB_Tables {
     public static async CreateNewTable(usersId: Array<string>): Promise<tableData> {
@@ -28,27 +29,23 @@ export default class DB_Tables {
     }
 
     public static async GetUsersIdInTable(tableId: string): Promise<Array<string>> {
-        return (await prisma.users(
-            {
-                where: {
-                    table: await prisma.table({
-                        id: tableId
-                    })
-                }
+        return (await prisma.users({
+            where: {
+                table: await prisma.table({
+                    id: tableId
+                })
             }
-        )).map(u => u.id);
+        })).map(u => u.id);
     }
 
     public static async IsTableExists(tableId: string): Promise<boolean> {
         return !!(await prisma.table({id: tableId}));
     }
 
-    public static async GetUserTableId(userId: string): Promise<string | undefined> {
+    public static async GetUserTableId(user: userUniqueData): Promise<string | undefined> {
         const tables = await prisma.tables({
             where: {
-                usersInGame_some: {
-                    id: userId
-                }
+                usersInGame_some: user
             }
         });
 

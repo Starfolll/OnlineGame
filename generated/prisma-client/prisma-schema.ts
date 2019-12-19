@@ -23,10 +23,10 @@ scalar DateTime
 type Lobby {
   id: ID!
   usersInLobby(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
+  name: String
   isGlobal: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
-  lobbyName: String
 }
 
 type LobbyConnection {
@@ -37,9 +37,20 @@ type LobbyConnection {
 
 input LobbyCreateInput {
   id: ID
-  usersInLobby: UserCreateManyInput
+  usersInLobby: UserCreateManyWithoutLobbyInput
+  name: String
   isGlobal: Boolean
-  lobbyName: String
+}
+
+input LobbyCreateOneWithoutUsersInLobbyInput {
+  create: LobbyCreateWithoutUsersInLobbyInput
+  connect: LobbyWhereUniqueInput
+}
+
+input LobbyCreateWithoutUsersInLobbyInput {
+  id: ID
+  name: String
+  isGlobal: Boolean
 }
 
 type LobbyEdge {
@@ -50,22 +61,22 @@ type LobbyEdge {
 enum LobbyOrderByInput {
   id_ASC
   id_DESC
+  name_ASC
+  name_DESC
   isGlobal_ASC
   isGlobal_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
   updatedAt_DESC
-  lobbyName_ASC
-  lobbyName_DESC
 }
 
 type LobbyPreviousValues {
   id: ID!
+  name: String
   isGlobal: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
-  lobbyName: String
 }
 
 type LobbySubscriptionPayload {
@@ -87,14 +98,33 @@ input LobbySubscriptionWhereInput {
 }
 
 input LobbyUpdateInput {
-  usersInLobby: UserUpdateManyInput
+  usersInLobby: UserUpdateManyWithoutLobbyInput
+  name: String
   isGlobal: Boolean
-  lobbyName: String
 }
 
 input LobbyUpdateManyMutationInput {
+  name: String
   isGlobal: Boolean
-  lobbyName: String
+}
+
+input LobbyUpdateOneWithoutUsersInLobbyInput {
+  create: LobbyCreateWithoutUsersInLobbyInput
+  update: LobbyUpdateWithoutUsersInLobbyDataInput
+  upsert: LobbyUpsertWithoutUsersInLobbyInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: LobbyWhereUniqueInput
+}
+
+input LobbyUpdateWithoutUsersInLobbyDataInput {
+  name: String
+  isGlobal: Boolean
+}
+
+input LobbyUpsertWithoutUsersInLobbyInput {
+  update: LobbyUpdateWithoutUsersInLobbyDataInput!
+  create: LobbyCreateWithoutUsersInLobbyInput!
 }
 
 input LobbyWhereInput {
@@ -115,6 +145,20 @@ input LobbyWhereInput {
   usersInLobby_every: UserWhereInput
   usersInLobby_some: UserWhereInput
   usersInLobby_none: UserWhereInput
+  name: String
+  name_not: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_gt: String
+  name_gte: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
   isGlobal: Boolean
   isGlobal_not: Boolean
   createdAt: DateTime
@@ -133,20 +177,6 @@ input LobbyWhereInput {
   updatedAt_lte: DateTime
   updatedAt_gt: DateTime
   updatedAt_gte: DateTime
-  lobbyName: String
-  lobbyName_not: String
-  lobbyName_in: [String!]
-  lobbyName_not_in: [String!]
-  lobbyName_lt: String
-  lobbyName_lte: String
-  lobbyName_gt: String
-  lobbyName_gte: String
-  lobbyName_contains: String
-  lobbyName_not_contains: String
-  lobbyName_starts_with: String
-  lobbyName_not_starts_with: String
-  lobbyName_ends_with: String
-  lobbyName_not_ends_with: String
   AND: [LobbyWhereInput!]
   OR: [LobbyWhereInput!]
   NOT: [LobbyWhereInput!]
@@ -339,6 +369,7 @@ type User {
   createdAt: DateTime!
   updatedAt: DateTime!
   table: Table
+  lobby: Lobby
   name: String!
   email: String!
   password: String!
@@ -358,6 +389,7 @@ input UserCreateInput {
   id: ID
   token: String!
   table: TableCreateOneWithoutUsersInGameInput
+  lobby: LobbyCreateOneWithoutUsersInLobbyInput
   name: String!
   email: String!
   password: String!
@@ -367,8 +399,8 @@ input UserCreateInput {
   gold: Float!
 }
 
-input UserCreateManyInput {
-  create: [UserCreateInput!]
+input UserCreateManyWithoutLobbyInput {
+  create: [UserCreateWithoutLobbyInput!]
   connect: [UserWhereUniqueInput!]
 }
 
@@ -377,9 +409,23 @@ input UserCreateManyWithoutTableInput {
   connect: [UserWhereUniqueInput!]
 }
 
+input UserCreateWithoutLobbyInput {
+  id: ID
+  token: String!
+  table: TableCreateOneWithoutUsersInGameInput
+  name: String!
+  email: String!
+  password: String!
+  publicName: String!
+  lvl: Int!
+  xp: Float!
+  gold: Float!
+}
+
 input UserCreateWithoutTableInput {
   id: ID
   token: String!
+  lobby: LobbyCreateOneWithoutUsersInLobbyInput
   name: String!
   email: String!
   password: String!
@@ -581,21 +627,10 @@ input UserSubscriptionWhereInput {
   NOT: [UserSubscriptionWhereInput!]
 }
 
-input UserUpdateDataInput {
-  token: String
-  table: TableUpdateOneWithoutUsersInGameInput
-  name: String
-  email: String
-  password: String
-  publicName: String
-  lvl: Int
-  xp: Float
-  gold: Float
-}
-
 input UserUpdateInput {
   token: String
   table: TableUpdateOneWithoutUsersInGameInput
+  lobby: LobbyUpdateOneWithoutUsersInLobbyInput
   name: String
   email: String
   password: String
@@ -616,18 +651,6 @@ input UserUpdateManyDataInput {
   gold: Float
 }
 
-input UserUpdateManyInput {
-  create: [UserCreateInput!]
-  update: [UserUpdateWithWhereUniqueNestedInput!]
-  upsert: [UserUpsertWithWhereUniqueNestedInput!]
-  delete: [UserWhereUniqueInput!]
-  connect: [UserWhereUniqueInput!]
-  set: [UserWhereUniqueInput!]
-  disconnect: [UserWhereUniqueInput!]
-  deleteMany: [UserScalarWhereInput!]
-  updateMany: [UserUpdateManyWithWhereNestedInput!]
-}
-
 input UserUpdateManyMutationInput {
   token: String
   name: String
@@ -637,6 +660,18 @@ input UserUpdateManyMutationInput {
   lvl: Int
   xp: Float
   gold: Float
+}
+
+input UserUpdateManyWithoutLobbyInput {
+  create: [UserCreateWithoutLobbyInput!]
+  delete: [UserWhereUniqueInput!]
+  connect: [UserWhereUniqueInput!]
+  set: [UserWhereUniqueInput!]
+  disconnect: [UserWhereUniqueInput!]
+  update: [UserUpdateWithWhereUniqueWithoutLobbyInput!]
+  upsert: [UserUpsertWithWhereUniqueWithoutLobbyInput!]
+  deleteMany: [UserScalarWhereInput!]
+  updateMany: [UserUpdateManyWithWhereNestedInput!]
 }
 
 input UserUpdateManyWithoutTableInput {
@@ -656,8 +691,9 @@ input UserUpdateManyWithWhereNestedInput {
   data: UserUpdateManyDataInput!
 }
 
-input UserUpdateWithoutTableDataInput {
+input UserUpdateWithoutLobbyDataInput {
   token: String
+  table: TableUpdateOneWithoutUsersInGameInput
   name: String
   email: String
   password: String
@@ -667,9 +703,21 @@ input UserUpdateWithoutTableDataInput {
   gold: Float
 }
 
-input UserUpdateWithWhereUniqueNestedInput {
+input UserUpdateWithoutTableDataInput {
+  token: String
+  lobby: LobbyUpdateOneWithoutUsersInLobbyInput
+  name: String
+  email: String
+  password: String
+  publicName: String
+  lvl: Int
+  xp: Float
+  gold: Float
+}
+
+input UserUpdateWithWhereUniqueWithoutLobbyInput {
   where: UserWhereUniqueInput!
-  data: UserUpdateDataInput!
+  data: UserUpdateWithoutLobbyDataInput!
 }
 
 input UserUpdateWithWhereUniqueWithoutTableInput {
@@ -677,10 +725,10 @@ input UserUpdateWithWhereUniqueWithoutTableInput {
   data: UserUpdateWithoutTableDataInput!
 }
 
-input UserUpsertWithWhereUniqueNestedInput {
+input UserUpsertWithWhereUniqueWithoutLobbyInput {
   where: UserWhereUniqueInput!
-  update: UserUpdateDataInput!
-  create: UserCreateInput!
+  update: UserUpdateWithoutLobbyDataInput!
+  create: UserCreateWithoutLobbyInput!
 }
 
 input UserUpsertWithWhereUniqueWithoutTableInput {
@@ -735,6 +783,7 @@ input UserWhereInput {
   updatedAt_gt: DateTime
   updatedAt_gte: DateTime
   table: TableWhereInput
+  lobby: LobbyWhereInput
   name: String
   name_not: String
   name_in: [String!]

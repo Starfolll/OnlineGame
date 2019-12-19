@@ -37,9 +37,9 @@ export default class DB_Users {
             ...user,
             password: await bcrypt.hash(user.password, 10),
             token: cryptoRandomString({length: 60}),
-            lvl: !!user.lvl ? user.lvl : 1,
-            xp: !!user.xp ? user.xp : 0,
-            gold: !!user.gold ? user.gold : 0
+            lvl: user.lvl || 1,
+            xp: user.xp || 0,
+            gold: user.gold || 0
         });
 
         if (!res.id) logError(res);

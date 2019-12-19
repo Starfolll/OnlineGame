@@ -1,5 +1,11 @@
 import DB_Tables from "../table/db_tables";
 
+export type userUniqueData = {
+    id?: string;
+    name?: string;
+    email?: string;
+}
+
 export type userData = {
     id: string;
     token: string;
@@ -46,6 +52,6 @@ export default class User {
 
 
     public async GetUserTableId(): Promise<string | undefined> {
-        return await DB_Tables.GetUserTableId(this.id);
+        return await DB_Tables.GetUserTableId({id: this.id});
     }
 }

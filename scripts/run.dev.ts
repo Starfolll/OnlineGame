@@ -67,4 +67,6 @@ export async function runDevelopmentBuild(webPort: number, gameWSPort: number) {
         Decks.defaultDeck,
         HeroesStacks.defaultStack
     );
+
+    console.log();
 }

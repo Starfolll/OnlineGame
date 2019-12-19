@@ -1,10 +1,11 @@
 type Lobby {
     id: ID! @id
-    usersInLobby: [User!]!
+
+    usersInLobby: [User!]! @relation(link: TABLE)
+
+    name: String
     isGlobal: Boolean! @default(value: false)
 
     createdAt: DateTime! @createdAt
     updatedAt: DateTime! @updatedAt
-
-    lobbyName: String
 }

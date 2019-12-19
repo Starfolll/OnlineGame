@@ -6,6 +6,7 @@ type User {
     updatedAt: DateTime! @updatedAt
 
     table: Table
+    lobby: Lobby
 
     name: String! @unique
     email: String! @unique

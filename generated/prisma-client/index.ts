@@ -202,14 +202,14 @@ export type UserOrderByInput =
 export type LobbyOrderByInput =
   | "id_ASC"
   | "id_DESC"
+  | "name_ASC"
+  | "name_DESC"
   | "isGlobal_ASC"
   | "isGlobal_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC"
   | "updatedAt_ASC"
-  | "updatedAt_DESC"
-  | "lobbyName_ASC"
-  | "lobbyName_DESC";
+  | "updatedAt_DESC";
 
 export type TableOrderByInput =
   | "id_ASC"
@@ -271,6 +271,7 @@ export interface UserWhereInput {
   updatedAt_gt?: Maybe<DateTimeInput>;
   updatedAt_gte?: Maybe<DateTimeInput>;
   table?: Maybe<TableWhereInput>;
+  lobby?: Maybe<LobbyWhereInput>;
   name?: Maybe<String>;
   name_not?: Maybe<String>;
   name_in?: Maybe<String[] | String>;
@@ -413,6 +414,20 @@ export interface LobbyWhereInput {
   usersInLobby_every?: Maybe<UserWhereInput>;
   usersInLobby_some?: Maybe<UserWhereInput>;
   usersInLobby_none?: Maybe<UserWhereInput>;
+  name?: Maybe<String>;
+  name_not?: Maybe<String>;
+  name_in?: Maybe<String[] | String>;
+  name_not_in?: Maybe<String[] | String>;
+  name_lt?: Maybe<String>;
+  name_lte?: Maybe<String>;
+  name_gt?: Maybe<String>;
+  name_gte?: Maybe<String>;
+  name_contains?: Maybe<String>;
+  name_not_contains?: Maybe<String>;
+  name_starts_with?: Maybe<String>;
+  name_not_starts_with?: Maybe<String>;
+  name_ends_with?: Maybe<String>;
+  name_not_ends_with?: Maybe<String>;
   isGlobal?: Maybe<Boolean>;
   isGlobal_not?: Maybe<Boolean>;
   createdAt?: Maybe<DateTimeInput>;
@@ -431,20 +446,6 @@ export interface LobbyWhereInput {
   updatedAt_lte?: Maybe<DateTimeInput>;
   updatedAt_gt?: Maybe<DateTimeInput>;
   updatedAt_gte?: Maybe<DateTimeInput>;
-  lobbyName?: Maybe<String>;
-  lobbyName_not?: Maybe<String>;
-  lobbyName_in?: Maybe<String[] | String>;
-  lobbyName_not_in?: Maybe<String[] | String>;
-  lobbyName_lt?: Maybe<String>;
-  lobbyName_lte?: Maybe<String>;
-  lobbyName_gt?: Maybe<String>;
-  lobbyName_gte?: Maybe<String>;
-  lobbyName_contains?: Maybe<String>;
-  lobbyName_not_contains?: Maybe<String>;
-  lobbyName_starts_with?: Maybe<String>;
-  lobbyName_not_starts_with?: Maybe<String>;
-  lobbyName_ends_with?: Maybe<String>;
-  lobbyName_not_ends_with?: Maybe<String>;
   AND?: Maybe<LobbyWhereInput[] | LobbyWhereInput>;
   OR?: Maybe<LobbyWhereInput[] | LobbyWhereInput>;
   NOT?: Maybe<LobbyWhereInput[] | LobbyWhereInput>;
@@ -462,17 +463,17 @@ export type UserWhereUniqueInput = AtLeastOne<{
 
 export interface LobbyCreateInput {
   id?: Maybe<ID_Input>;
-  usersInLobby?: Maybe<UserCreateManyInput>;
+  usersInLobby?: Maybe<UserCreateManyWithoutLobbyInput>;
+  name?: Maybe<String>;
   isGlobal?: Maybe<Boolean>;
-  lobbyName?: Maybe<String>;
 }
 
-export interface UserCreateManyInput {
-  create?: Maybe<UserCreateInput[] | UserCreateInput>;
+export interface UserCreateManyWithoutLobbyInput {
+  create?: Maybe<UserCreateWithoutLobbyInput[] | UserCreateWithoutLobbyInput>;
   connect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
 }
 
-export interface UserCreateInput {
+export interface UserCreateWithoutLobbyInput {
   id?: Maybe<ID_Input>;
   token: String;
   table?: Maybe<TableCreateOneWithoutUsersInGameInput>;
@@ -495,37 +496,37 @@ export interface TableCreateWithoutUsersInGameInput {
 }
 
 export interface LobbyUpdateInput {
-  usersInLobby?: Maybe<UserUpdateManyInput>;
+  usersInLobby?: Maybe<UserUpdateManyWithoutLobbyInput>;
+  name?: Maybe<String>;
   isGlobal?: Maybe<Boolean>;
-  lobbyName?: Maybe<String>;
 }
 
-export interface UserUpdateManyInput {
-  create?: Maybe<UserCreateInput[] | UserCreateInput>;
-  update?: Maybe<
-    | UserUpdateWithWhereUniqueNestedInput[]
-    | UserUpdateWithWhereUniqueNestedInput
-  >;
-  upsert?: Maybe<
-    | UserUpsertWithWhereUniqueNestedInput[]
-    | UserUpsertWithWhereUniqueNestedInput
-  >;
+export interface UserUpdateManyWithoutLobbyInput {
+  create?: Maybe<UserCreateWithoutLobbyInput[] | UserCreateWithoutLobbyInput>;
   delete?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
   connect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
   set?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
   disconnect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  update?: Maybe<
+    | UserUpdateWithWhereUniqueWithoutLobbyInput[]
+    | UserUpdateWithWhereUniqueWithoutLobbyInput
+  >;
+  upsert?: Maybe<
+    | UserUpsertWithWhereUniqueWithoutLobbyInput[]
+    | UserUpsertWithWhereUniqueWithoutLobbyInput
+  >;
   deleteMany?: Maybe<UserScalarWhereInput[] | UserScalarWhereInput>;
   updateMany?: Maybe<
     UserUpdateManyWithWhereNestedInput[] | UserUpdateManyWithWhereNestedInput
   >;
 }
 
-export interface UserUpdateWithWhereUniqueNestedInput {
+export interface UserUpdateWithWhereUniqueWithoutLobbyInput {
   where: UserWhereUniqueInput;
-  data: UserUpdateDataInput;
+  data: UserUpdateWithoutLobbyDataInput;
 }
 
-export interface UserUpdateDataInput {
+export interface UserUpdateWithoutLobbyDataInput {
   token?: Maybe<String>;
   table?: Maybe<TableUpdateOneWithoutUsersInGameInput>;
   name?: Maybe<String>;
@@ -544,10 +545,10 @@ export interface TableUpdateOneWithoutUsersInGameInput {
   connect?: Maybe<TableWhereUniqueInput>;
 }
 
-export interface UserUpsertWithWhereUniqueNestedInput {
+export interface UserUpsertWithWhereUniqueWithoutLobbyInput {
   where: UserWhereUniqueInput;
-  update: UserUpdateDataInput;
-  create: UserCreateInput;
+  update: UserUpdateWithoutLobbyDataInput;
+  create: UserCreateWithoutLobbyInput;
 }
 
 export interface UserScalarWhereInput {
@@ -697,8 +698,8 @@ export interface UserUpdateManyDataInput {
 }
 
 export interface LobbyUpdateManyMutationInput {
+  name?: Maybe<String>;
   isGlobal?: Maybe<Boolean>;
-  lobbyName?: Maybe<String>;
 }
 
 export interface TableCreateInput {
@@ -714,6 +715,7 @@ export interface UserCreateManyWithoutTableInput {
 export interface UserCreateWithoutTableInput {
   id?: Maybe<ID_Input>;
   token: String;
+  lobby?: Maybe<LobbyCreateOneWithoutUsersInLobbyInput>;
   name: String;
   email: String;
   password: String;
@@ -721,6 +723,17 @@ export interface UserCreateWithoutTableInput {
   lvl: Int;
   xp: Float;
   gold: Float;
+}
+
+export interface LobbyCreateOneWithoutUsersInLobbyInput {
+  create?: Maybe<LobbyCreateWithoutUsersInLobbyInput>;
+  connect?: Maybe<LobbyWhereUniqueInput>;
+}
+
+export interface LobbyCreateWithoutUsersInLobbyInput {
+  id?: Maybe<ID_Input>;
+  name?: Maybe<String>;
+  isGlobal?: Maybe<Boolean>;
 }
 
 export interface TableUpdateInput {
@@ -754,6 +767,7 @@ export interface UserUpdateWithWhereUniqueWithoutTableInput {
 
 export interface UserUpdateWithoutTableDataInput {
   token?: Maybe<String>;
+  lobby?: Maybe<LobbyUpdateOneWithoutUsersInLobbyInput>;
   name?: Maybe<String>;
   email?: Maybe<String>;
   password?: Maybe<String>;
@@ -763,15 +777,49 @@ export interface UserUpdateWithoutTableDataInput {
   gold?: Maybe<Float>;
 }
 
+export interface LobbyUpdateOneWithoutUsersInLobbyInput {
+  create?: Maybe<LobbyCreateWithoutUsersInLobbyInput>;
+  update?: Maybe<LobbyUpdateWithoutUsersInLobbyDataInput>;
+  upsert?: Maybe<LobbyUpsertWithoutUsersInLobbyInput>;
+  delete?: Maybe<Boolean>;
+  disconnect?: Maybe<Boolean>;
+  connect?: Maybe<LobbyWhereUniqueInput>;
+}
+
+export interface LobbyUpdateWithoutUsersInLobbyDataInput {
+  name?: Maybe<String>;
+  isGlobal?: Maybe<Boolean>;
+}
+
+export interface LobbyUpsertWithoutUsersInLobbyInput {
+  update: LobbyUpdateWithoutUsersInLobbyDataInput;
+  create: LobbyCreateWithoutUsersInLobbyInput;
+}
+
 export interface UserUpsertWithWhereUniqueWithoutTableInput {
   where: UserWhereUniqueInput;
   update: UserUpdateWithoutTableDataInput;
   create: UserCreateWithoutTableInput;
 }
 
+export interface UserCreateInput {
+  id?: Maybe<ID_Input>;
+  token: String;
+  table?: Maybe<TableCreateOneWithoutUsersInGameInput>;
+  lobby?: Maybe<LobbyCreateOneWithoutUsersInLobbyInput>;
+  name: String;
+  email: String;
+  password: String;
+  publicName: String;
+  lvl: Int;
+  xp: Float;
+  gold: Float;
+}
+
 export interface UserUpdateInput {
   token?: Maybe<String>;
   table?: Maybe<TableUpdateOneWithoutUsersInGameInput>;
+  lobby?: Maybe<LobbyUpdateOneWithoutUsersInLobbyInput>;
   name?: Maybe<String>;
   email?: Maybe<String>;
   password?: Maybe<String>;
@@ -831,10 +879,10 @@ export interface NodeNode {
 
 export interface Lobby {
   id: ID_Output;
+  name?: String;
   isGlobal: Boolean;
   createdAt: DateTimeOutput;
   updatedAt: DateTimeOutput;
-  lobbyName?: String;
 }
 
 export interface LobbyPromise extends Promise<Lobby>, Fragmentable {
@@ -848,10 +896,10 @@ export interface LobbyPromise extends Promise<Lobby>, Fragmentable {
     first?: Int;
     last?: Int;
   }) => T;
+  name: () => Promise<String>;
   isGlobal: () => Promise<Boolean>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
-  lobbyName: () => Promise<String>;
 }
 
 export interface LobbySubscription
@@ -867,10 +915,10 @@ export interface LobbySubscription
     first?: Int;
     last?: Int;
   }) => T;
+  name: () => Promise<AsyncIterator<String>>;
   isGlobal: () => Promise<AsyncIterator<Boolean>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  lobbyName: () => Promise<AsyncIterator<String>>;
 }
 
 export interface LobbyNullablePromise
@@ -886,10 +934,10 @@ export interface LobbyNullablePromise
     first?: Int;
     last?: Int;
   }) => T;
+  name: () => Promise<String>;
   isGlobal: () => Promise<Boolean>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
-  lobbyName: () => Promise<String>;
 }
 
 export interface User {
@@ -912,6 +960,7 @@ export interface UserPromise extends Promise<User>, Fragmentable {
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
   table: <T = TablePromise>() => T;
+  lobby: <T = LobbyPromise>() => T;
   name: () => Promise<String>;
   email: () => Promise<String>;
   password: () => Promise<String>;
@@ -929,6 +978,7 @@ export interface UserSubscription
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   table: <T = TableSubscription>() => T;
+  lobby: <T = LobbySubscription>() => T;
   name: () => Promise<AsyncIterator<String>>;
   email: () => Promise<AsyncIterator<String>>;
   password: () => Promise<AsyncIterator<String>>;
@@ -946,6 +996,7 @@ export interface UserNullablePromise
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
   table: <T = TablePromise>() => T;
+  lobby: <T = LobbyPromise>() => T;
   name: () => Promise<String>;
   email: () => Promise<String>;
   password: () => Promise<String>;
@@ -1238,30 +1289,30 @@ export interface LobbySubscriptionPayloadSubscription
 
 export interface LobbyPreviousValues {
   id: ID_Output;
+  name?: String;
   isGlobal: Boolean;
   createdAt: DateTimeOutput;
   updatedAt: DateTimeOutput;
-  lobbyName?: String;
 }
 
 export interface LobbyPreviousValuesPromise
   extends Promise<LobbyPreviousValues>,
     Fragmentable {
   id: () => Promise<ID_Output>;
+  name: () => Promise<String>;
   isGlobal: () => Promise<Boolean>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
-  lobbyName: () => Promise<String>;
 }
 
 export interface LobbyPreviousValuesSubscription
   extends Promise<AsyncIterator<LobbyPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
+  name: () => Promise<AsyncIterator<String>>;
   isGlobal: () => Promise<AsyncIterator<Boolean>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  lobbyName: () => Promise<AsyncIterator<String>>;
 }
 
 export interface TableSubscriptionPayload {
@@ -1404,6 +1455,11 @@ DateTime scalar output type, which is always a string
 export type DateTimeOutput = string;
 
 /*
+The `Boolean` scalar type represents `true` or `false`.
+*/
+export type Boolean = boolean;
+
+/*
 The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.
 */
 export type Int = number;
@@ -1412,11 +1468,6 @@ export type Int = number;
 The `Float` scalar type represents signed double-precision fractional values as specified by [IEEE 754](https://en.wikipedia.org/wiki/IEEE_floating_point).
 */
 export type Float = number;
-
-/*
-The `Boolean` scalar type represents `true` or `false`.
-*/
-export type Boolean = boolean;
 
 export type Long = string;
 
