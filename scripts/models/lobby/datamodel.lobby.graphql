@@ -1,0 +1,10 @@
+type Lobby {
+    id: ID! @id
+    usersInLobby: [User!]!
+    isGlobal: Boolean! @default(value: false)
+
+    createdAt: DateTime! @createdAt
+    updatedAt: DateTime! @updatedAt
+
+    lobbyName: String
+}

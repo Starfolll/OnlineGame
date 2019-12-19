@@ -11,9 +11,9 @@ import DB_Users from "./models/user/db_users";
 
 import {GamesManager} from "./gamesManager/gamesManager";
 import {StartLoggingSystemStatsTimeout} from "./consoleLogs/logSystemInfo";
+import {prisma} from "../generated/prisma-client";
 import {Decks} from "./gamesManager/gameTableManager/deck/decks";
 import {HeroesStacks} from "./gamesManager/gameTableManager/heroesStacks/heroesStacks";
-import {userData} from "./models/user/user";
 
 
 export async function runDevelopmentBuild(webPort: number, gameWSPort: number) {
@@ -22,40 +22,49 @@ export async function runDevelopmentBuild(webPort: number, gameWSPort: number) {
     logLetters("dev +_+");
     console.log();
 
-    logLink(`http://localhost:${webPort}`, "Main website");
+    logLink(`http://localhost:${webPort}`, "Website");
+    logLink(`http://localhost:4466`, "Prisma playground");
+    logLink(`http://localhost:4466/_admin`, "Prisma admin panel");
+    console.log();
+
     logInfo(`Server version: ${process.env.npm_package_version}`);
+    StartLoggingSystemStatsTimeout(120000 * 3);
 
     const app = express();
     const gamesManager = new GamesManager(
         new WebSocket.Server({port: gameWSPort}),
-        () => logInfo(`Game listening at port ${gameWSPort}`)
+        () => logInfo(`Game manager listening at port ${gameWSPort}`)
     );
 
-    app.use(webPageRoute);
-    app.listen(webPort, () => logInfo(`Web listening at port ${webPort}`));
+    await app.use(webPageRoute);
+    await app.listen(webPort);
+    logInfo(`Web listening at port ${webPort}`);
+    console.log();
 
-    StartLoggingSystemStatsTimeout(120000 * 3);
+    await prisma.deleteManyTables();
+    await prisma.deleteManyUsers();
 
-    gamesManager.CreateNewTable(
-        "1",
-        new Set(["1", "2"]),
+    await DB_Users.CreateNewUser({
+        "id": "id1",
+        "name": "admin 1",
+        "email": "admin 1 email",
+        "password": "password",
+        "publicName": "admin 1"
+    });
+
+    await DB_Users.CreateNewUser({
+        "id": "id2",
+        "name": "admin 2",
+        "email": "admin 2 email",
+        "password": "password",
+        "publicName": "admin 2"
+    });
+
+    console.log();
+
+    await gamesManager.CreateNewTable(
+        {usersId: ["id1", "id2"]},
         Decks.defaultDeck,
         HeroesStacks.defaultStack
     );
-
-    const starfolll = await DB_Users.IsUserExists({name: "admin"});
-
-    console.log(starfolll);
-
-    if (starfolll) await DB_Users.RemoveUser("admin");
-
-    await DB_Users.AddNewUser({
-        "name": "admin",
-        "email": "andrey.kovyarov@gmail.com",
-        "password": "password",
-        "publicName": "admin"
-    } as userData);
-
-    const user = await DB_Users.GetUserDataByEmailAndPassword("andrey.kovyarov@gmail.com", "password");
-    console.log(user);
 }

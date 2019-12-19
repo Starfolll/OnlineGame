@@ -16,6 +16,8 @@ export type AtLeastOne<T, U = { [K in keyof T]: Pick<T, K> }> = Partial<T> &
 export type Maybe<T> = T | undefined | null;
 
 export interface Exists {
+  lobby: (where?: LobbyWhereInput) => Promise<boolean>;
+  table: (where?: TableWhereInput) => Promise<boolean>;
   user: (where?: UserWhereInput) => Promise<boolean>;
 }
 
@@ -38,6 +40,44 @@ export interface Prisma {
    * Queries
    */
 
+  lobby: (where: LobbyWhereUniqueInput) => LobbyNullablePromise;
+  lobbies: (args?: {
+    where?: LobbyWhereInput;
+    orderBy?: LobbyOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => FragmentableArray<Lobby>;
+  lobbiesConnection: (args?: {
+    where?: LobbyWhereInput;
+    orderBy?: LobbyOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => LobbyConnectionPromise;
+  table: (where: TableWhereUniqueInput) => TableNullablePromise;
+  tables: (args?: {
+    where?: TableWhereInput;
+    orderBy?: TableOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => FragmentableArray<Table>;
+  tablesConnection: (args?: {
+    where?: TableWhereInput;
+    orderBy?: TableOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => TableConnectionPromise;
   user: (where: UserWhereUniqueInput) => UserNullablePromise;
   users: (args?: {
     where?: UserWhereInput;
@@ -63,6 +103,34 @@ export interface Prisma {
    * Mutations
    */
 
+  createLobby: (data: LobbyCreateInput) => LobbyPromise;
+  updateLobby: (args: {
+    data: LobbyUpdateInput;
+    where: LobbyWhereUniqueInput;
+  }) => LobbyPromise;
+  updateManyLobbies: (args: {
+    data: LobbyUpdateManyMutationInput;
+    where?: LobbyWhereInput;
+  }) => BatchPayloadPromise;
+  upsertLobby: (args: {
+    where: LobbyWhereUniqueInput;
+    create: LobbyCreateInput;
+    update: LobbyUpdateInput;
+  }) => LobbyPromise;
+  deleteLobby: (where: LobbyWhereUniqueInput) => LobbyPromise;
+  deleteManyLobbies: (where?: LobbyWhereInput) => BatchPayloadPromise;
+  createTable: (data: TableCreateInput) => TablePromise;
+  updateTable: (args: {
+    data: TableUpdateInput;
+    where: TableWhereUniqueInput;
+  }) => TablePromise;
+  upsertTable: (args: {
+    where: TableWhereUniqueInput;
+    create: TableCreateInput;
+    update: TableUpdateInput;
+  }) => TablePromise;
+  deleteTable: (where: TableWhereUniqueInput) => TablePromise;
+  deleteManyTables: (where?: TableWhereInput) => BatchPayloadPromise;
   createUser: (data: UserCreateInput) => UserPromise;
   updateUser: (args: {
     data: UserUpdateInput;
@@ -88,6 +156,12 @@ export interface Prisma {
 }
 
 export interface Subscription {
+  lobby: (
+    where?: LobbySubscriptionWhereInput
+  ) => LobbySubscriptionPayloadSubscription;
+  table: (
+    where?: TableSubscriptionWhereInput
+  ) => TableSubscriptionPayloadSubscription;
   user: (
     where?: UserSubscriptionWhereInput
   ) => UserSubscriptionPayloadSubscription;
@@ -106,6 +180,10 @@ export type UserOrderByInput =
   | "id_DESC"
   | "token_ASC"
   | "token_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updatedAt_ASC"
+  | "updatedAt_DESC"
   | "name_ASC"
   | "name_DESC"
   | "email_ASC"
@@ -121,12 +199,30 @@ export type UserOrderByInput =
   | "gold_ASC"
   | "gold_DESC";
 
+export type LobbyOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "isGlobal_ASC"
+  | "isGlobal_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updatedAt_ASC"
+  | "updatedAt_DESC"
+  | "lobbyName_ASC"
+  | "lobbyName_DESC";
+
+export type TableOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updatedAt_ASC"
+  | "updatedAt_DESC";
+
 export type MutationType = "CREATED" | "UPDATED" | "DELETED";
 
-export type UserWhereUniqueInput = AtLeastOne<{
+export type LobbyWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
-  name?: Maybe<String>;
-  email?: Maybe<String>;
 }>;
 
 export interface UserWhereInput {
@@ -158,6 +254,23 @@ export interface UserWhereInput {
   token_not_starts_with?: Maybe<String>;
   token_ends_with?: Maybe<String>;
   token_not_ends_with?: Maybe<String>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  updatedAt?: Maybe<DateTimeInput>;
+  updatedAt_not?: Maybe<DateTimeInput>;
+  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_lt?: Maybe<DateTimeInput>;
+  updatedAt_lte?: Maybe<DateTimeInput>;
+  updatedAt_gt?: Maybe<DateTimeInput>;
+  updatedAt_gte?: Maybe<DateTimeInput>;
+  table?: Maybe<TableWhereInput>;
   name?: Maybe<String>;
   name_not?: Maybe<String>;
   name_in?: Maybe<String[] | String>;
@@ -243,7 +356,362 @@ export interface UserWhereInput {
   NOT?: Maybe<UserWhereInput[] | UserWhereInput>;
 }
 
+export interface TableWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  usersInGame_every?: Maybe<UserWhereInput>;
+  usersInGame_some?: Maybe<UserWhereInput>;
+  usersInGame_none?: Maybe<UserWhereInput>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  updatedAt?: Maybe<DateTimeInput>;
+  updatedAt_not?: Maybe<DateTimeInput>;
+  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_lt?: Maybe<DateTimeInput>;
+  updatedAt_lte?: Maybe<DateTimeInput>;
+  updatedAt_gt?: Maybe<DateTimeInput>;
+  updatedAt_gte?: Maybe<DateTimeInput>;
+  AND?: Maybe<TableWhereInput[] | TableWhereInput>;
+  OR?: Maybe<TableWhereInput[] | TableWhereInput>;
+  NOT?: Maybe<TableWhereInput[] | TableWhereInput>;
+}
+
+export interface LobbyWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  usersInLobby_every?: Maybe<UserWhereInput>;
+  usersInLobby_some?: Maybe<UserWhereInput>;
+  usersInLobby_none?: Maybe<UserWhereInput>;
+  isGlobal?: Maybe<Boolean>;
+  isGlobal_not?: Maybe<Boolean>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  updatedAt?: Maybe<DateTimeInput>;
+  updatedAt_not?: Maybe<DateTimeInput>;
+  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_lt?: Maybe<DateTimeInput>;
+  updatedAt_lte?: Maybe<DateTimeInput>;
+  updatedAt_gt?: Maybe<DateTimeInput>;
+  updatedAt_gte?: Maybe<DateTimeInput>;
+  lobbyName?: Maybe<String>;
+  lobbyName_not?: Maybe<String>;
+  lobbyName_in?: Maybe<String[] | String>;
+  lobbyName_not_in?: Maybe<String[] | String>;
+  lobbyName_lt?: Maybe<String>;
+  lobbyName_lte?: Maybe<String>;
+  lobbyName_gt?: Maybe<String>;
+  lobbyName_gte?: Maybe<String>;
+  lobbyName_contains?: Maybe<String>;
+  lobbyName_not_contains?: Maybe<String>;
+  lobbyName_starts_with?: Maybe<String>;
+  lobbyName_not_starts_with?: Maybe<String>;
+  lobbyName_ends_with?: Maybe<String>;
+  lobbyName_not_ends_with?: Maybe<String>;
+  AND?: Maybe<LobbyWhereInput[] | LobbyWhereInput>;
+  OR?: Maybe<LobbyWhereInput[] | LobbyWhereInput>;
+  NOT?: Maybe<LobbyWhereInput[] | LobbyWhereInput>;
+}
+
+export type TableWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+}>;
+
+export type UserWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+  name?: Maybe<String>;
+  email?: Maybe<String>;
+}>;
+
+export interface LobbyCreateInput {
+  id?: Maybe<ID_Input>;
+  usersInLobby?: Maybe<UserCreateManyInput>;
+  isGlobal?: Maybe<Boolean>;
+  lobbyName?: Maybe<String>;
+}
+
+export interface UserCreateManyInput {
+  create?: Maybe<UserCreateInput[] | UserCreateInput>;
+  connect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+}
+
 export interface UserCreateInput {
+  id?: Maybe<ID_Input>;
+  token: String;
+  table?: Maybe<TableCreateOneWithoutUsersInGameInput>;
+  name: String;
+  email: String;
+  password: String;
+  publicName: String;
+  lvl: Int;
+  xp: Float;
+  gold: Float;
+}
+
+export interface TableCreateOneWithoutUsersInGameInput {
+  create?: Maybe<TableCreateWithoutUsersInGameInput>;
+  connect?: Maybe<TableWhereUniqueInput>;
+}
+
+export interface TableCreateWithoutUsersInGameInput {
+  id?: Maybe<ID_Input>;
+}
+
+export interface LobbyUpdateInput {
+  usersInLobby?: Maybe<UserUpdateManyInput>;
+  isGlobal?: Maybe<Boolean>;
+  lobbyName?: Maybe<String>;
+}
+
+export interface UserUpdateManyInput {
+  create?: Maybe<UserCreateInput[] | UserCreateInput>;
+  update?: Maybe<
+    | UserUpdateWithWhereUniqueNestedInput[]
+    | UserUpdateWithWhereUniqueNestedInput
+  >;
+  upsert?: Maybe<
+    | UserUpsertWithWhereUniqueNestedInput[]
+    | UserUpsertWithWhereUniqueNestedInput
+  >;
+  delete?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  connect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  set?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  disconnect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  deleteMany?: Maybe<UserScalarWhereInput[] | UserScalarWhereInput>;
+  updateMany?: Maybe<
+    UserUpdateManyWithWhereNestedInput[] | UserUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface UserUpdateWithWhereUniqueNestedInput {
+  where: UserWhereUniqueInput;
+  data: UserUpdateDataInput;
+}
+
+export interface UserUpdateDataInput {
+  token?: Maybe<String>;
+  table?: Maybe<TableUpdateOneWithoutUsersInGameInput>;
+  name?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+  publicName?: Maybe<String>;
+  lvl?: Maybe<Int>;
+  xp?: Maybe<Float>;
+  gold?: Maybe<Float>;
+}
+
+export interface TableUpdateOneWithoutUsersInGameInput {
+  create?: Maybe<TableCreateWithoutUsersInGameInput>;
+  delete?: Maybe<Boolean>;
+  disconnect?: Maybe<Boolean>;
+  connect?: Maybe<TableWhereUniqueInput>;
+}
+
+export interface UserUpsertWithWhereUniqueNestedInput {
+  where: UserWhereUniqueInput;
+  update: UserUpdateDataInput;
+  create: UserCreateInput;
+}
+
+export interface UserScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  token?: Maybe<String>;
+  token_not?: Maybe<String>;
+  token_in?: Maybe<String[] | String>;
+  token_not_in?: Maybe<String[] | String>;
+  token_lt?: Maybe<String>;
+  token_lte?: Maybe<String>;
+  token_gt?: Maybe<String>;
+  token_gte?: Maybe<String>;
+  token_contains?: Maybe<String>;
+  token_not_contains?: Maybe<String>;
+  token_starts_with?: Maybe<String>;
+  token_not_starts_with?: Maybe<String>;
+  token_ends_with?: Maybe<String>;
+  token_not_ends_with?: Maybe<String>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  updatedAt?: Maybe<DateTimeInput>;
+  updatedAt_not?: Maybe<DateTimeInput>;
+  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_lt?: Maybe<DateTimeInput>;
+  updatedAt_lte?: Maybe<DateTimeInput>;
+  updatedAt_gt?: Maybe<DateTimeInput>;
+  updatedAt_gte?: Maybe<DateTimeInput>;
+  name?: Maybe<String>;
+  name_not?: Maybe<String>;
+  name_in?: Maybe<String[] | String>;
+  name_not_in?: Maybe<String[] | String>;
+  name_lt?: Maybe<String>;
+  name_lte?: Maybe<String>;
+  name_gt?: Maybe<String>;
+  name_gte?: Maybe<String>;
+  name_contains?: Maybe<String>;
+  name_not_contains?: Maybe<String>;
+  name_starts_with?: Maybe<String>;
+  name_not_starts_with?: Maybe<String>;
+  name_ends_with?: Maybe<String>;
+  name_not_ends_with?: Maybe<String>;
+  email?: Maybe<String>;
+  email_not?: Maybe<String>;
+  email_in?: Maybe<String[] | String>;
+  email_not_in?: Maybe<String[] | String>;
+  email_lt?: Maybe<String>;
+  email_lte?: Maybe<String>;
+  email_gt?: Maybe<String>;
+  email_gte?: Maybe<String>;
+  email_contains?: Maybe<String>;
+  email_not_contains?: Maybe<String>;
+  email_starts_with?: Maybe<String>;
+  email_not_starts_with?: Maybe<String>;
+  email_ends_with?: Maybe<String>;
+  email_not_ends_with?: Maybe<String>;
+  password?: Maybe<String>;
+  password_not?: Maybe<String>;
+  password_in?: Maybe<String[] | String>;
+  password_not_in?: Maybe<String[] | String>;
+  password_lt?: Maybe<String>;
+  password_lte?: Maybe<String>;
+  password_gt?: Maybe<String>;
+  password_gte?: Maybe<String>;
+  password_contains?: Maybe<String>;
+  password_not_contains?: Maybe<String>;
+  password_starts_with?: Maybe<String>;
+  password_not_starts_with?: Maybe<String>;
+  password_ends_with?: Maybe<String>;
+  password_not_ends_with?: Maybe<String>;
+  publicName?: Maybe<String>;
+  publicName_not?: Maybe<String>;
+  publicName_in?: Maybe<String[] | String>;
+  publicName_not_in?: Maybe<String[] | String>;
+  publicName_lt?: Maybe<String>;
+  publicName_lte?: Maybe<String>;
+  publicName_gt?: Maybe<String>;
+  publicName_gte?: Maybe<String>;
+  publicName_contains?: Maybe<String>;
+  publicName_not_contains?: Maybe<String>;
+  publicName_starts_with?: Maybe<String>;
+  publicName_not_starts_with?: Maybe<String>;
+  publicName_ends_with?: Maybe<String>;
+  publicName_not_ends_with?: Maybe<String>;
+  lvl?: Maybe<Int>;
+  lvl_not?: Maybe<Int>;
+  lvl_in?: Maybe<Int[] | Int>;
+  lvl_not_in?: Maybe<Int[] | Int>;
+  lvl_lt?: Maybe<Int>;
+  lvl_lte?: Maybe<Int>;
+  lvl_gt?: Maybe<Int>;
+  lvl_gte?: Maybe<Int>;
+  xp?: Maybe<Float>;
+  xp_not?: Maybe<Float>;
+  xp_in?: Maybe<Float[] | Float>;
+  xp_not_in?: Maybe<Float[] | Float>;
+  xp_lt?: Maybe<Float>;
+  xp_lte?: Maybe<Float>;
+  xp_gt?: Maybe<Float>;
+  xp_gte?: Maybe<Float>;
+  gold?: Maybe<Float>;
+  gold_not?: Maybe<Float>;
+  gold_in?: Maybe<Float[] | Float>;
+  gold_not_in?: Maybe<Float[] | Float>;
+  gold_lt?: Maybe<Float>;
+  gold_lte?: Maybe<Float>;
+  gold_gt?: Maybe<Float>;
+  gold_gte?: Maybe<Float>;
+  AND?: Maybe<UserScalarWhereInput[] | UserScalarWhereInput>;
+  OR?: Maybe<UserScalarWhereInput[] | UserScalarWhereInput>;
+  NOT?: Maybe<UserScalarWhereInput[] | UserScalarWhereInput>;
+}
+
+export interface UserUpdateManyWithWhereNestedInput {
+  where: UserScalarWhereInput;
+  data: UserUpdateManyDataInput;
+}
+
+export interface UserUpdateManyDataInput {
+  token?: Maybe<String>;
+  name?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+  publicName?: Maybe<String>;
+  lvl?: Maybe<Int>;
+  xp?: Maybe<Float>;
+  gold?: Maybe<Float>;
+}
+
+export interface LobbyUpdateManyMutationInput {
+  isGlobal?: Maybe<Boolean>;
+  lobbyName?: Maybe<String>;
+}
+
+export interface TableCreateInput {
+  id?: Maybe<ID_Input>;
+  usersInGame?: Maybe<UserCreateManyWithoutTableInput>;
+}
+
+export interface UserCreateManyWithoutTableInput {
+  create?: Maybe<UserCreateWithoutTableInput[] | UserCreateWithoutTableInput>;
+  connect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+}
+
+export interface UserCreateWithoutTableInput {
   id?: Maybe<ID_Input>;
   token: String;
   name: String;
@@ -255,8 +723,55 @@ export interface UserCreateInput {
   gold: Float;
 }
 
+export interface TableUpdateInput {
+  usersInGame?: Maybe<UserUpdateManyWithoutTableInput>;
+}
+
+export interface UserUpdateManyWithoutTableInput {
+  create?: Maybe<UserCreateWithoutTableInput[] | UserCreateWithoutTableInput>;
+  delete?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  connect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  set?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  disconnect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  update?: Maybe<
+    | UserUpdateWithWhereUniqueWithoutTableInput[]
+    | UserUpdateWithWhereUniqueWithoutTableInput
+  >;
+  upsert?: Maybe<
+    | UserUpsertWithWhereUniqueWithoutTableInput[]
+    | UserUpsertWithWhereUniqueWithoutTableInput
+  >;
+  deleteMany?: Maybe<UserScalarWhereInput[] | UserScalarWhereInput>;
+  updateMany?: Maybe<
+    UserUpdateManyWithWhereNestedInput[] | UserUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface UserUpdateWithWhereUniqueWithoutTableInput {
+  where: UserWhereUniqueInput;
+  data: UserUpdateWithoutTableDataInput;
+}
+
+export interface UserUpdateWithoutTableDataInput {
+  token?: Maybe<String>;
+  name?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+  publicName?: Maybe<String>;
+  lvl?: Maybe<Int>;
+  xp?: Maybe<Float>;
+  gold?: Maybe<Float>;
+}
+
+export interface UserUpsertWithWhereUniqueWithoutTableInput {
+  where: UserWhereUniqueInput;
+  update: UserUpdateWithoutTableDataInput;
+  create: UserCreateWithoutTableInput;
+}
+
 export interface UserUpdateInput {
   token?: Maybe<String>;
+  table?: Maybe<TableUpdateOneWithoutUsersInGameInput>;
   name?: Maybe<String>;
   email?: Maybe<String>;
   password?: Maybe<String>;
@@ -277,6 +792,28 @@ export interface UserUpdateManyMutationInput {
   gold?: Maybe<Float>;
 }
 
+export interface LobbySubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<LobbyWhereInput>;
+  AND?: Maybe<LobbySubscriptionWhereInput[] | LobbySubscriptionWhereInput>;
+  OR?: Maybe<LobbySubscriptionWhereInput[] | LobbySubscriptionWhereInput>;
+  NOT?: Maybe<LobbySubscriptionWhereInput[] | LobbySubscriptionWhereInput>;
+}
+
+export interface TableSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<TableWhereInput>;
+  AND?: Maybe<TableSubscriptionWhereInput[] | TableSubscriptionWhereInput>;
+  OR?: Maybe<TableSubscriptionWhereInput[] | TableSubscriptionWhereInput>;
+  NOT?: Maybe<TableSubscriptionWhereInput[] | TableSubscriptionWhereInput>;
+}
+
 export interface UserSubscriptionWhereInput {
   mutation_in?: Maybe<MutationType[] | MutationType>;
   updatedFields_contains?: Maybe<String>;
@@ -292,9 +829,74 @@ export interface NodeNode {
   id: ID_Output;
 }
 
+export interface Lobby {
+  id: ID_Output;
+  isGlobal: Boolean;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
+  lobbyName?: String;
+}
+
+export interface LobbyPromise extends Promise<Lobby>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  usersInLobby: <T = FragmentableArray<User>>(args?: {
+    where?: UserWhereInput;
+    orderBy?: UserOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  isGlobal: () => Promise<Boolean>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  lobbyName: () => Promise<String>;
+}
+
+export interface LobbySubscription
+  extends Promise<AsyncIterator<Lobby>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  usersInLobby: <T = Promise<AsyncIterator<UserSubscription>>>(args?: {
+    where?: UserWhereInput;
+    orderBy?: UserOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  isGlobal: () => Promise<AsyncIterator<Boolean>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  lobbyName: () => Promise<AsyncIterator<String>>;
+}
+
+export interface LobbyNullablePromise
+  extends Promise<Lobby | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  usersInLobby: <T = FragmentableArray<User>>(args?: {
+    where?: UserWhereInput;
+    orderBy?: UserOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  isGlobal: () => Promise<Boolean>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  lobbyName: () => Promise<String>;
+}
+
 export interface User {
   id: ID_Output;
   token: String;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
   name: String;
   email: String;
   password: String;
@@ -307,6 +909,9 @@ export interface User {
 export interface UserPromise extends Promise<User>, Fragmentable {
   id: () => Promise<ID_Output>;
   token: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  table: <T = TablePromise>() => T;
   name: () => Promise<String>;
   email: () => Promise<String>;
   password: () => Promise<String>;
@@ -321,6 +926,9 @@ export interface UserSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   token: () => Promise<AsyncIterator<String>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  table: <T = TableSubscription>() => T;
   name: () => Promise<AsyncIterator<String>>;
   email: () => Promise<AsyncIterator<String>>;
   password: () => Promise<AsyncIterator<String>>;
@@ -335,6 +943,9 @@ export interface UserNullablePromise
     Fragmentable {
   id: () => Promise<ID_Output>;
   token: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  table: <T = TablePromise>() => T;
   name: () => Promise<String>;
   email: () => Promise<String>;
   password: () => Promise<String>;
@@ -344,25 +955,80 @@ export interface UserNullablePromise
   gold: () => Promise<Float>;
 }
 
-export interface UserConnection {
-  pageInfo: PageInfo;
-  edges: UserEdge[];
+export interface Table {
+  id: ID_Output;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
 }
 
-export interface UserConnectionPromise
-  extends Promise<UserConnection>,
+export interface TablePromise extends Promise<Table>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  usersInGame: <T = FragmentableArray<User>>(args?: {
+    where?: UserWhereInput;
+    orderBy?: UserOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+}
+
+export interface TableSubscription
+  extends Promise<AsyncIterator<Table>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  usersInGame: <T = Promise<AsyncIterator<UserSubscription>>>(args?: {
+    where?: UserWhereInput;
+    orderBy?: UserOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface TableNullablePromise
+  extends Promise<Table | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  usersInGame: <T = FragmentableArray<User>>(args?: {
+    where?: UserWhereInput;
+    orderBy?: UserOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+}
+
+export interface LobbyConnection {
+  pageInfo: PageInfo;
+  edges: LobbyEdge[];
+}
+
+export interface LobbyConnectionPromise
+  extends Promise<LobbyConnection>,
     Fragmentable {
   pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<UserEdge>>() => T;
-  aggregate: <T = AggregateUserPromise>() => T;
+  edges: <T = FragmentableArray<LobbyEdge>>() => T;
+  aggregate: <T = AggregateLobbyPromise>() => T;
 }
 
-export interface UserConnectionSubscription
-  extends Promise<AsyncIterator<UserConnection>>,
+export interface LobbyConnectionSubscription
+  extends Promise<AsyncIterator<LobbyConnection>>,
     Fragmentable {
   pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<UserEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateUserSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<LobbyEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateLobbySubscription>() => T;
 }
 
 export interface PageInfo {
@@ -386,6 +1052,114 @@ export interface PageInfoSubscription
   hasPreviousPage: () => Promise<AsyncIterator<Boolean>>;
   startCursor: () => Promise<AsyncIterator<String>>;
   endCursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface LobbyEdge {
+  node: Lobby;
+  cursor: String;
+}
+
+export interface LobbyEdgePromise extends Promise<LobbyEdge>, Fragmentable {
+  node: <T = LobbyPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface LobbyEdgeSubscription
+  extends Promise<AsyncIterator<LobbyEdge>>,
+    Fragmentable {
+  node: <T = LobbySubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface AggregateLobby {
+  count: Int;
+}
+
+export interface AggregateLobbyPromise
+  extends Promise<AggregateLobby>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateLobbySubscription
+  extends Promise<AsyncIterator<AggregateLobby>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface TableConnection {
+  pageInfo: PageInfo;
+  edges: TableEdge[];
+}
+
+export interface TableConnectionPromise
+  extends Promise<TableConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<TableEdge>>() => T;
+  aggregate: <T = AggregateTablePromise>() => T;
+}
+
+export interface TableConnectionSubscription
+  extends Promise<AsyncIterator<TableConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<TableEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateTableSubscription>() => T;
+}
+
+export interface TableEdge {
+  node: Table;
+  cursor: String;
+}
+
+export interface TableEdgePromise extends Promise<TableEdge>, Fragmentable {
+  node: <T = TablePromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface TableEdgeSubscription
+  extends Promise<AsyncIterator<TableEdge>>,
+    Fragmentable {
+  node: <T = TableSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface AggregateTable {
+  count: Int;
+}
+
+export interface AggregateTablePromise
+  extends Promise<AggregateTable>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateTableSubscription
+  extends Promise<AsyncIterator<AggregateTable>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface UserConnection {
+  pageInfo: PageInfo;
+  edges: UserEdge[];
+}
+
+export interface UserConnectionPromise
+  extends Promise<UserConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<UserEdge>>() => T;
+  aggregate: <T = AggregateUserPromise>() => T;
+}
+
+export interface UserConnectionSubscription
+  extends Promise<AsyncIterator<UserConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<UserEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateUserSubscription>() => T;
 }
 
 export interface UserEdge {
@@ -437,6 +1211,106 @@ export interface BatchPayloadSubscription
   count: () => Promise<AsyncIterator<Long>>;
 }
 
+export interface LobbySubscriptionPayload {
+  mutation: MutationType;
+  node: Lobby;
+  updatedFields: String[];
+  previousValues: LobbyPreviousValues;
+}
+
+export interface LobbySubscriptionPayloadPromise
+  extends Promise<LobbySubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = LobbyPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = LobbyPreviousValuesPromise>() => T;
+}
+
+export interface LobbySubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<LobbySubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = LobbySubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = LobbyPreviousValuesSubscription>() => T;
+}
+
+export interface LobbyPreviousValues {
+  id: ID_Output;
+  isGlobal: Boolean;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
+  lobbyName?: String;
+}
+
+export interface LobbyPreviousValuesPromise
+  extends Promise<LobbyPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  isGlobal: () => Promise<Boolean>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  lobbyName: () => Promise<String>;
+}
+
+export interface LobbyPreviousValuesSubscription
+  extends Promise<AsyncIterator<LobbyPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  isGlobal: () => Promise<AsyncIterator<Boolean>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  lobbyName: () => Promise<AsyncIterator<String>>;
+}
+
+export interface TableSubscriptionPayload {
+  mutation: MutationType;
+  node: Table;
+  updatedFields: String[];
+  previousValues: TablePreviousValues;
+}
+
+export interface TableSubscriptionPayloadPromise
+  extends Promise<TableSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = TablePromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = TablePreviousValuesPromise>() => T;
+}
+
+export interface TableSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<TableSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = TableSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = TablePreviousValuesSubscription>() => T;
+}
+
+export interface TablePreviousValues {
+  id: ID_Output;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
+}
+
+export interface TablePreviousValuesPromise
+  extends Promise<TablePreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+}
+
+export interface TablePreviousValuesSubscription
+  extends Promise<AsyncIterator<TablePreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
 export interface UserSubscriptionPayload {
   mutation: MutationType;
   node: User;
@@ -465,6 +1339,8 @@ export interface UserSubscriptionPayloadSubscription
 export interface UserPreviousValues {
   id: ID_Output;
   token: String;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
   name: String;
   email: String;
   password: String;
@@ -479,6 +1355,8 @@ export interface UserPreviousValuesPromise
     Fragmentable {
   id: () => Promise<ID_Output>;
   token: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
   name: () => Promise<String>;
   email: () => Promise<String>;
   password: () => Promise<String>;
@@ -493,6 +1371,8 @@ export interface UserPreviousValuesSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   token: () => Promise<AsyncIterator<String>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   name: () => Promise<AsyncIterator<String>>;
   email: () => Promise<AsyncIterator<String>>;
   password: () => Promise<AsyncIterator<String>>;
@@ -512,6 +1392,16 @@ export type ID_Output = string;
 The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
 */
 export type String = string;
+
+/*
+DateTime scalar input type, allowing Date
+*/
+export type DateTimeInput = Date | string;
+
+/*
+DateTime scalar output type, which is always a string
+*/
+export type DateTimeOutput = string;
 
 /*
 The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.
@@ -537,6 +1427,14 @@ export type Long = string;
 export const models: Model[] = [
   {
     name: "User",
+    embedded: false
+  },
+  {
+    name: "Lobby",
+    embedded: false
+  },
+  {
+    name: "Table",
     embedded: false
   }
 ];

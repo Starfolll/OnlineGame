@@ -8,6 +8,6 @@ export default function logGameInfo(message: any) {
         ` [ ${dateNow.toLocaleTimeString()} ]` +
         ` [ ${chalk.yellowBright("GEM")} ]` +
         " |---| " +
-        message
+        JSON.stringify(message, null, 2)
     );
 }

@@ -11,7 +11,6 @@ export enum playerTurnResponse {
 
 export type playerInitialConnection = {
     messageType: string;
-    name: string;
     token: string;
     id: string;
     tableId: string;

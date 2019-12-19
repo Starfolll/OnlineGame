@@ -7,6 +7,7 @@ import {Card} from "./deck/card";
 import {initialHeroTurnOptions} from "../players/communicationWithPlayer/responseMessagesTypes";
 import GameChatMessage, {gameChatMessageInfo} from "../../chat/gameChatMessage";
 import Chat from "../../chat/chat";
+import Table, {tableData} from "../../models/table/table";
 
 type turnsType =
     "waitingForPlayers" |
@@ -30,8 +31,7 @@ export type tableInfo = {
     chatMessages: Array<gameChatMessageInfo>;
 };
 
-export class GameTable {
-    private readonly tableId: string;
+export class GameTable extends Table {
     private currentTurnType: turnsType = "waitingForPlayers";
 
     protected isGameStarted: boolean = false;
@@ -45,16 +45,15 @@ export class GameTable {
     private readonly onGameEndCallback: (tableId: string) => void;
 
     constructor(
-        tableId: string,
-        playersId: Set<string>,
+        table: tableData,
         cards: Array<Card>,
         heroes: { [heroWeight: number]: Hero },
         onGameEndCallback: (tableId: string) => void
     ) {
-        this.tableId = tableId;
+        super(table);
 
         this.deck = new Deck(cards);
-        this.players = new Players(playersId);
+        this.players = new Players(table.usersId);
         this.heroes = new HeroesStack(heroes);
         this.chat = new Chat<GameChatMessage>(30);
 
@@ -330,7 +329,7 @@ export class GameTable {
 
         setTimeout(() => {
             this.players.DisconnectAllPlayers();
-            this.onGameEndCallback(this.tableId);
+            this.onGameEndCallback(this.id);
         }, 6000);
     }
 

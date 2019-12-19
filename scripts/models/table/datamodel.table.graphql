@@ -1,0 +1,8 @@
+type Table {
+    id: ID! @id
+
+    usersInGame: [User!]! @relation(link: TABLE)
+
+    createdAt: DateTime! @createdAt
+    updatedAt: DateTime! @updatedAt
+}

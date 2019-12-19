@@ -1,8 +1,7 @@
 let socket;
 
-let id = -1;
-let name = Math.random() * 10000 | 0;
-let token = "-1";
+let id = "null";
+let token = "null";
 
 const connectToGame = (tableId) => {
    socket = new WebSocket(`ws://${window.location.hostname}:8080`);
@@ -12,7 +11,6 @@ const connectToGame = (tableId) => {
          "messageType": "playerInitialConnection",
          "token": token,
          "id": id,
-         "name": name,
          "tableId": tableId
       }));
    };

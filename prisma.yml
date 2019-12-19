@@ -1,7 +1,9 @@
 endpoint: http://localhost:4466
 
 datamodel:
-  /scripts/models/user/datamodel.user.graphql
+  - /scripts/models/user/datamodel.user.graphql
+  - /scripts/models/lobby/datamodel.lobby.graphql
+  - /scripts/models/table/datamodel.table.graphql
 
 generate:
   - generator: typescript-client

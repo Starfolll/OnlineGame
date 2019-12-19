@@ -7,11 +7,17 @@ import {Card} from "./gameTableManager/deck/card";
 import {IsMessageValid} from "./players/communicationWithPlayer/responseMessages";
 
 import logError from "../consoleLogs/logError";
-import logGameInfo from "../consoleLogs/logGameInfo";
 import DB_Users from "../models/user/db_users";
+import DB_Tables from "../models/table/db_tables";
 
 export class GamesManager {
     private readonly tables: { [id: string]: GameTableManager } = {};
+
+
+    private readonly onGameEndCallback = async (tableId: string) => {
+        await this.DropTable(tableId);
+    };
+
 
     constructor(gameWSS: WebSocket.Server, cb?: Function) {
         gameWSS.on("connection", (connection: WebSocket) => {
@@ -20,15 +26,16 @@ export class GamesManager {
                     const validMessage = IsMessageValid.GetValidPlayerInitialConnection(JSON.parse(event.data));
 
                     if (!validMessage) throw new Error();
-                    const userData = await DB_Users.GetUserDataByNameAndToken(validMessage.name, validMessage.token);
+                    const userData = await DB_Users.GetUserDataByIdAndToken(validMessage.id, validMessage.token);
 
                     if (!userData) throw new Error();
-                    if (!this.IsTableExists(validMessage.tableId)) throw new Error();
+                    if (!(await DB_Tables.IsTableExists(validMessage.tableId))) throw new Error();
 
                     connection.removeEventListener("message", onMessageHandler);
-                    this.ConnectPlayerToTable(new Player(userData, connection));
+                    this.ConnectPlayerToTable(validMessage.tableId, new Player(userData, connection));
                 } catch (e) {
                     if (!!e.message) logError(e.message);
+                    console.log(e);
                     connection.close(1007, "invalid data model");
                 }
             };
@@ -38,40 +45,27 @@ export class GamesManager {
         if (!!cb) cb();
     }
 
-
-    get TablesCount(): number {
-        return Object.keys(this.tables).length
-    }
-
-
-    public CreateNewTable(
-        tableId: string,
-        playersId: Set<string>,
+    public async CreateNewTable(
+        table: { usersId: Array<string> },
         cards: Array<Card>,
         heroes: { [heroWeight: number]: Hero }
-    ): void {
-        logGameInfo(`New table: ` + tableId);
+    ): Promise<void> {
+        const tableDataUpdated = await DB_Tables.CreateNewTable(table.usersId);
 
-        const onGameEnd = (tableId: string) => this.DropTable(tableId);
-
-        this.tables[tableId] = new GameTableManager(
-            tableId,
-            playersId,
+        this.tables[tableDataUpdated.id] = new GameTableManager(
+            tableDataUpdated,
             cards,
             heroes,
-            onGameEnd
+            this.onGameEndCallback
         );
     }
 
-    public IsTableExists(tableId: string): boolean {
-        return !!this.tables[tableId];
+    public async ConnectPlayerToTable(tableId: string, player: Player): Promise<void> {
+        this.tables[tableId].ConnectPlayer(player);
     }
 
-    public ConnectPlayerToTable(player: Player): void {
-        this.tables[player.tableId].ConnectPlayer(player);
-    }
-
-    public DropTable(tableId: string): void {
+    public async DropTable(tableId: string): Promise<void> {
+        await DB_Tables.DeleteTable(tableId);
         delete this.tables[tableId];
     }
 }

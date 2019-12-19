@@ -20,8 +20,8 @@ export class Players {
     private playerPickHeroTurn: number = -1;
     private playerHeroWeightTurn: number = -1;
 
-    constructor(playersIdInGame: Set<string>) {
-        this.playersIdInGame = playersIdInGame;
+    constructor(playersIdInGame: Array<string>) {
+        this.playersIdInGame = new Set(playersIdInGame);
         this.playersIdCount = this.playersIdInGame.size;
     }
 
@@ -289,7 +289,7 @@ export class Players {
 
     public DisconnectAllPlayers(): void {
         Object.keys(this.players).forEach(pId => {
-            this.players[+pId].Disconnect();
+            this.players[pId].Disconnect();
         });
     }
 
@@ -309,50 +309,50 @@ export class Players {
 
     public IsPlayerCreated(player: Player): boolean {
         return Object.keys(this.players).some(pId => {
-            const p = this.players[+pId];
+            const p = this.players[pId];
             return player.id === p.id && player.token === p.token && !p.IsConnected;
         });
     }
 
     public ResetPlayerConnection(player: Player) {
         Object.keys(this.players).forEach(pId => {
-            const p = this.players[+pId];
+            const p = this.players[pId];
             if (p.id === player.id && p.token === player.token) {
-                this.players[+pId].Connection = player.Connection;
+                this.players[pId].Connection = player.Connection;
             }
         });
     }
 
     public IsPlayerClone(player: Player): boolean {
         return Object.keys(this.players).some(pId => {
-            const p = this.players[+pId];
+            const p = this.players[pId];
             return (player.id === p.id && player.token === p.token && p.IsConnected);
         });
     }
 
     public SetPlayerDisconnected(playerId: string): void {
         Object.keys(this.players).forEach(pId => {
-            if (this.players[+pId].id === playerId)
-                this.players[+pId].SetDisconnected();
+            if (this.players[pId].id === playerId)
+                this.players[pId].SetDisconnected();
         });
     }
 
     // players informant
     public InformPlayersAboutInitialPlayerConnection(playerInfo: playerPreGameInfo): void {
         Object.keys(this.players).forEach(pId => {
-            if (pId !== playerInfo.id) this.players[+pId].InformAboutPlayerInitialConnected(playerInfo);
+            if (pId !== playerInfo.id) this.players[pId].InformAboutPlayerInitialConnected(playerInfo);
         });
     }
 
     public InformPlayersAboutPlayerConnected(playerId: string): void {
         Object.keys(this.players).forEach(pId => {
-            if (pId !== playerId) this.players[+pId].InformAboutPlayerConnected(playerId);
+            if (pId !== playerId) this.players[pId].InformAboutPlayerConnected(playerId);
         });
     }
 
     public InformPlayersAboutPlayerDisconnected(playerId: string): void {
         Object.keys(this.players).forEach(pId => {
-            if (pId !== playerId) this.players[+pId].InformAboutPlayerDisconnected(playerId);
+            if (pId !== playerId) this.players[pId].InformAboutPlayerDisconnected(playerId);
         });
     }
 
@@ -368,10 +368,10 @@ export class Players {
         const playerTurnId = this.GetPlayerIdWithTurnNumber(this.playerPickHeroTurn)!;
 
         this.playersId.forEach(pId => {
-            if (this.players[+pId].id === playerTurnId)
-                this.players[+pId].heroesWeightToPickFrom = heroesWeightLeft;
+            if (this.players[pId].id === playerTurnId)
+                this.players[pId].heroesWeightToPickFrom = heroesWeightLeft;
 
-            this.players[+pId].InformAboutHeroPickTurnStart(
+            this.players[pId].InformAboutHeroPickTurnStart(
                 shiftedHeroesWeight,
                 pId === playerTurnId ? heroesWeightLeft : undefined,
                 playerTurnId
@@ -383,10 +383,10 @@ export class Players {
         const playerTurnId = this.GetPlayerIdWithTurnNumber(this.playerPickHeroTurn)!;
 
         this.playersId.forEach(pId => {
-            if (this.players[+pId].id === playerTurnId)
-                this.players[+pId].heroesWeightToPickFrom = heroesWeightLeft;
+            if (this.players[pId].id === playerTurnId)
+                this.players[pId].heroesWeightToPickFrom = heroesWeightLeft;
 
-            this.players[+pId].InformAboutPickHeroTurn(
+            this.players[pId].InformAboutPickHeroTurn(
                 playerTurnId,
                 pId === playerTurnId ? heroesWeightLeft : undefined
             );
@@ -496,7 +496,7 @@ export class Players {
     public InformPlayerAboutPreGameInfo(playerId: string): void {
         this.players[playerId].InformAboutPreGameInfo(
             Object.keys(this.players).map(pId => {
-                return this.players[+pId].GetPreGameInfo();
+                return this.players[pId].GetPreGameInfo();
             }),
             this.length
         );

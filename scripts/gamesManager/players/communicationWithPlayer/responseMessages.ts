@@ -15,7 +15,6 @@ export class IsMessageValid {
     static GetValidPlayerInitialConnection(message: any): playerInitialConnection | undefined {
         if (typeof message !== "object") return undefined;
         if (!message["messageType"] || message["messageType"] !== "playerInitialConnection") return undefined;
-        if (!message["name"] || typeof message["name"] !== "string") return undefined;
         if (!message["token"] || typeof message["token"] !== "string") return undefined;
         if (!message["id"] || typeof message["id"] !== "string") return undefined;
         if (!message["tableId"] || typeof message["tableId"] !== "string") return undefined;

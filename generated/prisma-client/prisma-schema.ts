@@ -2,7 +2,15 @@
   // Please don't change this file manually but run `prisma generate` to update it.
   // For more information, please read the docs: https://www.prisma.io/docs/prisma-client/
 
-export const typeDefs = /* GraphQL */ `type AggregateUser {
+export const typeDefs = /* GraphQL */ `type AggregateLobby {
+  count: Int!
+}
+
+type AggregateTable {
+  count: Int!
+}
+
+type AggregateUser {
   count: Int!
 }
 
@@ -10,9 +18,158 @@ type BatchPayload {
   count: Long!
 }
 
+scalar DateTime
+
+type Lobby {
+  id: ID!
+  usersInLobby(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
+  isGlobal: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  lobbyName: String
+}
+
+type LobbyConnection {
+  pageInfo: PageInfo!
+  edges: [LobbyEdge]!
+  aggregate: AggregateLobby!
+}
+
+input LobbyCreateInput {
+  id: ID
+  usersInLobby: UserCreateManyInput
+  isGlobal: Boolean
+  lobbyName: String
+}
+
+type LobbyEdge {
+  node: Lobby!
+  cursor: String!
+}
+
+enum LobbyOrderByInput {
+  id_ASC
+  id_DESC
+  isGlobal_ASC
+  isGlobal_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  lobbyName_ASC
+  lobbyName_DESC
+}
+
+type LobbyPreviousValues {
+  id: ID!
+  isGlobal: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  lobbyName: String
+}
+
+type LobbySubscriptionPayload {
+  mutation: MutationType!
+  node: Lobby
+  updatedFields: [String!]
+  previousValues: LobbyPreviousValues
+}
+
+input LobbySubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: LobbyWhereInput
+  AND: [LobbySubscriptionWhereInput!]
+  OR: [LobbySubscriptionWhereInput!]
+  NOT: [LobbySubscriptionWhereInput!]
+}
+
+input LobbyUpdateInput {
+  usersInLobby: UserUpdateManyInput
+  isGlobal: Boolean
+  lobbyName: String
+}
+
+input LobbyUpdateManyMutationInput {
+  isGlobal: Boolean
+  lobbyName: String
+}
+
+input LobbyWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  usersInLobby_every: UserWhereInput
+  usersInLobby_some: UserWhereInput
+  usersInLobby_none: UserWhereInput
+  isGlobal: Boolean
+  isGlobal_not: Boolean
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  lobbyName: String
+  lobbyName_not: String
+  lobbyName_in: [String!]
+  lobbyName_not_in: [String!]
+  lobbyName_lt: String
+  lobbyName_lte: String
+  lobbyName_gt: String
+  lobbyName_gte: String
+  lobbyName_contains: String
+  lobbyName_not_contains: String
+  lobbyName_starts_with: String
+  lobbyName_not_starts_with: String
+  lobbyName_ends_with: String
+  lobbyName_not_ends_with: String
+  AND: [LobbyWhereInput!]
+  OR: [LobbyWhereInput!]
+  NOT: [LobbyWhereInput!]
+}
+
+input LobbyWhereUniqueInput {
+  id: ID
+}
+
 scalar Long
 
 type Mutation {
+  createLobby(data: LobbyCreateInput!): Lobby!
+  updateLobby(data: LobbyUpdateInput!, where: LobbyWhereUniqueInput!): Lobby
+  updateManyLobbies(data: LobbyUpdateManyMutationInput!, where: LobbyWhereInput): BatchPayload!
+  upsertLobby(where: LobbyWhereUniqueInput!, create: LobbyCreateInput!, update: LobbyUpdateInput!): Lobby!
+  deleteLobby(where: LobbyWhereUniqueInput!): Lobby
+  deleteManyLobbies(where: LobbyWhereInput): BatchPayload!
+  createTable(data: TableCreateInput!): Table!
+  updateTable(data: TableUpdateInput!, where: TableWhereUniqueInput!): Table
+  upsertTable(where: TableWhereUniqueInput!, create: TableCreateInput!, update: TableUpdateInput!): Table!
+  deleteTable(where: TableWhereUniqueInput!): Table
+  deleteManyTables(where: TableWhereInput): BatchPayload!
   createUser(data: UserCreateInput!): User!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
@@ -39,6 +196,12 @@ type PageInfo {
 }
 
 type Query {
+  lobby(where: LobbyWhereUniqueInput!): Lobby
+  lobbies(where: LobbyWhereInput, orderBy: LobbyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Lobby]!
+  lobbiesConnection(where: LobbyWhereInput, orderBy: LobbyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): LobbyConnection!
+  table(where: TableWhereUniqueInput!): Table
+  tables(where: TableWhereInput, orderBy: TableOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Table]!
+  tablesConnection(where: TableWhereInput, orderBy: TableOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): TableConnection!
   user(where: UserWhereUniqueInput!): User
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
@@ -46,12 +209,136 @@ type Query {
 }
 
 type Subscription {
+  lobby(where: LobbySubscriptionWhereInput): LobbySubscriptionPayload
+  table(where: TableSubscriptionWhereInput): TableSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
+}
+
+type Table {
+  id: ID!
+  usersInGame(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type TableConnection {
+  pageInfo: PageInfo!
+  edges: [TableEdge]!
+  aggregate: AggregateTable!
+}
+
+input TableCreateInput {
+  id: ID
+  usersInGame: UserCreateManyWithoutTableInput
+}
+
+input TableCreateOneWithoutUsersInGameInput {
+  create: TableCreateWithoutUsersInGameInput
+  connect: TableWhereUniqueInput
+}
+
+input TableCreateWithoutUsersInGameInput {
+  id: ID
+}
+
+type TableEdge {
+  node: Table!
+  cursor: String!
+}
+
+enum TableOrderByInput {
+  id_ASC
+  id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type TablePreviousValues {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type TableSubscriptionPayload {
+  mutation: MutationType!
+  node: Table
+  updatedFields: [String!]
+  previousValues: TablePreviousValues
+}
+
+input TableSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: TableWhereInput
+  AND: [TableSubscriptionWhereInput!]
+  OR: [TableSubscriptionWhereInput!]
+  NOT: [TableSubscriptionWhereInput!]
+}
+
+input TableUpdateInput {
+  usersInGame: UserUpdateManyWithoutTableInput
+}
+
+input TableUpdateOneWithoutUsersInGameInput {
+  create: TableCreateWithoutUsersInGameInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: TableWhereUniqueInput
+}
+
+input TableWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  usersInGame_every: UserWhereInput
+  usersInGame_some: UserWhereInput
+  usersInGame_none: UserWhereInput
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  AND: [TableWhereInput!]
+  OR: [TableWhereInput!]
+  NOT: [TableWhereInput!]
+}
+
+input TableWhereUniqueInput {
+  id: ID
 }
 
 type User {
   id: ID!
   token: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  table: Table
   name: String!
   email: String!
   password: String!
@@ -68,6 +355,29 @@ type UserConnection {
 }
 
 input UserCreateInput {
+  id: ID
+  token: String!
+  table: TableCreateOneWithoutUsersInGameInput
+  name: String!
+  email: String!
+  password: String!
+  publicName: String!
+  lvl: Int!
+  xp: Float!
+  gold: Float!
+}
+
+input UserCreateManyInput {
+  create: [UserCreateInput!]
+  connect: [UserWhereUniqueInput!]
+}
+
+input UserCreateManyWithoutTableInput {
+  create: [UserCreateWithoutTableInput!]
+  connect: [UserWhereUniqueInput!]
+}
+
+input UserCreateWithoutTableInput {
   id: ID
   token: String!
   name: String!
@@ -89,6 +399,10 @@ enum UserOrderByInput {
   id_DESC
   token_ASC
   token_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
   name_ASC
   name_DESC
   email_ASC
@@ -108,6 +422,8 @@ enum UserOrderByInput {
 type UserPreviousValues {
   id: ID!
   token: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   name: String!
   email: String!
   password: String!
@@ -115,6 +431,136 @@ type UserPreviousValues {
   lvl: Int!
   xp: Float!
   gold: Float!
+}
+
+input UserScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  token: String
+  token_not: String
+  token_in: [String!]
+  token_not_in: [String!]
+  token_lt: String
+  token_lte: String
+  token_gt: String
+  token_gte: String
+  token_contains: String
+  token_not_contains: String
+  token_starts_with: String
+  token_not_starts_with: String
+  token_ends_with: String
+  token_not_ends_with: String
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  name: String
+  name_not: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_gt: String
+  name_gte: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  email: String
+  email_not: String
+  email_in: [String!]
+  email_not_in: [String!]
+  email_lt: String
+  email_lte: String
+  email_gt: String
+  email_gte: String
+  email_contains: String
+  email_not_contains: String
+  email_starts_with: String
+  email_not_starts_with: String
+  email_ends_with: String
+  email_not_ends_with: String
+  password: String
+  password_not: String
+  password_in: [String!]
+  password_not_in: [String!]
+  password_lt: String
+  password_lte: String
+  password_gt: String
+  password_gte: String
+  password_contains: String
+  password_not_contains: String
+  password_starts_with: String
+  password_not_starts_with: String
+  password_ends_with: String
+  password_not_ends_with: String
+  publicName: String
+  publicName_not: String
+  publicName_in: [String!]
+  publicName_not_in: [String!]
+  publicName_lt: String
+  publicName_lte: String
+  publicName_gt: String
+  publicName_gte: String
+  publicName_contains: String
+  publicName_not_contains: String
+  publicName_starts_with: String
+  publicName_not_starts_with: String
+  publicName_ends_with: String
+  publicName_not_ends_with: String
+  lvl: Int
+  lvl_not: Int
+  lvl_in: [Int!]
+  lvl_not_in: [Int!]
+  lvl_lt: Int
+  lvl_lte: Int
+  lvl_gt: Int
+  lvl_gte: Int
+  xp: Float
+  xp_not: Float
+  xp_in: [Float!]
+  xp_not_in: [Float!]
+  xp_lt: Float
+  xp_lte: Float
+  xp_gt: Float
+  xp_gte: Float
+  gold: Float
+  gold_not: Float
+  gold_in: [Float!]
+  gold_not_in: [Float!]
+  gold_lt: Float
+  gold_lte: Float
+  gold_gt: Float
+  gold_gte: Float
+  AND: [UserScalarWhereInput!]
+  OR: [UserScalarWhereInput!]
+  NOT: [UserScalarWhereInput!]
 }
 
 type UserSubscriptionPayload {
@@ -135,7 +581,31 @@ input UserSubscriptionWhereInput {
   NOT: [UserSubscriptionWhereInput!]
 }
 
+input UserUpdateDataInput {
+  token: String
+  table: TableUpdateOneWithoutUsersInGameInput
+  name: String
+  email: String
+  password: String
+  publicName: String
+  lvl: Int
+  xp: Float
+  gold: Float
+}
+
 input UserUpdateInput {
+  token: String
+  table: TableUpdateOneWithoutUsersInGameInput
+  name: String
+  email: String
+  password: String
+  publicName: String
+  lvl: Int
+  xp: Float
+  gold: Float
+}
+
+input UserUpdateManyDataInput {
   token: String
   name: String
   email: String
@@ -144,6 +614,18 @@ input UserUpdateInput {
   lvl: Int
   xp: Float
   gold: Float
+}
+
+input UserUpdateManyInput {
+  create: [UserCreateInput!]
+  update: [UserUpdateWithWhereUniqueNestedInput!]
+  upsert: [UserUpsertWithWhereUniqueNestedInput!]
+  delete: [UserWhereUniqueInput!]
+  connect: [UserWhereUniqueInput!]
+  set: [UserWhereUniqueInput!]
+  disconnect: [UserWhereUniqueInput!]
+  deleteMany: [UserScalarWhereInput!]
+  updateMany: [UserUpdateManyWithWhereNestedInput!]
 }
 
 input UserUpdateManyMutationInput {
@@ -155,6 +637,56 @@ input UserUpdateManyMutationInput {
   lvl: Int
   xp: Float
   gold: Float
+}
+
+input UserUpdateManyWithoutTableInput {
+  create: [UserCreateWithoutTableInput!]
+  delete: [UserWhereUniqueInput!]
+  connect: [UserWhereUniqueInput!]
+  set: [UserWhereUniqueInput!]
+  disconnect: [UserWhereUniqueInput!]
+  update: [UserUpdateWithWhereUniqueWithoutTableInput!]
+  upsert: [UserUpsertWithWhereUniqueWithoutTableInput!]
+  deleteMany: [UserScalarWhereInput!]
+  updateMany: [UserUpdateManyWithWhereNestedInput!]
+}
+
+input UserUpdateManyWithWhereNestedInput {
+  where: UserScalarWhereInput!
+  data: UserUpdateManyDataInput!
+}
+
+input UserUpdateWithoutTableDataInput {
+  token: String
+  name: String
+  email: String
+  password: String
+  publicName: String
+  lvl: Int
+  xp: Float
+  gold: Float
+}
+
+input UserUpdateWithWhereUniqueNestedInput {
+  where: UserWhereUniqueInput!
+  data: UserUpdateDataInput!
+}
+
+input UserUpdateWithWhereUniqueWithoutTableInput {
+  where: UserWhereUniqueInput!
+  data: UserUpdateWithoutTableDataInput!
+}
+
+input UserUpsertWithWhereUniqueNestedInput {
+  where: UserWhereUniqueInput!
+  update: UserUpdateDataInput!
+  create: UserCreateInput!
+}
+
+input UserUpsertWithWhereUniqueWithoutTableInput {
+  where: UserWhereUniqueInput!
+  update: UserUpdateWithoutTableDataInput!
+  create: UserCreateWithoutTableInput!
 }
 
 input UserWhereInput {
@@ -186,6 +718,23 @@ input UserWhereInput {
   token_not_starts_with: String
   token_ends_with: String
   token_not_ends_with: String
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  table: TableWhereInput
   name: String
   name_not: String
   name_in: [String!]

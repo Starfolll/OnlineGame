@@ -5,17 +5,17 @@ import {Player} from "../players/player";
 import {IsMessageValid} from "../players/communicationWithPlayer/responseMessages";
 import {Card} from "./deck/card";
 import {playerTurnResponse} from "../players/communicationWithPlayer/responseMessagesTypes";
+import {tableData} from "../../models/table/table";
 
 
 export class GameTableManager extends GameTable {
     constructor(
-        tableId: string,
-        playersId: Set<string>,
+        table: tableData,
         cards: Array<Card>,
         heroes: { [heroWeight: number]: Hero },
         onGameEndCallback: (tableId: string) => void
     ) {
-        super(tableId, playersId, cards, heroes, onGameEndCallback);
+        super(table, cards, heroes, onGameEndCallback);
     }
 
 

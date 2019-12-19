@@ -1,3 +1,5 @@
+import DB_Tables from "../table/db_tables";
+
 export type userData = {
     id: string;
     token: string;
@@ -5,8 +7,8 @@ export type userData = {
     email: string;
     password: string;
     publicName: string;
-    tableId: string;
-    lobbyId: string;
+    createdAt: string;
+    updatedAt: string;
     lvl: number;
     xp: number;
     gold: number;
@@ -21,9 +23,6 @@ export default class User {
     public readonly password: string;
 
     public readonly publicName: string;
-
-    public readonly tableId: string;
-    public readonly lobbyId: string;
 
     public readonly lvl: number;
     public readonly xp: number;
@@ -40,11 +39,13 @@ export default class User {
 
         this.publicName = data.publicName;
 
-        this.tableId = data.tableId;
-        this.lobbyId = data.lobbyId;
-
         this.lvl = data.lvl;
         this.xp = data.xp;
         this.gold = data.gold;
+    }
+
+
+    public async GetUserTableId(): Promise<string | undefined> {
+        return await DB_Tables.GetUserTableId(this.id);
     }
 }
