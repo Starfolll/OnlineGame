@@ -1,18 +1,19 @@
 import WebSocket from "ws";
 import express from "express";
 
-import webPageRoute from "./expressRouter/webPageRoute";
+import webPageRoute from "./router/webPage.route";
 
 import logLetters from "./consoleLogs/logLetters";
 import logInfo from "./consoleLogs/logInfo";
 import logLink from "./consoleLogs/logLink";
 
-import {prisma} from "../generated/prisma-client";
+import DB_Users from "./models/user/db_users";
 
 import {GamesManager} from "./gamesManager/gamesManager";
 import {StartLoggingSystemStatsTimeout} from "./consoleLogs/logSystemInfo";
 import {Decks} from "./gamesManager/gameTableManager/deck/decks";
 import {HeroesStacks} from "./gamesManager/gameTableManager/heroesStacks/heroesStacks";
+import {userData} from "./models/user/user";
 
 
 export async function runDevelopmentBuild(webPort: number, gameWSPort: number) {
@@ -36,15 +37,25 @@ export async function runDevelopmentBuild(webPort: number, gameWSPort: number) {
     StartLoggingSystemStatsTimeout(120000 * 3);
 
     gamesManager.CreateNewTable(
-        1,
-        new Set([1, 2]),
+        "1",
+        new Set(["1", "2"]),
         Decks.defaultDeck,
         HeroesStacks.defaultStack
     );
 
-    // const newUser = await prisma.createUser({name: "Alice"});
-    // console.log(newUser);
+    const starfolll = await DB_Users.IsUserExists({name: "admin"});
 
-    const allUsers = await prisma.users({where: {name: "Alice"}});
-    console.log(allUsers)
+    console.log(starfolll);
+
+    if (starfolll) await DB_Users.RemoveUser("admin");
+
+    await DB_Users.AddNewUser({
+        "name": "admin",
+        "email": "andrey.kovyarov@gmail.com",
+        "password": "password",
+        "publicName": "admin"
+    } as userData);
+
+    const user = await DB_Users.GetUserDataByEmailAndPassword("andrey.kovyarov@gmail.com", "password");
+    console.log(user);
 }

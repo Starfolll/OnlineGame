@@ -18,7 +18,7 @@ export default class Lobby {
 
 
     public AddUser(user: LobbyUser): void {
-        this.lobbyUsers[user.userId] = user;
+        this.lobbyUsers[user.id] = user;
     }
 
 

@@ -6,25 +6,25 @@ import {GetMessage} from "./communicationWithPlayer/informMassages";
 import {tableInfoWithPlayers} from "./players";
 import {heroDebuffsTypes} from "../gameTableManager/heroesStacks/heroDebuffsTypes";
 import {heroAbilityTypes} from "../gameTableManager/heroesStacks/heroAbilityTypes";
-import {gameChatMessageInfo} from "../gameTableManager/gameChatMessage";
-import User from "../../coreFragments/user";
+import {gameChatMessageInfo} from "../../chat/gameChatMessage";
+import User, {userData} from "../../models/user/user";
 
 
 export type playerPreGameInfo = {
-    id: number;
+    id: string;
     name: string;
     isConnected: boolean;
 }
 
 export type playerEndGameScoreTable = {
-    playerId: number;
+    playerId: string;
     score: number;
     isWinner: boolean;
     place: number;
 }
 
 export type playerInfo = {
-    userId: number;
+    userId: string;
     name: string;
 
     isPlayerDisconnected: boolean;
@@ -54,8 +54,6 @@ export type playerInfo = {
 };
 
 export class Player extends User {
-    public readonly tableId: number;
-
     private isPlayerDisconnected: boolean = false;
     private connection: WebSocket;
 
@@ -82,9 +80,8 @@ export class Player extends User {
     public maxSameCardsAmount: number = 10;
 
 
-    constructor(userId: number, name: string, token: string, tableId: number, connection: WebSocket) {
-        super(userId, name, token);
-        this.tableId = tableId;
+    constructor(userData: userData, connection: WebSocket) {
+        super(userData);
         this.connection = connection;
     }
 
@@ -225,7 +222,7 @@ export class Player extends User {
         return {
             isWinner: false,
             place: 0,
-            playerId: this.userId,
+            playerId: this.id,
             score: score
         }
     }
@@ -238,7 +235,7 @@ export class Player extends User {
 
     public GetPreGameInfo(): playerPreGameInfo {
         return {
-            "id": this.userId,
+            "id": this.id,
             "name": this.name,
             "isConnected": this.IsConnected
         }
@@ -246,7 +243,7 @@ export class Player extends User {
 
     public GetInfo(privateInfo: boolean): playerInfo {
         const info: playerInfo = {
-            "userId": this.userId,
+            "userId": this.id,
             "name": this.name,
 
             "isPlayerDisconnected": this.IsConnected,
@@ -291,7 +288,7 @@ export class Player extends User {
 
 
     // informatory
-    public InformAboutPlayerDisconnected(playerId: number): void {
+    public InformAboutPlayerDisconnected(playerId: string): void {
         if (this.IsConnected)
             this.connection.send(JSON.stringify(GetMessage.PlayerDisconnected(playerId)));
     }
@@ -301,7 +298,7 @@ export class Player extends User {
             this.connection.send(JSON.stringify(GetMessage.PlayerInitialConnection(playerInfo)));
     }
 
-    public InformAboutPlayerConnected(playerId: number): void {
+    public InformAboutPlayerConnected(playerId: string): void {
         if (this.IsConnected)
             this.connection.send(JSON.stringify(GetMessage.PlayerConnected(playerId)));
     }
@@ -316,17 +313,17 @@ export class Player extends User {
             this.connection.send(JSON.stringify(GetMessage.TableInfo(gameTable)));
     }
 
-    public InformAboutHeroPickTurnStart(heroesShiftedWeight: Array<number>, heroesWeightLeft: Array<number> | undefined, playerIdTurn: number): void {
+    public InformAboutHeroPickTurnStart(heroesShiftedWeight: Array<number>, heroesWeightLeft: Array<number> | undefined, playerIdTurn: string): void {
         if (this.IsConnected)
             this.connection.send(JSON.stringify(GetMessage.HeroPickTurnStart(heroesShiftedWeight, heroesWeightLeft, playerIdTurn)));
     }
 
-    public InformAboutPickHeroTurn(playerIdTurn: number, heroesWeightLeft: Array<number> | undefined): void {
+    public InformAboutPickHeroTurn(playerIdTurn: string, heroesWeightLeft: Array<number> | undefined): void {
         if (this.IsConnected)
             this.connection.send(JSON.stringify(GetMessage.PrickHero(playerIdTurn, heroesWeightLeft)));
     }
 
-    public InformAboutInitialHeroTurn(heroWeight: number, playerId: number): void {
+    public InformAboutInitialHeroTurn(heroWeight: number, playerId: string): void {
         if (this.IsConnected)
             this.connection.send(JSON.stringify(GetMessage.HeroInitialTurnStarted(
                 heroWeight,
@@ -335,40 +332,40 @@ export class Player extends User {
             )));
     }
 
-    public InformAboutBuildTurnStart(heroWeight: number, playerId: number): void {
+    public InformAboutBuildTurnStart(heroWeight: number, playerId: string): void {
         if (this.IsConnected)
             this.connection.send(JSON.stringify(GetMessage.HeroBuildTurnStarted(heroWeight, playerId)));
     }
 
 
-    public InformAboutHeroAbilityTurnStart(abilityType: heroAbilityTypes, playerId: number): void {
+    public InformAboutHeroAbilityTurnStart(abilityType: heroAbilityTypes, playerId: string): void {
         if (this.IsConnected)
             this.connection.send(JSON.stringify(GetMessage.HeroAbilityTurnStarted(abilityType, playerId)));
     }
 
 
-    public InformAboutPlayerBuiltDistrict(playerId: number, cardInfo: cardInfo): void {
+    public InformAboutPlayerBuiltDistrict(playerId: string, cardInfo: cardInfo): void {
         if (this.IsConnected)
             this.connection.send(JSON.stringify(GetMessage.DistrictBuilt(playerId, cardInfo)));
     }
 
-    public InformAboutPlayerDistrictDestroyed(playerId: number, cardInGameId: number): void {
+    public InformAboutPlayerDistrictDestroyed(playerId: string, cardInGameId: number): void {
         if (this.IsConnected)
             this.connection.send(JSON.stringify(GetMessage.DistrictDestroyed(playerId, cardInGameId)));
     }
 
 
-    public InformAboutPlayerReceivedGold(playerId: number, count: number): void {
+    public InformAboutPlayerReceivedGold(playerId: string, count: number): void {
         if (this.IsConnected)
             this.connection.send(JSON.stringify(GetMessage.PlayerReceivedGold(playerId, count)));
     }
 
-    public InformAboutPlayerReceivedCard(playerId: number, card: Card | undefined): void {
+    public InformAboutPlayerReceivedCard(playerId: string, card: Card | undefined): void {
         if (this.IsConnected)
             this.connection.send(JSON.stringify(GetMessage.PlayerReceivedCard(playerId, card)));
     }
 
-    public InformAboutPlayerHandChanged(playerId: number, newHandLength: number, hand?: Array<Card>): void {
+    public InformAboutPlayerHandChanged(playerId: string, newHandLength: number, hand?: Array<Card>): void {
         if (this.IsConnected)
             this.connection.send(JSON.stringify(GetMessage.PlayerHandChanged(playerId, newHandLength, hand)));
     }
@@ -390,7 +387,7 @@ export class Player extends User {
             this.connection.send(JSON.stringify(GetMessage.GameEnd(scoreTable)));
     }
 
-    public InformAboutDebuffAddedToHero(heroWeight: number, debuffType: heroDebuffsTypes, fromPlayerId?: number): void {
+    public InformAboutDebuffAddedToHero(heroWeight: number, debuffType: heroDebuffsTypes, fromPlayerId?: string): void {
         if (this.IsConnected)
             this.connection.send(JSON.stringify(GetMessage.DebuffAddedToHero(heroWeight, debuffType, fromPlayerId)));
     }

@@ -3,7 +3,7 @@ import {Card, cardClass, cardInfo} from "../gameTableManager/deck/card";
 import {tableInfo} from "../gameTableManager/gameTable";
 import {heroDebuffsTypes} from "../gameTableManager/heroesStacks/heroDebuffsTypes";
 import {heroAbilityTypes} from "../gameTableManager/heroesStacks/heroAbilityTypes";
-import {gameChatMessageInfo} from "../gameTableManager/gameChatMessage";
+import {gameChatMessageInfo} from "../../chat/gameChatMessage";
 
 
 export type tableInfoWithPlayers = {
@@ -12,22 +12,22 @@ export type tableInfoWithPlayers = {
 }
 
 export class Players {
-    private readonly players: { [id: number]: Player; } = {};
+    private readonly players: { [id: string]: Player; } = {};
 
-    private readonly playersIdInGame: Set<number>;
+    private readonly playersIdInGame: Set<string>;
     private readonly playersIdCount: number;
 
     private playerPickHeroTurn: number = -1;
     private playerHeroWeightTurn: number = -1;
 
-    constructor(playersIdInGame: Set<number>) {
+    constructor(playersIdInGame: Set<string>) {
         this.playersIdInGame = playersIdInGame;
         this.playersIdCount = this.playersIdInGame.size;
     }
 
 
-    get playersId(): Set<number> {
-        return new Set(Object.keys(this.players).map(id => +id));
+    get playersId(): Set<string> {
+        return new Set(Object.keys(this.players).map(id => id));
     }
 
     get length(): number {
@@ -35,32 +35,32 @@ export class Players {
     }
 
 
-    public GetPlayerWithId(id: number): Player {
+    public GetPlayerWithId(id: string): Player {
         return this.players[id];
     }
 
 
-    public GivePlayerCard(playerId: number, card: Card, announce = true): void {
+    public GivePlayerCard(playerId: string, card: Card, announce = true): void {
         this.players[playerId].hand.push(card);
         if (announce) this.InformPlayersAboutPlayerReceivedCard(playerId, card);
     }
 
-    public GivePlayerGold(playerId: number, count: number, announce = true) {
+    public GivePlayerGold(playerId: string, count: number, announce = true) {
         this.players[playerId].gold += count;
         if (announce) this.InformPlayersAboutPlayerReceivedGold(playerId, count);
     }
 
-    public SetPlayerKing(playerId: number): void {
+    public SetPlayerKing(playerId: string): void {
         Array.from(this.playersIdInGame).forEach(pId => {
             this.players[pId].isKing = playerId === pId;
         });
     }
 
-    public AddBuildLimitToPlayer(playerId: number, additionLimit: number): void {
+    public AddBuildLimitToPlayer(playerId: string, additionLimit: number): void {
         this.players[playerId].buildLimit += additionLimit;
     }
 
-    public AddGoldToPlayerForEachCardClass(playerId: number, cardClass: cardClass): void {
+    public AddGoldToPlayerForEachCardClass(playerId: string, cardClass: cardClass): void {
         const playerPlacedCards = this.GetPlayerWithId(playerId).placedCards;
         let additionGold = 0;
         playerPlacedCards.forEach(c => {
@@ -69,48 +69,48 @@ export class Players {
         if (additionGold > 0) this.GivePlayerGold(playerId, additionGold);
     }
 
-    public SetPlayerHand(playerId: number, newHand: Array<Card>): void {
+    public SetPlayerHand(playerId: string, newHand: Array<Card>): void {
         this.players[playerId].hand = newHand;
         this.InformPlayersAboutPlayerHandChanged(playerId);
     }
 
-    public AttachHeroWeightToPlayer(playerId: number, heroWeight: number): void {
+    public AttachHeroWeightToPlayer(playerId: string, heroWeight: number): void {
         this.players[playerId].heroWeight = heroWeight;
         this.players[playerId].SetHeroPickTurnMade();
     }
 
     //------------//
     // pick hero sickle and start game
-    private GetPlayerIdWithTurnNumber(turnNumber: number): number {
+    private GetPlayerIdWithTurnNumber(turnNumber: number): string | undefined {
         const playersId = Array.from(this.playersIdInGame);
 
         for (let i = 0; i < playersId.length; i++) {
             const player = this.players[playersId[i]];
             if (player.heroPickTurnNumber === turnNumber)
-                return player.userId;
+                return player.id;
         }
 
-        return -1;
+        return undefined;
     }
 
-    private GetPlayerIdWithHeroWeight(weight: number): number {
+    private GetPlayerIdWithHeroWeight(weight: number): string | undefined {
         const playersId = Array.from(this.playersIdInGame);
 
         for (let i = 0; i < playersId.length; i++) {
             const player = this.players[playersId[i]];
             if (player.heroWeight === weight)
-                return player.userId;
+                return player.id;
         }
 
-        return -1;
+        return undefined;
     }
 
-    private GetKingPlayerId(): number {
+    private GetKingPlayerId(): string | undefined {
         const playersId = Array.from(this.playersIdInGame.values());
         for (let i = 0; i < playersId.length; i++) {
             if (this.players[playersId[i]].isKing) return playersId[i];
         }
-        return -1;
+        return undefined;
     }
 
 
@@ -137,7 +137,7 @@ export class Players {
     }
 
     public RearrangePlayersTurn(): void {
-        const kingPlayerId = this.GetKingPlayerId();
+        const kingPlayerId = this.GetKingPlayerId()!;
         const kingPlayerInitialTurnNumber = this.players[kingPlayerId].heroPickInitialTurnNumber;
 
         const playersId = Array.from(this.playersIdInGame.values());
@@ -165,7 +165,7 @@ export class Players {
         })) this.playerPickHeroTurn = -1;
     }
 
-    public IsPlayerHeroPickTurn(playerId: number, heroWeight: number): boolean {
+    public IsPlayerHeroPickTurn(playerId: string, heroWeight: number): boolean {
         return this.players[playerId].IsHeroPickTurnCanBeMade(heroWeight);
     }
 
@@ -179,8 +179,8 @@ export class Players {
         return this.playerHeroWeightTurn;
     }
 
-    public GetCurrentPlayerIdTurn(): number {
-        return this.GetPlayerIdWithHeroWeight(this.playerHeroWeightTurn);
+    public GetCurrentPlayerIdTurn(): string {
+        return this.GetPlayerIdWithHeroWeight(this.playerHeroWeightTurn)!;
     }
 
     public ResetCurrentHeroTurn(): void {
@@ -202,32 +202,32 @@ export class Players {
     }
 
     public SetHeroInitialTurnOptions(options: Array<string>): void {
-        const playerIdWithHeroWeight = this.GetPlayerIdWithHeroWeight(this.playerHeroWeightTurn);
+        const playerIdWithHeroWeight = this.GetPlayerIdWithHeroWeight(this.playerHeroWeightTurn)!;
         this.players[playerIdWithHeroWeight].initialTurnOptionsToPickFrom = options;
     }
 
-    public RemoveHeroInitialTurnOptionsInPlayer(playerId: number) {
+    public RemoveHeroInitialTurnOptionsInPlayer(playerId: string) {
         this.players[playerId].initialTurnOptionsToPickFrom = undefined;
     }
 
-    public IsPlayerCanInitialPickOptionTurn(playerId: number, option: string): boolean {
+    public IsPlayerCanInitialPickOptionTurn(playerId: string, option: string): boolean {
         return this.players[playerId].IsInitialPickOptionTurnCanBeMade(option);
     }
 
-    public GivePlayerInitialCardsToChoseFrom(playerId: number, cards: Array<Card>): void {
+    public GivePlayerInitialCardsToChoseFrom(playerId: string, cards: Array<Card>): void {
         this.players[playerId].initialTurnCardsToPickFrom = cards;
         this.players[playerId].InformAboutMoveToPickOneOfProposedCards(cards.map(c => c.GetInfo()));
     }
 
-    public IsPlayerCanPickHeroInitialCard(playerId: number, cardInGameId: number): boolean {
+    public IsPlayerCanPickHeroInitialCard(playerId: string, cardInGameId: number): boolean {
         return this.players[playerId].IsInitialPickCardTurnCanBeMade(cardInGameId);
     }
 
-    public GetPlayerChosenCard(playerId: number, cardInGameId: number): Card | undefined {
+    public GetPlayerChosenCard(playerId: string, cardInGameId: number): Card | undefined {
         return this.players[playerId].GetInitialTurnChosenCard(cardInGameId);
     }
 
-    public SetPlayerInitialTurnMade(playerId: number): void {
+    public SetPlayerInitialTurnMade(playerId: string): void {
         this.players[playerId].SetInitialTurnMade();
     }
 
@@ -237,25 +237,25 @@ export class Players {
 
     // hero ability
     public SetHeroAbilityTurnStart(heroAbilityType: heroAbilityTypes): void {
-        this.players[this.GetPlayerIdWithHeroWeight(this.playerHeroWeightTurn)].abilityTurnType = heroAbilityType;
+        this.players[this.GetPlayerIdWithHeroWeight(this.playerHeroWeightTurn)!].abilityTurnType = heroAbilityType;
     }
 
-    public SetHeroAbilityTurnMade(playerId: number) {
-        this.players[this.GetPlayerIdWithHeroWeight(this.playerHeroWeightTurn)].SetAbilityTurnMade();
+    public SetHeroAbilityTurnMade() {
+        this.players[this.GetPlayerIdWithHeroWeight(this.playerHeroWeightTurn)!].SetAbilityTurnMade();
     }
 
     // players buildTurn
     public SetHeroBuildTurnStart(buildLimit: number): void {
-        const playerIdWithHero = this.GetPlayerIdWithHeroWeight(this.playerHeroWeightTurn);
+        const playerIdWithHero = this.GetPlayerIdWithHeroWeight(this.playerHeroWeightTurn)!;
 
         this.players[playerIdWithHero].buildLimit = buildLimit;
     }
 
-    public IsPlayerCanBuildDistrict(playerId: number, cardInGameId: number): boolean {
+    public IsPlayerCanBuildDistrict(playerId: string, cardInGameId: number): boolean {
         return this.players[playerId].IsDistrictBuildCanBeMade(cardInGameId);
     }
 
-    public SetPlayerCardBuilt(playerId: number, cardInGameId: number): void {
+    public SetPlayerCardBuilt(playerId: string, cardInGameId: number): void {
         const card = this.players[playerId].RemoveCardFromHand(cardInGameId);
         if (!!card) {
             this.players[playerId].gold -= card.cost;
@@ -268,15 +268,15 @@ export class Players {
         }
     }
 
-    public IsPlayerCanEndBuildTurn(playerId: number): boolean {
+    public IsPlayerCanEndBuildTurn(playerId: string): boolean {
         return this.players[playerId].IsEndOfBuildTurnCanBeMade();
     }
 
-    public EndPlayerBuildTurn(playerId: number): void {
+    public EndPlayerBuildTurn(playerId: string): void {
         this.players[playerId].SetBuildTurnMade();
     }
 
-    public DestroyPlayerDistrict(playerId: number, districtInGameId: number): void {
+    public DestroyPlayerDistrict(playerId: string, districtInGameId: number): void {
         this.players[playerId].RemovePlacedCard(districtInGameId);
     }
 
@@ -296,11 +296,11 @@ export class Players {
     //------------//
     // players connection
     public IsPlayerBelongToGame(player: Player): boolean {
-        return this.playersIdInGame.has(player.userId);
+        return this.playersIdInGame.has(player.id);
     }
 
     public AddPlayer(player: Player): void {
-        this.players[player.userId] = player;
+        this.players[player.id] = player;
     }
 
     public IsAllPlayerConnected(): boolean {
@@ -310,14 +310,14 @@ export class Players {
     public IsPlayerCreated(player: Player): boolean {
         return Object.keys(this.players).some(pId => {
             const p = this.players[+pId];
-            return player.userId === p.userId && player.token === p.token && !p.IsConnected;
+            return player.id === p.id && player.token === p.token && !p.IsConnected;
         });
     }
 
     public ResetPlayerConnection(player: Player) {
         Object.keys(this.players).forEach(pId => {
             const p = this.players[+pId];
-            if (p.userId === player.userId && p.token === player.token) {
+            if (p.id === player.id && p.token === player.token) {
                 this.players[+pId].Connection = player.Connection;
             }
         });
@@ -326,13 +326,13 @@ export class Players {
     public IsPlayerClone(player: Player): boolean {
         return Object.keys(this.players).some(pId => {
             const p = this.players[+pId];
-            return (player.userId === p.userId && player.token === p.token && p.IsConnected);
+            return (player.id === p.id && player.token === p.token && p.IsConnected);
         });
     }
 
-    public SetPlayerDisconnected(playerId: number): void {
+    public SetPlayerDisconnected(playerId: string): void {
         Object.keys(this.players).forEach(pId => {
-            if (this.players[+pId].userId === playerId)
+            if (this.players[+pId].id === playerId)
                 this.players[+pId].SetDisconnected();
         });
     }
@@ -340,19 +340,19 @@ export class Players {
     // players informant
     public InformPlayersAboutInitialPlayerConnection(playerInfo: playerPreGameInfo): void {
         Object.keys(this.players).forEach(pId => {
-            if (+pId !== playerInfo.id) this.players[+pId].InformAboutPlayerInitialConnected(playerInfo);
+            if (pId !== playerInfo.id) this.players[+pId].InformAboutPlayerInitialConnected(playerInfo);
         });
     }
 
-    public InformPlayersAboutPlayerConnected(playerId: number): void {
+    public InformPlayersAboutPlayerConnected(playerId: string): void {
         Object.keys(this.players).forEach(pId => {
-            if (+pId !== playerId) this.players[+pId].InformAboutPlayerConnected(playerId);
+            if (pId !== playerId) this.players[+pId].InformAboutPlayerConnected(playerId);
         });
     }
 
-    public InformPlayersAboutPlayerDisconnected(playerId: number): void {
+    public InformPlayersAboutPlayerDisconnected(playerId: string): void {
         Object.keys(this.players).forEach(pId => {
-            if (+pId !== playerId) this.players[+pId].InformAboutPlayerDisconnected(playerId);
+            if (pId !== playerId) this.players[+pId].InformAboutPlayerDisconnected(playerId);
         });
     }
 
@@ -365,44 +365,44 @@ export class Players {
 
 
     public InformPlayersAboutHeroPickTurnStart(shiftedHeroesWeight: Array<number>, heroesWeightLeft: Array<number>): void {
-        const playerTurnId = this.GetPlayerIdWithTurnNumber(this.playerPickHeroTurn);
+        const playerTurnId = this.GetPlayerIdWithTurnNumber(this.playerPickHeroTurn)!;
 
         this.playersId.forEach(pId => {
-            if (this.players[+pId].userId === playerTurnId)
+            if (this.players[+pId].id === playerTurnId)
                 this.players[+pId].heroesWeightToPickFrom = heroesWeightLeft;
 
             this.players[+pId].InformAboutHeroPickTurnStart(
                 shiftedHeroesWeight,
-                +pId === playerTurnId ? heroesWeightLeft : undefined,
+                pId === playerTurnId ? heroesWeightLeft : undefined,
                 playerTurnId
             );
         });
     }
 
     public InformPlayersAboutPlayerPickingHero(heroesWeightLeft: Array<number>): void {
-        const playerTurnId = this.GetPlayerIdWithTurnNumber(this.playerPickHeroTurn);
+        const playerTurnId = this.GetPlayerIdWithTurnNumber(this.playerPickHeroTurn)!;
 
         this.playersId.forEach(pId => {
-            if (this.players[+pId].userId === playerTurnId)
+            if (this.players[+pId].id === playerTurnId)
                 this.players[+pId].heroesWeightToPickFrom = heroesWeightLeft;
 
             this.players[+pId].InformAboutPickHeroTurn(
                 playerTurnId,
-                +pId === playerTurnId ? heroesWeightLeft : undefined
+                pId === playerTurnId ? heroesWeightLeft : undefined
             );
         });
     }
 
 
     public InformPlayersAboutHeroAbilityTurnStart(heroAbilityType: heroAbilityTypes): void {
-        const playerId = this.GetPlayerIdWithHeroWeight(this.playerHeroWeightTurn);
+        const playerId = this.GetPlayerIdWithHeroWeight(this.playerHeroWeightTurn)!;
         this.playersId.forEach(pId => {
             this.players[pId].InformAboutHeroAbilityTurnStart(heroAbilityType, playerId);
         });
     }
 
 
-    public InformPlayersAboutPlayerHandChanged(playerId: number): void {
+    public InformPlayersAboutPlayerHandChanged(playerId: string): void {
         const newHand = this.players[playerId].hand;
         const handLength = newHand.length;
 
@@ -414,7 +414,7 @@ export class Players {
 
 
     public InformPlayersAboutNextHeroInitialTurnStart(): void {
-        const playerIdTurn = this.GetPlayerIdWithHeroWeight(this.playerHeroWeightTurn);
+        const playerIdTurn = this.GetPlayerIdWithHeroWeight(this.playerHeroWeightTurn)!;
 
         this.playersId.forEach(pId => {
             this.players[pId].InformAboutInitialHeroTurn(
@@ -425,7 +425,7 @@ export class Players {
     }
 
     public InformPlayersAboutHeroBuildTurnStart(): void {
-        const playerIdTurn = this.GetPlayerIdWithHeroWeight(this.playerHeroWeightTurn);
+        const playerIdTurn = this.GetPlayerIdWithHeroWeight(this.playerHeroWeightTurn)!;
 
         this.playersId.forEach(pId => {
             this.players[pId].InformAboutBuildTurnStart(
@@ -436,32 +436,32 @@ export class Players {
     }
 
 
-    public InformPlayersAboutDistrictBuilt(playerId: number, cardInfo: cardInfo): void {
+    public InformPlayersAboutDistrictBuilt(playerId: string, cardInfo: cardInfo): void {
         this.playersId.forEach(pId => {
             this.players[pId].InformAboutPlayerBuiltDistrict(playerId, cardInfo);
         });
     }
 
-    public InformPlayersAboutDistrictDestroyed(playerId: number, cardInGameId: number): void {
+    public InformPlayersAboutDistrictDestroyed(playerId: string, cardInGameId: number): void {
         this.playersId.forEach(pId => {
             this.players[pId].InformAboutPlayerDistrictDestroyed(playerId, cardInGameId);
         });
     }
 
 
-    public InformPlayersAboutPlayerReceivedGold(playerId: number, count: number): void {
+    public InformPlayersAboutPlayerReceivedGold(playerId: string, count: number): void {
         this.playersId.forEach(pId => {
             this.players[pId].InformAboutPlayerReceivedGold(playerId, count);
         });
     }
 
-    public InformPlayersAboutPlayerReceivedCard(playerId: number, card: Card): void {
+    public InformPlayersAboutPlayerReceivedCard(playerId: string, card: Card): void {
         this.playersId.forEach(pId => {
             this.players[pId].InformAboutPlayerReceivedCard(playerId, playerId === pId ? card : undefined);
         });
     }
 
-    public InformAboutDebuffAddedToHero(heroWeight: number, debuffType: heroDebuffsTypes, fromPlayerId?: number): void {
+    public InformAboutDebuffAddedToHero(heroWeight: number, debuffType: heroDebuffsTypes, fromPlayerId?: string): void {
         this.playersId.forEach(pId => {
             this.players[pId].InformAboutDebuffAddedToHero(heroWeight, debuffType, fromPlayerId);
         });
@@ -493,7 +493,7 @@ export class Players {
     }
 
 
-    public InformPlayerAboutPreGameInfo(playerId: number): void {
+    public InformPlayerAboutPreGameInfo(playerId: string): void {
         this.players[playerId].InformAboutPreGameInfo(
             Object.keys(this.players).map(pId => {
                 return this.players[+pId].GetPreGameInfo();
@@ -502,13 +502,13 @@ export class Players {
         );
     }
 
-    public InformPlayerAboutGameTable(playerId: number, tableInfo: tableInfo): void {
+    public InformPlayerAboutGameTable(playerId: string, tableInfo: tableInfo): void {
         const player = this.players[playerId];
 
         const tableInfoWithPlayers: tableInfoWithPlayers = {
             "tableInfo": tableInfo,
             "players": Array.from(this.playersIdInGame).map(pId => {
-                return this.players[pId].GetInfo(player.userId === pId);
+                return this.players[pId].GetInfo(player.id === pId);
             })
         };
 

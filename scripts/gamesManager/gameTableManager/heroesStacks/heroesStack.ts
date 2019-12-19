@@ -90,11 +90,11 @@ export class HeroesStack {
         return this.heroes[heroWeight].HasAbility();
     }
 
-    public IsHeroCanUseAbility(heroWeight: number, message: any, playerId: number, players: Players, heroes: HeroesStack, deck: Deck): boolean {
+    public IsHeroCanUseAbility(heroWeight: number, message: any, playerId: string, players: Players, heroes: HeroesStack, deck: Deck): boolean {
         return this.heroes[heroWeight].IsPlayerCanMakeAbilityMove(message, playerId, players, heroes, deck);
     }
 
-    public UseHeroAbility(heroWeight: number, message: any, playerId: number, players: Players, heroes: HeroesStack, deck: Deck): void {
+    public UseHeroAbility(heroWeight: number, message: any, playerId: string, players: Players, heroes: HeroesStack, deck: Deck): void {
         this.heroes[heroWeight].CastPlayerAbility(message, playerId, players, heroes, deck);
     }
 
@@ -109,14 +109,14 @@ export class HeroesStack {
     }
 
 
-    public ApplyDebuffOnHero(heroWeight: number, debuffType: heroDebuffsTypes, fromPlayerId: number): void {
+    public ApplyDebuffOnHero(heroWeight: number, debuffType: heroDebuffsTypes, fromPlayerId: string): void {
         this.heroes[heroWeight].AddDebuff(debuffType, fromPlayerId);
     }
 
 
     public InvokeHeroDebuffs(
         heroWeight: number,
-        playerIdWithThisHero: number,
+        playerIdWithThisHero: string,
         players: Players,
         heroes: HeroesStack,
         deck: Deck
@@ -126,7 +126,7 @@ export class HeroesStack {
 
     public InvokeHeroBuffs(
         heroWeight: number,
-        playerIdWithThisHero: number,
+        playerIdWithThisHero: string,
         players: Players,
         heroes: HeroesStack,
         deck: Deck

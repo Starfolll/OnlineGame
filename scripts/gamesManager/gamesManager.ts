@@ -5,35 +5,31 @@ import {Player} from "./players/player";
 import {Hero} from "./gameTableManager/heroesStacks/hero";
 import {Card} from "./gameTableManager/deck/card";
 import {IsMessageValid} from "./players/communicationWithPlayer/responseMessages";
-import {playerInitialConnection} from "./players/communicationWithPlayer/responseMessagesTypes";
 
 import logError from "../consoleLogs/logError";
 import logGameInfo from "../consoleLogs/logGameInfo";
+import DB_Users from "../models/user/db_users";
 
 export class GamesManager {
-    private readonly tables: { [id: number]: GameTableManager } = {};
+    private readonly tables: { [id: string]: GameTableManager } = {};
 
     constructor(gameWSS: WebSocket.Server, cb?: Function) {
         gameWSS.on("connection", (connection: WebSocket) => {
-            const onMessageHandler = (event: { data: any; type: string; target: WebSocket }): void => {
+            const onMessageHandler = async (event: { data: any; type: string; target: WebSocket }) => {
                 try {
-                    const messageBody: playerInitialConnection | undefined =
-                        IsMessageValid.GetValidPlayerInitialConnection(JSON.parse(event.data));
+                    const validMessage = IsMessageValid.GetValidPlayerInitialConnection(JSON.parse(event.data));
 
-                    if (messageBody === undefined) throw new Error();
-                    if (!this.IsTableExists(messageBody.tableId)) throw new Error();
+                    if (!validMessage) throw new Error();
+                    const userData = await DB_Users.GetUserDataByNameAndToken(validMessage.name, validMessage.token);
+
+                    if (!userData) throw new Error();
+                    if (!this.IsTableExists(validMessage.tableId)) throw new Error();
 
                     connection.removeEventListener("message", onMessageHandler);
-                    this.ConnectPlayerToTable(new Player(
-                        messageBody.id,
-                        messageBody.name,
-                        messageBody.token,
-                        messageBody.tableId,
-                        connection
-                    ));
+                    this.ConnectPlayerToTable(new Player(userData, connection));
                 } catch (e) {
                     if (!!e.message) logError(e.message);
-                    connection.close(1007, "invalid data");
+                    connection.close(1007, "invalid data model");
                 }
             };
 
@@ -49,14 +45,14 @@ export class GamesManager {
 
 
     public CreateNewTable(
-        tableId: number,
-        playersId: Set<number>,
+        tableId: string,
+        playersId: Set<string>,
         cards: Array<Card>,
         heroes: { [heroWeight: number]: Hero }
     ): void {
         logGameInfo(`New table: ` + tableId);
 
-        const onGameEnd = (tableId: number) => this.DropTable(tableId);
+        const onGameEnd = (tableId: string) => this.DropTable(tableId);
 
         this.tables[tableId] = new GameTableManager(
             tableId,
@@ -67,7 +63,7 @@ export class GamesManager {
         );
     }
 
-    public IsTableExists(tableId: number): boolean {
+    public IsTableExists(tableId: string): boolean {
         return !!this.tables[tableId];
     }
 
@@ -75,7 +71,7 @@ export class GamesManager {
         this.tables[player.tableId].ConnectPlayer(player);
     }
 
-    public DropTable(tableId: number): void {
+    public DropTable(tableId: string): void {
         delete this.tables[tableId];
     }
 }

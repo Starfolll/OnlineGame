@@ -5,7 +5,8 @@ import {Hero, heroInfo} from "./heroesStacks/hero";
 import {HeroesStack} from "./heroesStacks/heroesStack";
 import {Card} from "./deck/card";
 import {initialHeroTurnOptions} from "../players/communicationWithPlayer/responseMessagesTypes";
-import GameChatMessage, {gameChatMessageInfo} from "./gameChatMessage";
+import GameChatMessage, {gameChatMessageInfo} from "../../chat/gameChatMessage";
+import Chat from "../../chat/chat";
 
 type turnsType =
     "waitingForPlayers" |
@@ -30,7 +31,7 @@ export type tableInfo = {
 };
 
 export class GameTable {
-    private readonly tableId: number;
+    private readonly tableId: string;
     private currentTurnType: turnsType = "waitingForPlayers";
 
     protected isGameStarted: boolean = false;
@@ -39,23 +40,23 @@ export class GameTable {
     private readonly deck: Deck;
     private readonly players: Players;
     private readonly heroes: HeroesStack;
-    private readonly chatMessages: Array<GameChatMessage> = [];
-    private readonly chatMessagesLimit: number = 30;
+    private readonly chat: Chat<GameChatMessage>;
 
-    private readonly onGameEndCallback: (tableId: number) => void;
+    private readonly onGameEndCallback: (tableId: string) => void;
 
     constructor(
-        tableId: number,
-        playersId: Set<number>,
+        tableId: string,
+        playersId: Set<string>,
         cards: Array<Card>,
         heroes: { [heroWeight: number]: Hero },
-        onGameEndCallback: (tableId: number) => void
+        onGameEndCallback: (tableId: string) => void
     ) {
         this.tableId = tableId;
 
         this.deck = new Deck(cards);
         this.players = new Players(playersId);
         this.heroes = new HeroesStack(heroes);
+        this.chat = new Chat<GameChatMessage>(30);
 
         this.onGameEndCallback = onGameEndCallback;
     }
@@ -77,11 +78,11 @@ export class GameTable {
             this.players.InformPlayersAboutInitialPlayerConnection(player.GetPreGameInfo());
         } else {
             this.players.ResetPlayerConnection(player);
-            this.players.InformPlayersAboutPlayerConnected(player.userId);
+            this.players.InformPlayersAboutPlayerConnected(player.id);
         }
 
-        if (this.isGameStarted) this.players.InformPlayerAboutGameTable(player.userId, this.GetTableInfo());
-        else this.players.InformPlayerAboutPreGameInfo(player.userId);
+        if (this.isGameStarted) this.players.InformPlayerAboutGameTable(player.id, this.GetTableInfo());
+        else this.players.InformPlayerAboutPreGameInfo(player.id);
 
         return true;
     }
@@ -94,7 +95,7 @@ export class GameTable {
         player.Connection.close(errorCode, message);
     }
 
-    protected SetPlayerDisconnected(playerId: number): void {
+    protected SetPlayerDisconnected(playerId: string): void {
         this.players.SetPlayerDisconnected(playerId);
         this.players.InformPlayersAboutPlayerDisconnected(playerId);
     }
@@ -156,12 +157,12 @@ export class GameTable {
         );
     }
 
-    protected IsPlayerCanPickHero(playerId: number, heroWeight: number): boolean {
+    protected IsPlayerCanPickHero(playerId: string, heroWeight: number): boolean {
         if (!this.heroes.IsLeftHeroesHasWeight(heroWeight)) return false;
         return this.players.IsPlayerHeroPickTurn(playerId, heroWeight);
     }
 
-    protected AttachHeroToPlayer(playerId: number, heroWeight: number): void {
+    protected AttachHeroToPlayer(playerId: string, heroWeight: number): void {
         this.heroes.RemoveLeftHero(heroWeight);
         this.players.AttachHeroWeightToPlayer(playerId, heroWeight);
 
@@ -221,17 +222,17 @@ export class GameTable {
         this.players.InformPlayersAboutNextHeroInitialTurnStart();
     }
 
-    protected IsPlayerCanPickHeroInitialOptions(playerId: number, option: string): boolean {
+    protected IsPlayerCanPickHeroInitialOptions(playerId: string, option: string): boolean {
         return this.players.IsPlayerCanInitialPickOptionTurn(playerId, option);
     }
 
-    protected HeroPickedInitialTurnOptionGold(playerId: number): void {
+    protected HeroPickedInitialTurnOptionGold(playerId: string): void {
         this.players.GivePlayerGold(playerId, 2);
         this.players.SetPlayerInitialTurnMade(playerId);
         this.GivePlayerHeroAbilityTurn();
     }
 
-    protected HeroPickedInitialTurnOptionCards(playerId: number): void {
+    protected HeroPickedInitialTurnOptionCards(playerId: string): void {
         const cardsToChoseFrom: Array<Card> = [];
         const maxCardsToChoseFrom: number = 2;
         for (let i = 0; i < maxCardsToChoseFrom; i++) {
@@ -243,11 +244,11 @@ export class GameTable {
         this.players.GivePlayerInitialCardsToChoseFrom(playerId, cardsToChoseFrom);
     }
 
-    protected IsPlayerCanPickHeroInitialCard(playerId: number, cardInGameId: number): boolean {
+    protected IsPlayerCanPickHeroInitialCard(playerId: string, cardInGameId: number): boolean {
         return this.players.IsPlayerCanPickHeroInitialCard(playerId, cardInGameId);
     }
 
-    protected HeroPickedInitialTurnCard(playerId: number, cardInGameId: number): void {
+    protected HeroPickedInitialTurnCard(playerId: string, cardInGameId: number): void {
         const card = this.players.GetPlayerChosenCard(playerId, cardInGameId);
         if (!!card) this.players.GivePlayerCard(playerId, card);
         this.players.SetPlayerInitialTurnMade(playerId);
@@ -265,12 +266,12 @@ export class GameTable {
             this.players.SetHeroAbilityTurnStart(abilityType);
             this.players.InformPlayersAboutHeroAbilityTurnStart(abilityType);
         } else {
-            this.players.SetHeroAbilityTurnMade(this.players.GetCurrentPlayerIdTurn());
+            this.players.SetHeroAbilityTurnMade();
             this.BeginBuildHeroTurn();
         }
     }
 
-    protected IsPlayerCanUseHeroAbility(playerId: number, abilityData: any): boolean {
+    protected IsPlayerCanUseHeroAbility(playerId: string, abilityData: any): boolean {
         return this.heroes.IsHeroCanUseAbility(
             this.players.GetCurrentHeroWeightTurn(),
             abilityData,
@@ -281,7 +282,7 @@ export class GameTable {
         );
     }
 
-    protected UsePlayerHeroAbility(playerId: number, abilityData: any): void {
+    protected UsePlayerHeroAbility(playerId: string, abilityData: any): void {
         this.heroes.UseHeroAbility(
             this.players.GetCurrentHeroWeightTurn(),
             abilityData,
@@ -291,7 +292,7 @@ export class GameTable {
             this.deck
         );
 
-        this.players.SetHeroAbilityTurnMade(this.players.GetCurrentPlayerIdTurn());
+        this.players.SetHeroAbilityTurnMade();
         this.BeginBuildHeroTurn();
     }
 
@@ -304,19 +305,19 @@ export class GameTable {
         this.players.InformPlayersAboutHeroBuildTurnStart();
     }
 
-    protected IsPlayerCanBuildDistrict(playerId: number, cardInGameId: number): boolean {
+    protected IsPlayerCanBuildDistrict(playerId: string, cardInGameId: number): boolean {
         return this.players.IsPlayerCanBuildDistrict(playerId, cardInGameId);
     }
 
-    protected PlayerBuildDistrict(playerId: number, cardInGameId: number): void {
+    protected PlayerBuildDistrict(playerId: string, cardInGameId: number): void {
         this.players.SetPlayerCardBuilt(playerId, cardInGameId);
     }
 
-    protected PlayerCanEndBuildTurn(playerId: number) {
+    protected PlayerCanEndBuildTurn(playerId: string) {
         return this.players.IsPlayerCanEndBuildTurn(playerId);
     }
 
-    protected EndPlayerBuildTurn(playerId: number): void {
+    protected EndPlayerBuildTurn(playerId: string): void {
         this.players.EndPlayerBuildTurn(playerId);
         this.GiveNextPlayerPickInitialTurnOptions();
     }
@@ -334,12 +335,12 @@ export class GameTable {
     }
 
     // chat message
-    protected AddChatMessage(playerId: number, message: string): void {
+    protected AddChatMessage(playerId: string, message: string): void {
         const chatMessage = new GameChatMessage(playerId, message);
-        this.chatMessages.push(chatMessage);
-        this.players.InformPlayersAboutChatMessage(chatMessage.GetMessageInfo());
 
-        if (this.chatMessages.length > this.chatMessagesLimit) this.chatMessages.pop();
+        this.chat.AddMessage(chatMessage);
+
+        this.players.InformPlayersAboutChatMessage(chatMessage.GetMessageInfo());
     }
 
     // table info
@@ -355,7 +356,7 @@ export class GameTable {
 
             "currentTurnType": this.currentTurnType,
 
-            "chatMessages": this.chatMessages.map(m => m.GetMessageInfo())
+            "chatMessages": this.chat.GetMessages().map(m => m.GetMessageInfo())
         }
     }
 }

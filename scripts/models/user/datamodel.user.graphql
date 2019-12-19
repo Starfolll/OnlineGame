@@ -1,0 +1,14 @@
+type User {
+    id: ID! @id
+    token: String!
+
+    name: String! @unique
+    email: String! @unique
+    password: String!
+
+    publicName: String!
+
+    lvl: Int!
+    xp: Float!
+    gold: Float!
+}

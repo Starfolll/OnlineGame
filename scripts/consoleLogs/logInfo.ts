@@ -8,6 +8,6 @@ export default function logInfo(message: any) {
         ` [ ${dateNow.toLocaleTimeString()} ]` +
         ` [ ${chalk.greenBright("INF")} ]` +
         " |---| " +
-        message
+        JSON.stringify(message)
     );
 }

@@ -8,6 +8,6 @@ export default function logError(message: any,) {
         ` [ ${dateNow.toLocaleTimeString()} ]` +
         ` [ ${chalk.redBright("ERR")} ]` +
         " |---| " +
-        chalk.redBright(message)
+        chalk.redBright(JSON.stringify(message))
     );
 }

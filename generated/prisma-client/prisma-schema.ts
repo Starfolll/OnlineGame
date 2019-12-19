@@ -2,11 +2,7 @@
   // Please don't change this file manually but run `prisma generate` to update it.
   // For more information, please read the docs: https://www.prisma.io/docs/prisma-client/
 
-export const typeDefs = /* GraphQL */ `type AggregatePost {
-  count: Int!
-}
-
-type AggregateUser {
+export const typeDefs = /* GraphQL */ `type AggregateUser {
   count: Int!
 }
 
@@ -17,12 +13,6 @@ type BatchPayload {
 scalar Long
 
 type Mutation {
-  createPost(data: PostCreateInput!): Post!
-  updatePost(data: PostUpdateInput!, where: PostWhereUniqueInput!): Post
-  updateManyPosts(data: PostUpdateManyMutationInput!, where: PostWhereInput): BatchPayload!
-  upsertPost(where: PostWhereUniqueInput!, create: PostCreateInput!, update: PostUpdateInput!): Post!
-  deletePost(where: PostWhereUniqueInput!): Post
-  deleteManyPosts(where: PostWhereInput): BatchPayload!
   createUser(data: UserCreateInput!): User!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
@@ -48,111 +38,7 @@ type PageInfo {
   endCursor: String
 }
 
-type Post {
-  id: ID!
-  content: String!
-  author: User!
-}
-
-type PostConnection {
-  pageInfo: PageInfo!
-  edges: [PostEdge]!
-  aggregate: AggregatePost!
-}
-
-input PostCreateInput {
-  id: ID
-  content: String!
-  author: UserCreateOneInput!
-}
-
-type PostEdge {
-  node: Post!
-  cursor: String!
-}
-
-enum PostOrderByInput {
-  id_ASC
-  id_DESC
-  content_ASC
-  content_DESC
-}
-
-type PostPreviousValues {
-  id: ID!
-  content: String!
-}
-
-type PostSubscriptionPayload {
-  mutation: MutationType!
-  node: Post
-  updatedFields: [String!]
-  previousValues: PostPreviousValues
-}
-
-input PostSubscriptionWhereInput {
-  mutation_in: [MutationType!]
-  updatedFields_contains: String
-  updatedFields_contains_every: [String!]
-  updatedFields_contains_some: [String!]
-  node: PostWhereInput
-  AND: [PostSubscriptionWhereInput!]
-  OR: [PostSubscriptionWhereInput!]
-  NOT: [PostSubscriptionWhereInput!]
-}
-
-input PostUpdateInput {
-  content: String
-  author: UserUpdateOneRequiredInput
-}
-
-input PostUpdateManyMutationInput {
-  content: String
-}
-
-input PostWhereInput {
-  id: ID
-  id_not: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_contains: ID
-  id_not_contains: ID
-  id_starts_with: ID
-  id_not_starts_with: ID
-  id_ends_with: ID
-  id_not_ends_with: ID
-  content: String
-  content_not: String
-  content_in: [String!]
-  content_not_in: [String!]
-  content_lt: String
-  content_lte: String
-  content_gt: String
-  content_gte: String
-  content_contains: String
-  content_not_contains: String
-  content_starts_with: String
-  content_not_starts_with: String
-  content_ends_with: String
-  content_not_ends_with: String
-  author: UserWhereInput
-  AND: [PostWhereInput!]
-  OR: [PostWhereInput!]
-  NOT: [PostWhereInput!]
-}
-
-input PostWhereUniqueInput {
-  id: ID
-}
-
 type Query {
-  post(where: PostWhereUniqueInput!): Post
-  posts(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post]!
-  postsConnection(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PostConnection!
   user(where: UserWhereUniqueInput!): User
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
@@ -160,13 +46,19 @@ type Query {
 }
 
 type Subscription {
-  post(where: PostSubscriptionWhereInput): PostSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }
 
 type User {
   id: ID!
+  token: String!
   name: String!
+  email: String!
+  password: String!
+  publicName: String!
+  lvl: Int!
+  xp: Float!
+  gold: Float!
 }
 
 type UserConnection {
@@ -177,12 +69,14 @@ type UserConnection {
 
 input UserCreateInput {
   id: ID
+  token: String!
   name: String!
-}
-
-input UserCreateOneInput {
-  create: UserCreateInput
-  connect: UserWhereUniqueInput
+  email: String!
+  password: String!
+  publicName: String!
+  lvl: Int!
+  xp: Float!
+  gold: Float!
 }
 
 type UserEdge {
@@ -193,13 +87,34 @@ type UserEdge {
 enum UserOrderByInput {
   id_ASC
   id_DESC
+  token_ASC
+  token_DESC
   name_ASC
   name_DESC
+  email_ASC
+  email_DESC
+  password_ASC
+  password_DESC
+  publicName_ASC
+  publicName_DESC
+  lvl_ASC
+  lvl_DESC
+  xp_ASC
+  xp_DESC
+  gold_ASC
+  gold_DESC
 }
 
 type UserPreviousValues {
   id: ID!
+  token: String!
   name: String!
+  email: String!
+  password: String!
+  publicName: String!
+  lvl: Int!
+  xp: Float!
+  gold: Float!
 }
 
 type UserSubscriptionPayload {
@@ -220,28 +135,26 @@ input UserSubscriptionWhereInput {
   NOT: [UserSubscriptionWhereInput!]
 }
 
-input UserUpdateDataInput {
-  name: String
-}
-
 input UserUpdateInput {
+  token: String
   name: String
+  email: String
+  password: String
+  publicName: String
+  lvl: Int
+  xp: Float
+  gold: Float
 }
 
 input UserUpdateManyMutationInput {
+  token: String
   name: String
-}
-
-input UserUpdateOneRequiredInput {
-  create: UserCreateInput
-  update: UserUpdateDataInput
-  upsert: UserUpsertNestedInput
-  connect: UserWhereUniqueInput
-}
-
-input UserUpsertNestedInput {
-  update: UserUpdateDataInput!
-  create: UserCreateInput!
+  email: String
+  password: String
+  publicName: String
+  lvl: Int
+  xp: Float
+  gold: Float
 }
 
 input UserWhereInput {
@@ -259,6 +172,20 @@ input UserWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
+  token: String
+  token_not: String
+  token_in: [String!]
+  token_not_in: [String!]
+  token_lt: String
+  token_lte: String
+  token_gt: String
+  token_gte: String
+  token_contains: String
+  token_not_contains: String
+  token_starts_with: String
+  token_not_starts_with: String
+  token_ends_with: String
+  token_not_ends_with: String
   name: String
   name_not: String
   name_in: [String!]
@@ -273,6 +200,72 @@ input UserWhereInput {
   name_not_starts_with: String
   name_ends_with: String
   name_not_ends_with: String
+  email: String
+  email_not: String
+  email_in: [String!]
+  email_not_in: [String!]
+  email_lt: String
+  email_lte: String
+  email_gt: String
+  email_gte: String
+  email_contains: String
+  email_not_contains: String
+  email_starts_with: String
+  email_not_starts_with: String
+  email_ends_with: String
+  email_not_ends_with: String
+  password: String
+  password_not: String
+  password_in: [String!]
+  password_not_in: [String!]
+  password_lt: String
+  password_lte: String
+  password_gt: String
+  password_gte: String
+  password_contains: String
+  password_not_contains: String
+  password_starts_with: String
+  password_not_starts_with: String
+  password_ends_with: String
+  password_not_ends_with: String
+  publicName: String
+  publicName_not: String
+  publicName_in: [String!]
+  publicName_not_in: [String!]
+  publicName_lt: String
+  publicName_lte: String
+  publicName_gt: String
+  publicName_gte: String
+  publicName_contains: String
+  publicName_not_contains: String
+  publicName_starts_with: String
+  publicName_not_starts_with: String
+  publicName_ends_with: String
+  publicName_not_ends_with: String
+  lvl: Int
+  lvl_not: Int
+  lvl_in: [Int!]
+  lvl_not_in: [Int!]
+  lvl_lt: Int
+  lvl_lte: Int
+  lvl_gt: Int
+  lvl_gte: Int
+  xp: Float
+  xp_not: Float
+  xp_in: [Float!]
+  xp_not_in: [Float!]
+  xp_lt: Float
+  xp_lte: Float
+  xp_gt: Float
+  xp_gte: Float
+  gold: Float
+  gold_not: Float
+  gold_in: [Float!]
+  gold_not_in: [Float!]
+  gold_lt: Float
+  gold_lte: Float
+  gold_gt: Float
+  gold_gte: Float
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
@@ -280,5 +273,7 @@ input UserWhereInput {
 
 input UserWhereUniqueInput {
   id: ID
+  name: String
+  email: String
 }
 `

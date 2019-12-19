@@ -13,8 +13,8 @@ export type playerInitialConnection = {
     messageType: string;
     name: string;
     token: string;
-    id: number;
-    tableId: number;
+    id: string;
+    tableId: string;
 }
 
 export type heroPicked = {
@@ -50,6 +50,6 @@ export type buildTurnMade = {
 
 export type gameChatMessage = {
     messageType: string;
-    playerId: number;
+    playerId: string;
     message: string;
 }

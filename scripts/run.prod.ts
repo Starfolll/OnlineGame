@@ -1,7 +1,7 @@
 import WebSocket from "ws";
 import express from "express";
 
-import webPageRoute from "./expressRouter/webPageRoute";
+import webPageRoute from "./router/webPage.route";
 
 import logLetters from "./consoleLogs/logLetters";
 import logInfo from "./consoleLogs/logInfo";

@@ -8,7 +8,7 @@ import {Deck} from "../../deck/deck";
 
 type changeHand = {
     messageType: string;
-    playerId: number;
+    playerId: string;
 }
 
 const GetValidUserMassage = (message: any): changeHand | undefined => {
@@ -37,18 +37,18 @@ export class Magician extends Hero {
         this.debuffs = [];
     }
 
-    public IsPlayerCanMakeAbilityMove(message: any, playerId: number, players: Players, heroes: HeroesStack, deck: Deck): boolean {
+    public IsPlayerCanMakeAbilityMove(message: any, playerId: string, players: Players, heroes: HeroesStack, deck: Deck): boolean {
         const validMessage = GetValidUserMassage(message);
         if (!validMessage) return false;
 
         if (!this.IsPlayerCanUseAbility(players.GetPlayerWithId(playerId))) return false;
-        return players.playersId.has(validMessage.playerId) || validMessage.playerId === -1;
+        return players.playersId.has(validMessage.playerId) || validMessage.playerId === null;
     }
 
-    public CastPlayerAbility(message: any, playerId: number, players: Players, heroes: HeroesStack, deck: Deck): void {
+    public CastPlayerAbility(message: any, playerId: string, players: Players, heroes: HeroesStack, deck: Deck): void {
         const validMessage = GetValidUserMassage(message)!;
 
-        if (validMessage.playerId !== -1) {
+        if (validMessage.playerId === null) {
             const player1Hand = players.GetPlayerWithId(playerId).hand;
             const player2Hand = players.GetPlayerWithId(validMessage.playerId).hand;
 

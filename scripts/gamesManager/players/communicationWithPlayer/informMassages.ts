@@ -24,7 +24,7 @@ import {
 } from "./informMassagesTypes";
 import {heroDebuffsTypes} from "../../gameTableManager/heroesStacks/heroDebuffsTypes";
 import {heroAbilityTypes} from "../../gameTableManager/heroesStacks/heroAbilityTypes";
-import {gameChatMessageInfo} from "../../gameTableManager/gameChatMessage";
+import {gameChatMessageInfo} from "../../../chat/gameChatMessage";
 
 
 export class GetMessage {
@@ -36,7 +36,7 @@ export class GetMessage {
         }
     }
 
-    static PlayerDisconnected(playerId: number): playerDisconnected {
+    static PlayerDisconnected(playerId: string): playerDisconnected {
         return {
             "messageType": "playerDisconnected",
             "playerId": playerId
@@ -50,7 +50,7 @@ export class GetMessage {
         }
     }
 
-    static PlayerConnected(playerId: number): playerConnected {
+    static PlayerConnected(playerId: string): playerConnected {
         return {
             "messageType": "playerConnected",
             "playerId": playerId
@@ -65,7 +65,7 @@ export class GetMessage {
     }
 
 
-    static HeroPickTurnStart(heroesShiftedWeight: Array<number>, heroesWeightLeft: Array<number> | undefined, playerIdTurn: number): heroPickTurnStart {
+    static HeroPickTurnStart(heroesShiftedWeight: Array<number>, heroesWeightLeft: Array<number> | undefined, playerIdTurn: string): heroPickTurnStart {
         return {
             "messageType": "heroPickTurnStart",
             "heroesShiftedWeight": heroesShiftedWeight,
@@ -74,7 +74,7 @@ export class GetMessage {
         }
     }
 
-    static PrickHero(playerIdTurn: number, heroesWeightLeft: Array<number> | undefined): playerPickingHero {
+    static PrickHero(playerIdTurn: string, heroesWeightLeft: Array<number> | undefined): playerPickingHero {
         return {
             "messageType": "prickHero",
             "heroesWeightLeft": heroesWeightLeft,
@@ -82,7 +82,7 @@ export class GetMessage {
         }
     }
 
-    static HeroInitialTurnStarted(heroId: number, playerId: number, options: Array<string> | undefined): heroInitialTurnStarted {
+    static HeroInitialTurnStarted(heroId: number, playerId: string, options: Array<string> | undefined): heroInitialTurnStarted {
         return {
             "messageType": "heroInitialTurnStarted",
             "heroId": heroId,
@@ -98,7 +98,7 @@ export class GetMessage {
         }
     }
 
-    static HeroAbilityTurnStarted(abilityType: heroAbilityTypes, playerId: number): heroAbilityTurnStarted {
+    static HeroAbilityTurnStarted(abilityType: heroAbilityTypes, playerId: string): heroAbilityTurnStarted {
         return {
             "messageType": "heroAbilityTurnStarted",
             "heroAbilityType": abilityType,
@@ -106,7 +106,7 @@ export class GetMessage {
         }
     }
 
-    static HeroBuildTurnStarted(heroId: number, playerId: number): heroBuildTurnStarted {
+    static HeroBuildTurnStarted(heroId: number, playerId: string): heroBuildTurnStarted {
         return {
             "messageType": "heroBuildTurnStarted",
             "heroId": heroId,
@@ -114,7 +114,7 @@ export class GetMessage {
         }
     }
 
-    static DistrictBuilt(playerId: number, cardInfo: cardInfo): districtBuilt {
+    static DistrictBuilt(playerId: string, cardInfo: cardInfo): districtBuilt {
         return {
             "messageType": "playerBuiltDistrict",
             "playerId": playerId,
@@ -122,7 +122,7 @@ export class GetMessage {
         }
     }
 
-    static DistrictDestroyed(playerId: number, cardInGameId: number): districtDestroyed {
+    static DistrictDestroyed(playerId: string, cardInGameId: number): districtDestroyed {
         return {
             "messageType": "districtDestroyed",
             "cardInGameId": cardInGameId,
@@ -130,7 +130,7 @@ export class GetMessage {
         }
     }
 
-    static PlayerReceivedGold(playerId: number, count: number): playerReceivedGold {
+    static PlayerReceivedGold(playerId: string, count: number): playerReceivedGold {
         return {
             "messageType": "playerReceivedGold",
             "playerId": playerId,
@@ -138,7 +138,7 @@ export class GetMessage {
         }
     }
 
-    static PlayerReceivedCard(playerId: number, card: Card | undefined): playerReceivedCard {
+    static PlayerReceivedCard(playerId: string, card: Card | undefined): playerReceivedCard {
         return {
             "messageType": "playerReceivedCard",
             "playerId": playerId,
@@ -153,7 +153,7 @@ export class GetMessage {
         }
     }
 
-    static DebuffAddedToHero(heroWeight: number, debuffType: heroDebuffsTypes, fromPlayerId?: number): debuffAddedToHero {
+    static DebuffAddedToHero(heroWeight: number, debuffType: heroDebuffsTypes, fromPlayerId?: string): debuffAddedToHero {
         return {
             "messageType": "debuffAddedToHero",
             "debuffType": debuffType,
@@ -162,7 +162,7 @@ export class GetMessage {
         }
     }
 
-    static PlayerHandChanged(playerId: number, newHandLength: number, hand?: Array<Card>): playerHandChanged {
+    static PlayerHandChanged(playerId: string, newHandLength: number, hand?: Array<Card>): playerHandChanged {
         return {
             "messageType": "playerHandChanged",
             "playerId": playerId,

@@ -18,7 +18,7 @@ export type heroInfo = {
 
 export type debuffWithMetadata = {
     debuffType: heroDebuffsTypes,
-    fromPlayerId: number,
+    fromPlayerId: string,
     additionData?: any
 }
 
@@ -59,7 +59,7 @@ export abstract class Hero {
         this.buffs.push(buff);
     }
 
-    public AddDebuff(debuff: heroDebuffsTypes, fromPlayerId: number, additionalData?: any): void {
+    public AddDebuff(debuff: heroDebuffsTypes, fromPlayerId: string, additionalData?: any): void {
         this.debuffs.push({
             "debuffType": debuff,
             "fromPlayerId": fromPlayerId,
@@ -77,12 +77,12 @@ export abstract class Hero {
         return player.abilityTurnType === this.abilityType;
     }
 
-    public abstract IsPlayerCanMakeAbilityMove(message: any, playerId: number, players: Players, heroes: HeroesStack, deck: Deck): boolean;
+    public abstract IsPlayerCanMakeAbilityMove(message: any, playerId: string, players: Players, heroes: HeroesStack, deck: Deck): boolean;
 
-    public abstract CastPlayerAbility(message: any, playerId: number, players: Players, heroes: HeroesStack, deck: Deck): void;
+    public abstract CastPlayerAbility(message: any, playerId: string, players: Players, heroes: HeroesStack, deck: Deck): void;
 
 
-    public InvokeDebuffs(playerId: number, players: Players, heroes: HeroesStack, deck: Deck): void {
+    public InvokeDebuffs(playerId: string, players: Players, heroes: HeroesStack, deck: Deck): void {
         this.debuffs.forEach(debuff => {
             switch (debuff.debuffType) {
                 case "robbed":
@@ -97,7 +97,7 @@ export abstract class Hero {
         });
     }
 
-    public InvokeBuffs(playerId: number, players: Players, heroes: HeroesStack, deck: Deck): void {
+    public InvokeBuffs(playerId: string, players: Players, heroes: HeroesStack, deck: Deck): void {
         this.buffs.forEach(buff => {
             switch (buff) {
                 case "instanceGold":

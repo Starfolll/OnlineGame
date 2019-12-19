@@ -37,7 +37,7 @@ export class Thief extends Hero {
         this.debuffs = [];
     }
 
-    public IsPlayerCanMakeAbilityMove(message: any, playerId: number, players: Players, heroes: HeroesStack, deck: Deck): boolean {
+    public IsPlayerCanMakeAbilityMove(message: any, playerId: string, players: Players, heroes: HeroesStack, deck: Deck): boolean {
         const validMessage = GetValidUserMassage(message);
         if (!validMessage) return false;
 
@@ -46,7 +46,7 @@ export class Thief extends Hero {
         return validMessage.heroWeight > this.weight;
     }
 
-    public CastPlayerAbility(message: any, playerId: number, players: Players, heroes: HeroesStack, deck: Deck): void {
+    public CastPlayerAbility(message: any, playerId: string, players: Players, heroes: HeroesStack, deck: Deck): void {
         const validMessage = GetValidUserMassage(message)!;
 
         heroes.ApplyDebuffOnHero(validMessage.heroWeight, "robbed", playerId);

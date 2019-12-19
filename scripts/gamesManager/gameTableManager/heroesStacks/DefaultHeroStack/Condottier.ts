@@ -8,7 +8,7 @@ import {Deck} from "../../deck/deck";
 
 type destroyDistrict = {
     messageType: string;
-    playerId: number;
+    playerId: string;
     districtInGameId: number;
 }
 
@@ -39,7 +39,7 @@ export class Condottier extends Hero {
         this.debuffs = [];
     }
 
-    public IsPlayerCanMakeAbilityMove(message: any, playerId: number, players: Players, heroes: HeroesStack, deck: Deck): boolean {
+    public IsPlayerCanMakeAbilityMove(message: any, playerId: string, players: Players, heroes: HeroesStack, deck: Deck): boolean {
         const validMessage = GetValidUserMassage(message);
         if (!validMessage) return false;
 
@@ -52,7 +52,7 @@ export class Condottier extends Hero {
         return playerToDestroy.placedCards.some(c => c.gameId === validMessage.districtInGameId);
     }
 
-    public CastPlayerAbility(message: any, playerId: number, players: Players, heroes: HeroesStack, deck: Deck): void {
+    public CastPlayerAbility(message: any, playerId: string, players: Players, heroes: HeroesStack, deck: Deck): void {
         const validMessage = GetValidUserMassage(message)!;
 
         players.GetPlayerWithId(validMessage.playerId).placedCards

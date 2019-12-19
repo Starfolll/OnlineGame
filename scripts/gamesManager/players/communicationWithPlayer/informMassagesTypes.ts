@@ -3,7 +3,7 @@ import {tableInfoWithPlayers} from "../players";
 import {Card, cardInfo} from "../../gameTableManager/deck/card";
 import {heroDebuffsTypes} from "../../gameTableManager/heroesStacks/heroDebuffsTypes";
 import {heroAbilityTypes} from "../../gameTableManager/heroesStacks/heroAbilityTypes";
-import {gameChatMessageInfo} from "../../gameTableManager/gameChatMessage";
+import {gameChatMessageInfo} from "../../../chat/gameChatMessage";
 
 export type preGameInfo = {
     messageType: string;
@@ -13,7 +13,7 @@ export type preGameInfo = {
 
 export type playerDisconnected = {
     messageType: string;
-    playerId: number
+    playerId: string;
 };
 
 export type playerInitialConnection = {
@@ -23,7 +23,7 @@ export type playerInitialConnection = {
 
 export type playerConnected = {
     messageType: string;
-    playerId: number
+    playerId: string;
 };
 
 export type gameTable = {
@@ -35,31 +35,31 @@ export type heroPickTurnStart = {
     messageType: string;
     heroesShiftedWeight: Array<number>;
     heroesWeightLeft: Array<number> | undefined;
-    playerIdTurn: number;
+    playerIdTurn: string;
 }
 
 export type playerPickingHero = {
     messageType: string;
     heroesWeightLeft: Array<number> | undefined;
-    playerIdTurn: number;
+    playerIdTurn: string;
 }
 
 export type heroInitialTurnStarted = {
     messageType: string;
     heroId: number;
-    playerId: number;
+    playerId: string;
     options?: Array<string>
 }
 
 export type playerReceivedGold = {
     messageType: string;
-    playerId: number;
+    playerId: string;
     count: number;
 }
 
 export type playerReceivedCard = {
     messageType: string;
-    playerId: number;
+    playerId: string;
     card: Card | undefined;
 }
 
@@ -71,24 +71,24 @@ export type pickOneOfProposedCards = {
 export type heroAbilityTurnStarted = {
     messageType: string;
     heroAbilityType: heroAbilityTypes;
-    playerId: number;
+    playerId: string;
 }
 
 export type heroBuildTurnStarted = {
     messageType: string;
-    playerId: number;
+    playerId: string;
     heroId: number;
 }
 
 export type districtBuilt = {
     messageType: string;
-    playerId: number;
+    playerId: string;
     card: cardInfo;
 }
 
 export type districtDestroyed = {
     messageType: string;
-    playerId: number;
+    playerId: string;
     cardInGameId: number;
 }
 
@@ -101,12 +101,12 @@ export type debuffAddedToHero = {
     messageType: string;
     debuffType: heroDebuffsTypes;
     heroWeight: number;
-    fromPlayerId?: number;
+    fromPlayerId?: string;
 }
 
 export type playerHandChanged = {
     messageType: string;
-    playerId: number;
+    playerId: string;
     handLength: number;
     hand?: Array<Card>;
 }
