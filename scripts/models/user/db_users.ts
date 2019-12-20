@@ -29,6 +29,7 @@ export default class DB_Users {
         email: string,
         password: string,
         publicName: string,
+        token?: string,
         lvl?: number,
         xp?: number,
         gold?: number
@@ -36,7 +37,7 @@ export default class DB_Users {
         const res = await prisma.createUser({
             ...user,
             password: await bcrypt.hash(user.password, 10),
-            token: cryptoRandomString({length: 60}),
+            token: user.token || cryptoRandomString({length: 60}),
             lvl: user.lvl || 1,
             xp: user.xp || 0,
             gold: user.gold || 0

@@ -49,7 +49,8 @@ export async function runDevelopmentBuild(webPort: number, gameWSPort: number) {
         "name": "admin 1",
         "email": "admin 1 email",
         "password": "password",
-        "publicName": "admin 1"
+        "publicName": "admin 1",
+        "token": "1"
     });
 
     await DB_Users.CreateNewUser({
@@ -57,7 +58,8 @@ export async function runDevelopmentBuild(webPort: number, gameWSPort: number) {
         "name": "admin 2",
         "email": "admin 2 email",
         "password": "password",
-        "publicName": "admin 2"
+        "publicName": "admin 2",
+        "token": "2"
     });
 
     console.log();
