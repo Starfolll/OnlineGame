@@ -1,7 +1,7 @@
 import WebSocket from "ws";
 import express from "express";
 
-import webPageRoute from "./router/webPage.route";
+import webPageRoute from "./router/static/webPage.route";
 
 import logLetters from "./consoleLogs/logLetters";
 import logInfo from "./consoleLogs/logInfo";
@@ -17,6 +17,7 @@ import GlobalLobby from "./globalLobbyManager/globalLobby";
 import Db_Lobbies from "./models/lobby/db_lobbies";
 import {Decks} from "./gamesManager/gameTableManager/deck/decks";
 import {HeroesStacks} from "./gamesManager/gameTableManager/heroesStacks/heroesStacks";
+import usersAvatar from "./router/static/usersAvatar";
 
 
 export async function runDevelopmentBuild(webPort: number, gameWSPort: number, globalLobbyWSPort: number) {
@@ -35,8 +36,9 @@ export async function runDevelopmentBuild(webPort: number, gameWSPort: number, g
 
 
     const app = express();
-    await app.use(webPageRoute);
-    await app.listen(webPort);
+    app.use("/", webPageRoute);
+    app.use("/usersAvatars", usersAvatar);
+    app.listen(webPort);
     logInfo(`Web listening at port ${webPort}`);
 
     const gamesManager = new GamesManager(

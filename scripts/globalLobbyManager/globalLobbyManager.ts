@@ -22,6 +22,7 @@ export default class GlobalLobbyManager {
                     if (!userData) throw new Error();
 
                     const tableId = await DB_Tables.GetUserTableId({id: userData.id});
+                    console.log(tableId);
                     if (!!tableId) {
                         connection.send(JSON.stringify(GetGlobalLobbyMessage.RedirectToGameTable(tableId)));
                         throw new Error();
