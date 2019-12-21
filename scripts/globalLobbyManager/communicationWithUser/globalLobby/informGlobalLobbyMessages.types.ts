@@ -1,5 +1,10 @@
 import {extendedLobbyData} from "../../../models/lobby/lobby";
-import {lobbyChatMessageInfo} from "../../../chat/lobbyChatMessage";
+import {chatMessageInfo} from "../../../chat/chatMessage";
+
+export type redirectToGameTable = {
+    messageType: string;
+    tableId: string;
+}
 
 export type globalLobbyInfo = {
     messageType: string;
@@ -8,5 +13,5 @@ export type globalLobbyInfo = {
 
 export type newLobbyChatMessage = {
     messageType: string;
-    message: lobbyChatMessageInfo;
+    message: chatMessageInfo;
 }

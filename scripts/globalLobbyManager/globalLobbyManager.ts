@@ -3,6 +3,8 @@ import GlobalLobby from "./globalLobby";
 import IsLobbyMessageValid from "./communicationWithUser/globalLobby/responseGlobalLobbyMessages";
 import logError from "../consoleLogs/logError";
 import DB_Users from "../models/user/db_users";
+import DB_Tables from "../models/table/db_tables";
+import GetGlobalLobbyMessage from "./communicationWithUser/globalLobby/informGlobalLobbyMessages";
 
 export default class GlobalLobbyManager {
     private readonly globalLobby: GlobalLobby;
@@ -14,11 +16,16 @@ export default class GlobalLobbyManager {
             const onMessageHandler = async (event: { data: any; type: string; target: WebSocket }) => {
                 try {
                     const validMessage = IsLobbyMessageValid.GetValidUserInitialConnection(JSON.parse(event.data));
-
                     if (!validMessage) throw new Error();
-                    const userData = await DB_Users.GetUserDataByIdAndToken(validMessage.id, validMessage.token);
 
+                    const userData = await DB_Users.GetUserDataByIdAndToken(validMessage.id, validMessage.token);
                     if (!userData) throw new Error();
+
+                    const tableId = await DB_Tables.GetUserTableId({id: userData.id});
+                    if (!!tableId) {
+                        connection.send(JSON.stringify(GetGlobalLobbyMessage.RedirectToGameTable(tableId)));
+                        throw new Error();
+                    }
 
                     connection.removeEventListener("message", onMessageHandler);
                     await this.globalLobby.ConnectUser({id: userData.id}, connection);
