@@ -23,8 +23,7 @@ scalar DateTime
 type Lobby {
   id: ID!
   usersInLobby(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
-  name: String
-  isGlobal: Boolean!
+  name: String!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -38,8 +37,7 @@ type LobbyConnection {
 input LobbyCreateInput {
   id: ID
   usersInLobby: UserCreateManyWithoutLobbyInput
-  name: String
-  isGlobal: Boolean
+  name: String!
 }
 
 input LobbyCreateOneWithoutUsersInLobbyInput {
@@ -49,8 +47,7 @@ input LobbyCreateOneWithoutUsersInLobbyInput {
 
 input LobbyCreateWithoutUsersInLobbyInput {
   id: ID
-  name: String
-  isGlobal: Boolean
+  name: String!
 }
 
 type LobbyEdge {
@@ -63,8 +60,6 @@ enum LobbyOrderByInput {
   id_DESC
   name_ASC
   name_DESC
-  isGlobal_ASC
-  isGlobal_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -73,8 +68,7 @@ enum LobbyOrderByInput {
 
 type LobbyPreviousValues {
   id: ID!
-  name: String
-  isGlobal: Boolean!
+  name: String!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -100,12 +94,10 @@ input LobbySubscriptionWhereInput {
 input LobbyUpdateInput {
   usersInLobby: UserUpdateManyWithoutLobbyInput
   name: String
-  isGlobal: Boolean
 }
 
 input LobbyUpdateManyMutationInput {
   name: String
-  isGlobal: Boolean
 }
 
 input LobbyUpdateOneWithoutUsersInLobbyInput {
@@ -119,7 +111,6 @@ input LobbyUpdateOneWithoutUsersInLobbyInput {
 
 input LobbyUpdateWithoutUsersInLobbyDataInput {
   name: String
-  isGlobal: Boolean
 }
 
 input LobbyUpsertWithoutUsersInLobbyInput {
@@ -159,8 +150,6 @@ input LobbyWhereInput {
   name_not_starts_with: String
   name_ends_with: String
   name_not_ends_with: String
-  isGlobal: Boolean
-  isGlobal_not: Boolean
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]

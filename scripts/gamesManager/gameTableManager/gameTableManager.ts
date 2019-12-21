@@ -2,9 +2,9 @@ import WebSocket from "ws";
 import {GameTable} from "./gameTable";
 import {Hero} from "./heroesStacks/hero";
 import {Player} from "../players/player";
-import {IsMessageValid} from "../players/communicationWithPlayer/responseMessages";
+import {IsGameMessageValid} from "../players/communicationWithPlayer/responseGameMessages";
 import {Card} from "./deck/card";
-import {playerTurnResponse} from "../players/communicationWithPlayer/responseMessagesTypes";
+import {playerTurnResponse} from "../players/communicationWithPlayer/responseGameMessages.types";
 import {tableData} from "../../models/table/table";
 
 
@@ -97,7 +97,7 @@ export class GameTableManager extends GameTable {
 
 
     private PlayHeroPickTurn(playerId: string, messageBody: any): void {
-        const validMessage = IsMessageValid.GetValidHeroPickedMessage(messageBody);
+        const validMessage = IsGameMessageValid.GetValidHeroPickedMessage(messageBody);
         if (!validMessage) return;
 
         if (this.IsPlayerCanPickHero(playerId, validMessage.heroWeight))
@@ -105,7 +105,7 @@ export class GameTableManager extends GameTable {
     }
 
     private PlayInitialHeroTurnOption(playerId: string, messageBody: any): void {
-        const validMessage = IsMessageValid.GetValidInitialHeroTurnOptionPicked(messageBody);
+        const validMessage = IsGameMessageValid.GetValidInitialHeroTurnOptionPicked(messageBody);
         if (!validMessage) return;
 
         if (this.IsPlayerCanPickHeroInitialOptions(playerId, validMessage.pickedOption))
@@ -120,7 +120,7 @@ export class GameTableManager extends GameTable {
     }
 
     private PlayInitialHeroCard(playerId: string, messageBody: any): void {
-        const validMessage = IsMessageValid.GetValidInitialHeroCardPicked(messageBody);
+        const validMessage = IsGameMessageValid.GetValidInitialHeroCardPicked(messageBody);
         if (!validMessage) return;
 
         if (this.IsPlayerCanPickHeroInitialCard(playerId, validMessage.cardInGameId))
@@ -128,7 +128,7 @@ export class GameTableManager extends GameTable {
     }
 
     private PlayerHeroAbility(playerId: string, messageBody: any): void {
-        const validMessage = IsMessageValid.GetValidHeroAbilityUsed(messageBody);
+        const validMessage = IsGameMessageValid.GetValidHeroAbilityUsed(messageBody);
         if (!validMessage) return;
 
         if (this.IsPlayerCanUseHeroAbility(playerId, validMessage.abilityData))
@@ -136,7 +136,7 @@ export class GameTableManager extends GameTable {
     }
 
     private PlayBuildDistrict(playerId: string, messageBody: any): void {
-        const validMessage = IsMessageValid.GetValidBuiltDistrict(messageBody);
+        const validMessage = IsGameMessageValid.GetValidBuiltDistrict(messageBody);
         if (!validMessage) return;
 
         if (this.IsPlayerCanBuildDistrict(playerId, validMessage.cardInGameId))
@@ -144,7 +144,7 @@ export class GameTableManager extends GameTable {
     }
 
     private PlayEndOfBuildTurn(playerId: string, messageBody: any): void {
-        const validMessage = IsMessageValid.GetValidBuildTurnMade(messageBody);
+        const validMessage = IsGameMessageValid.GetValidBuildTurnMade(messageBody);
         if (!validMessage) return;
 
         if (this.PlayerCanEndBuildTurn(playerId))
@@ -152,7 +152,7 @@ export class GameTableManager extends GameTable {
     }
 
     private PlaySendChatMessage(playerId: string, messageBody: any): void {
-        const validMessage = IsMessageValid.GetValidChatMessage(messageBody, 120);
+        const validMessage = IsGameMessageValid.GetValidChatMessage(messageBody, 120);
         if (!validMessage) return;
 
         this.AddChatMessage(playerId, validMessage.message);

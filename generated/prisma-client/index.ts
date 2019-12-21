@@ -204,8 +204,6 @@ export type LobbyOrderByInput =
   | "id_DESC"
   | "name_ASC"
   | "name_DESC"
-  | "isGlobal_ASC"
-  | "isGlobal_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC"
   | "updatedAt_ASC"
@@ -428,8 +426,6 @@ export interface LobbyWhereInput {
   name_not_starts_with?: Maybe<String>;
   name_ends_with?: Maybe<String>;
   name_not_ends_with?: Maybe<String>;
-  isGlobal?: Maybe<Boolean>;
-  isGlobal_not?: Maybe<Boolean>;
   createdAt?: Maybe<DateTimeInput>;
   createdAt_not?: Maybe<DateTimeInput>;
   createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
@@ -464,8 +460,7 @@ export type UserWhereUniqueInput = AtLeastOne<{
 export interface LobbyCreateInput {
   id?: Maybe<ID_Input>;
   usersInLobby?: Maybe<UserCreateManyWithoutLobbyInput>;
-  name?: Maybe<String>;
-  isGlobal?: Maybe<Boolean>;
+  name: String;
 }
 
 export interface UserCreateManyWithoutLobbyInput {
@@ -498,7 +493,6 @@ export interface TableCreateWithoutUsersInGameInput {
 export interface LobbyUpdateInput {
   usersInLobby?: Maybe<UserUpdateManyWithoutLobbyInput>;
   name?: Maybe<String>;
-  isGlobal?: Maybe<Boolean>;
 }
 
 export interface UserUpdateManyWithoutLobbyInput {
@@ -699,7 +693,6 @@ export interface UserUpdateManyDataInput {
 
 export interface LobbyUpdateManyMutationInput {
   name?: Maybe<String>;
-  isGlobal?: Maybe<Boolean>;
 }
 
 export interface TableCreateInput {
@@ -732,8 +725,7 @@ export interface LobbyCreateOneWithoutUsersInLobbyInput {
 
 export interface LobbyCreateWithoutUsersInLobbyInput {
   id?: Maybe<ID_Input>;
-  name?: Maybe<String>;
-  isGlobal?: Maybe<Boolean>;
+  name: String;
 }
 
 export interface TableUpdateInput {
@@ -788,7 +780,6 @@ export interface LobbyUpdateOneWithoutUsersInLobbyInput {
 
 export interface LobbyUpdateWithoutUsersInLobbyDataInput {
   name?: Maybe<String>;
-  isGlobal?: Maybe<Boolean>;
 }
 
 export interface LobbyUpsertWithoutUsersInLobbyInput {
@@ -879,8 +870,7 @@ export interface NodeNode {
 
 export interface Lobby {
   id: ID_Output;
-  name?: String;
-  isGlobal: Boolean;
+  name: String;
   createdAt: DateTimeOutput;
   updatedAt: DateTimeOutput;
 }
@@ -897,7 +887,6 @@ export interface LobbyPromise extends Promise<Lobby>, Fragmentable {
     last?: Int;
   }) => T;
   name: () => Promise<String>;
-  isGlobal: () => Promise<Boolean>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
 }
@@ -916,7 +905,6 @@ export interface LobbySubscription
     last?: Int;
   }) => T;
   name: () => Promise<AsyncIterator<String>>;
-  isGlobal: () => Promise<AsyncIterator<Boolean>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
@@ -935,7 +923,6 @@ export interface LobbyNullablePromise
     last?: Int;
   }) => T;
   name: () => Promise<String>;
-  isGlobal: () => Promise<Boolean>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
 }
@@ -1289,8 +1276,7 @@ export interface LobbySubscriptionPayloadSubscription
 
 export interface LobbyPreviousValues {
   id: ID_Output;
-  name?: String;
-  isGlobal: Boolean;
+  name: String;
   createdAt: DateTimeOutput;
   updatedAt: DateTimeOutput;
 }
@@ -1300,7 +1286,6 @@ export interface LobbyPreviousValuesPromise
     Fragmentable {
   id: () => Promise<ID_Output>;
   name: () => Promise<String>;
-  isGlobal: () => Promise<Boolean>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
 }
@@ -1310,7 +1295,6 @@ export interface LobbyPreviousValuesSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   name: () => Promise<AsyncIterator<String>>;
-  isGlobal: () => Promise<AsyncIterator<Boolean>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
@@ -1455,11 +1439,6 @@ DateTime scalar output type, which is always a string
 export type DateTimeOutput = string;
 
 /*
-The `Boolean` scalar type represents `true` or `false`.
-*/
-export type Boolean = boolean;
-
-/*
 The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.
 */
 export type Int = number;
@@ -1468,6 +1447,11 @@ export type Int = number;
 The `Float` scalar type represents signed double-precision fractional values as specified by [IEEE 754](https://en.wikipedia.org/wiki/IEEE_floating_point).
 */
 export type Float = number;
+
+/*
+The `Boolean` scalar type represents `true` or `false`.
+*/
+export type Boolean = boolean;
 
 export type Long = string;
 

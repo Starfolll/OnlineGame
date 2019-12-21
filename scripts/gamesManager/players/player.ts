@@ -2,12 +2,12 @@ import WebSocket from "ws";
 
 import {Card, cardInfo} from "../gameTableManager/deck/card";
 
-import {GetMessage} from "./communicationWithPlayer/informMassages";
+import {GetGameMessage} from "./communicationWithPlayer/informGameMassages";
 import {tableInfoWithPlayers} from "./players";
 import {heroDebuffsTypes} from "../gameTableManager/heroesStacks/heroDebuffsTypes";
 import {heroAbilityTypes} from "../gameTableManager/heroesStacks/heroAbilityTypes";
-import {gameChatMessageInfo} from "../../chat/gameChatMessage";
 import User, {userData} from "../../models/user/user";
+import {chatMessageInfo} from "../../chat/chatMessage";
 
 
 export type playerPreGameInfo = {
@@ -292,42 +292,42 @@ export class Player extends User {
     // informatory
     public InformAboutPlayerDisconnected(playerId: string): void {
         if (this.IsConnected)
-            this.connection.send(JSON.stringify(GetMessage.PlayerDisconnected(playerId)));
+            this.connection.send(JSON.stringify(GetGameMessage.PlayerDisconnected(playerId)));
     }
 
     public InformAboutPlayerInitialConnected(playerInfo: playerPreGameInfo): void {
         if (this.IsConnected)
-            this.connection.send(JSON.stringify(GetMessage.PlayerInitialConnection(playerInfo)));
+            this.connection.send(JSON.stringify(GetGameMessage.PlayerInitialConnection(playerInfo)));
     }
 
     public InformAboutPlayerConnected(playerId: string): void {
         if (this.IsConnected)
-            this.connection.send(JSON.stringify(GetMessage.PlayerConnected(playerId)));
+            this.connection.send(JSON.stringify(GetGameMessage.PlayerConnected(playerId)));
     }
 
     public InformAboutPreGameInfo(playersInfo: Array<playerPreGameInfo>, playersCount: number): void {
         if (this.IsConnected)
-            this.connection.send(JSON.stringify(GetMessage.PreGameInfo(playersInfo, playersCount)));
+            this.connection.send(JSON.stringify(GetGameMessage.PreGameInfo(playersInfo, playersCount)));
     }
 
     public InformAboutTable(gameTable: tableInfoWithPlayers): void {
         if (this.IsConnected)
-            this.connection.send(JSON.stringify(GetMessage.TableInfo(gameTable)));
+            this.connection.send(JSON.stringify(GetGameMessage.TableInfo(gameTable)));
     }
 
     public InformAboutHeroPickTurnStart(heroesShiftedWeight: Array<number>, heroesWeightLeft: Array<number> | undefined, playerIdTurn: string): void {
         if (this.IsConnected)
-            this.connection.send(JSON.stringify(GetMessage.HeroPickTurnStart(heroesShiftedWeight, heroesWeightLeft, playerIdTurn)));
+            this.connection.send(JSON.stringify(GetGameMessage.HeroPickTurnStart(heroesShiftedWeight, heroesWeightLeft, playerIdTurn)));
     }
 
     public InformAboutPickHeroTurn(playerIdTurn: string, heroesWeightLeft: Array<number> | undefined): void {
         if (this.IsConnected)
-            this.connection.send(JSON.stringify(GetMessage.PrickHero(playerIdTurn, heroesWeightLeft)));
+            this.connection.send(JSON.stringify(GetGameMessage.PrickHero(playerIdTurn, heroesWeightLeft)));
     }
 
     public InformAboutInitialHeroTurn(heroWeight: number, playerId: string): void {
         if (this.IsConnected)
-            this.connection.send(JSON.stringify(GetMessage.HeroInitialTurnStarted(
+            this.connection.send(JSON.stringify(GetGameMessage.HeroInitialTurnStarted(
                 heroWeight,
                 playerId,
                 this.initialTurnOptionsToPickFrom
@@ -336,61 +336,61 @@ export class Player extends User {
 
     public InformAboutBuildTurnStart(heroWeight: number, playerId: string, buildLimit: number | undefined): void {
         if (this.IsConnected)
-            this.connection.send(JSON.stringify(GetMessage.HeroBuildTurnStarted(heroWeight, playerId, buildLimit)));
+            this.connection.send(JSON.stringify(GetGameMessage.HeroBuildTurnStarted(heroWeight, playerId, buildLimit)));
     }
 
 
     public InformAboutHeroAbilityTurnStart(abilityType: heroAbilityTypes, playerId: string): void {
         if (this.IsConnected)
-            this.connection.send(JSON.stringify(GetMessage.HeroAbilityTurnStarted(abilityType, playerId)));
+            this.connection.send(JSON.stringify(GetGameMessage.HeroAbilityTurnStarted(abilityType, playerId)));
     }
 
 
     public InformAboutPlayerBuiltDistrict(playerId: string, cardInfo: cardInfo): void {
         if (this.IsConnected)
-            this.connection.send(JSON.stringify(GetMessage.DistrictBuilt(playerId, cardInfo)));
+            this.connection.send(JSON.stringify(GetGameMessage.DistrictBuilt(playerId, cardInfo)));
     }
 
     public InformAboutPlayerDistrictDestroyed(playerId: string, cardInGameId: number): void {
         if (this.IsConnected)
-            this.connection.send(JSON.stringify(GetMessage.DistrictDestroyed(playerId, cardInGameId)));
+            this.connection.send(JSON.stringify(GetGameMessage.DistrictDestroyed(playerId, cardInGameId)));
     }
 
 
     public InformAboutPlayerReceivedGold(playerId: string, count: number): void {
         if (this.IsConnected)
-            this.connection.send(JSON.stringify(GetMessage.PlayerReceivedGold(playerId, count)));
+            this.connection.send(JSON.stringify(GetGameMessage.PlayerReceivedGold(playerId, count)));
     }
 
     public InformAboutPlayerReceivedCard(playerId: string, card: Card | undefined): void {
         if (this.IsConnected)
-            this.connection.send(JSON.stringify(GetMessage.PlayerReceivedCard(playerId, card)));
+            this.connection.send(JSON.stringify(GetGameMessage.PlayerReceivedCard(playerId, card)));
     }
 
     public InformAboutPlayerHandChanged(playerId: string, newHandLength: number, hand?: Array<Card>): void {
         if (this.IsConnected)
-            this.connection.send(JSON.stringify(GetMessage.PlayerHandChanged(playerId, newHandLength, hand)));
+            this.connection.send(JSON.stringify(GetGameMessage.PlayerHandChanged(playerId, newHandLength, hand)));
     }
 
 
-    public InformAboutChatMessage(message: gameChatMessageInfo): void {
+    public InformAboutChatMessage(message: chatMessageInfo): void {
         if (this.IsConnected)
-            this.connection.send(JSON.stringify(GetMessage.ChatMessage(message)));
+            this.connection.send(JSON.stringify(GetGameMessage.ChatMessage(message)));
     }
 
 
     public InformAboutMoveToPickOneOfProposedCards(cards: Array<cardInfo>): void {
         if (this.IsConnected)
-            this.connection.send(JSON.stringify(GetMessage.PickOneOfProposedCards(cards)));
+            this.connection.send(JSON.stringify(GetGameMessage.PickOneOfProposedCards(cards)));
     }
 
     public InformAboutGameEnd(scoreTable: Array<playerEndGameScoreTable>): void {
         if (this.IsConnected)
-            this.connection.send(JSON.stringify(GetMessage.GameEnd(scoreTable)));
+            this.connection.send(JSON.stringify(GetGameMessage.GameEnd(scoreTable)));
     }
 
     public InformAboutDebuffAddedToHero(heroWeight: number, debuffType: heroDebuffsTypes, fromPlayerId?: string): void {
         if (this.IsConnected)
-            this.connection.send(JSON.stringify(GetMessage.DebuffAddedToHero(heroWeight, debuffType, fromPlayerId)));
+            this.connection.send(JSON.stringify(GetGameMessage.DebuffAddedToHero(heroWeight, debuffType, fromPlayerId)));
     }
 }

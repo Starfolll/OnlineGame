@@ -21,13 +21,13 @@ import {
     playerReceivedCard,
     playerReceivedGold,
     preGameInfo
-} from "./informMassagesTypes";
+} from "./informGameMassages.types";
 import {heroDebuffsTypes} from "../../gameTableManager/heroesStacks/heroDebuffsTypes";
 import {heroAbilityTypes} from "../../gameTableManager/heroesStacks/heroAbilityTypes";
-import {gameChatMessageInfo} from "../../../chat/gameChatMessage";
+import {chatMessageInfo} from "../../../chat/chatMessage";
 
 
-export class GetMessage {
+export class GetGameMessage {
     static PreGameInfo(players: Array<playerPreGameInfo>, playersCount: number): preGameInfo {
         return {
             "messageType": "preGameInfo",
@@ -172,7 +172,7 @@ export class GetMessage {
         }
     }
 
-    static ChatMessage(message: gameChatMessageInfo): gameMessage {
+    static ChatMessage(message: chatMessageInfo): gameMessage {
         return {
             "messageType": "informGameChatMessage",
             "message": message

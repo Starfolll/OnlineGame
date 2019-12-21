@@ -3,6 +3,34 @@ let socket;
 let id = "null";
 let token = "null";
 
+// lobby
+const connectToLobby = () => {
+   socket = new WebSocket(`ws://${window.location.hostname}:8081`);
+
+   socket.onopen = () => {
+      socket.send(JSON.stringify({
+         "messageType": "playerInitialConnection",
+         "token": token,
+         "id": id,
+      }));
+   };
+
+   socket.onmessage = (e) => {
+      console.log(JSON.parse(e.data));
+   };
+
+   socket.onerror = (err) => console.error(" | connection error", err);
+   socket.onclose = (err) => console.error(" | connection close", err.reason);
+};
+
+const sendLobbyChatMessage = (message) => {
+   socket.send(JSON.stringify({
+      "messageType": "chatMessage",
+      "message": message
+   }));
+};
+
+// game
 const connectToGame = (tableId) => {
    socket = new WebSocket(`ws://${window.location.hostname}:8080`);
 
@@ -57,7 +85,7 @@ const endBuildTurn = () => {
    }));
 };
 
-const sendChatMessage = (message) => {
+const sendGameChatMessage = (message) => {
    socket.send(JSON.stringify({
       "messageType": "chatMessage",
       "message": message

@@ -3,7 +3,7 @@ import {Card, cardClass, cardInfo} from "../gameTableManager/deck/card";
 import {tableInfo} from "../gameTableManager/gameTable";
 import {heroDebuffsTypes} from "../gameTableManager/heroesStacks/heroDebuffsTypes";
 import {heroAbilityTypes} from "../gameTableManager/heroesStacks/heroAbilityTypes";
-import {gameChatMessageInfo} from "../../chat/gameChatMessage";
+import chatMessage, {chatMessageInfo} from "../../chat/chatMessage";
 
 
 export type tableInfoWithPlayers = {
@@ -486,9 +486,9 @@ export class Players {
     }
 
 
-    public InformPlayersAboutChatMessage(message: gameChatMessageInfo): void {
+    public InformPlayersAboutChatMessage(message: chatMessageInfo): void {
         this.playersId.forEach(pId => {
-            if (pId !== message.playerId) this.players[pId].InformAboutChatMessage(message);
+            this.players[pId].InformAboutChatMessage(message);
         });
     }
 

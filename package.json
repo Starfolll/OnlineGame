@@ -26,7 +26,8 @@
   ],
   "config": {
     "webPort": 8000,
-    "gameWSPort": 8080
+    "gameWSPort": 8080,
+    "globalLobbyWSPort": 8081
   },
   "author": {
     "url": "https://github.com/Starfolll/",

@@ -1,9 +1,10 @@
 import {prisma} from "../../../generated/prisma-client";
 import {lobbyData} from "./lobby";
 import logError from "../../consoleLogs/logError";
-import {userUniqueData} from "../user/user";
+import {userData, userUniqueData} from "../user/user";
+import logInfo from "../../consoleLogs/logInfo";
 
-export default class DB_Lobbies {
+export default class Db_Lobbies {
     public static async GetLobbyData(lobbyId: string): Promise<lobbyData | undefined> {
         const res = await prisma.lobby({id: lobbyId});
         if (!res?.id) logError(res);
@@ -11,31 +12,24 @@ export default class DB_Lobbies {
 
         return {
             name: res.name,
-            isGlobal: res.isGlobal,
             id: res.id
         }
     }
 
     public static async CreateNewLobby(lobby: {
         id?: string,
-        name?: string,
-        isGlobal?: boolean,
-        usersId?: Array<string>
+        name: string
     }): Promise<lobbyData> {
         const res = await prisma.createLobby({
             id: lobby.id,
-            name: lobby.name,
-            isGlobal: lobby.isGlobal || false,
-            usersInLobby: !!lobby.usersId ? {
-                connect: lobby.usersId.map(uId => ({
-                    id: uId
-                }))
-            } : undefined
+            name: lobby.name
         });
+
+        if (!res.id) logError(res);
+        logInfo(`New lobby: ${res.id}, ${res.name}`);
 
         return {
             id: res.id,
-            isGlobal: res.isGlobal,
             name: res.name
         }
     }
@@ -57,6 +51,12 @@ export default class DB_Lobbies {
                 })
             }
         })).map(u => u.id);
+    }
+
+    public static async GetUserInLobbyInfo(userUniqueData: userUniqueData): Promise<userData | null> {
+        const user = await prisma.user(userUniqueData);
+        if (!user) return null;
+        return user as userData;
     }
 
     public static async ConnectUserToLobby(lobbyId: string, user: userUniqueData): Promise<void> {

@@ -4,7 +4,7 @@ import {GameTableManager} from "./gameTableManager/gameTableManager";
 import {Player} from "./players/player";
 import {Hero} from "./gameTableManager/heroesStacks/hero";
 import {Card} from "./gameTableManager/deck/card";
-import {IsMessageValid} from "./players/communicationWithPlayer/responseMessages";
+import {IsGameMessageValid} from "./players/communicationWithPlayer/responseGameMessages";
 
 import logError from "../consoleLogs/logError";
 import DB_Users from "../models/user/db_users";
@@ -23,7 +23,7 @@ export class GamesManager {
         gameWSS.on("connection", (connection: WebSocket) => {
             const onMessageHandler = async (event: { data: any; type: string; target: WebSocket }) => {
                 try {
-                    const validMessage = IsMessageValid.GetValidPlayerInitialConnection(JSON.parse(event.data));
+                    const validMessage = IsGameMessageValid.GetValidPlayerInitialConnection(JSON.parse(event.data));
 
                     if (!validMessage) throw new Error();
                     const userData = await DB_Users.GetUserDataByIdAndToken(validMessage.id, validMessage.token);

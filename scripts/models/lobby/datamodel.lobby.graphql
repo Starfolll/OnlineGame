@@ -3,8 +3,7 @@ type Lobby {
 
     usersInLobby: [User!]! @relation(link: TABLE)
 
-    name: String
-    isGlobal: Boolean! @default(value: false)
+    name: String!
 
     createdAt: DateTime! @createdAt
     updatedAt: DateTime! @updatedAt

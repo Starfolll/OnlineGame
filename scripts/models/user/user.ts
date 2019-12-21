@@ -20,6 +20,11 @@ export type userData = {
     gold: number;
 }
 
+export type userPublicData = {
+    id: string;
+    publicName: string;
+}
+
 export default class User {
     public readonly id: string;
     public readonly token: string;
@@ -48,6 +53,14 @@ export default class User {
         this.lvl = data.lvl;
         this.xp = data.xp;
         this.gold = data.gold;
+    }
+
+
+    public GetUserPublicData(): userPublicData {
+        return {
+            id: this.id,
+            publicName: this.publicName
+        }
     }
 
 

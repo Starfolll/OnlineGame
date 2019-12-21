@@ -4,10 +4,10 @@ import {Deck} from "./deck/deck";
 import {Hero, heroInfo} from "./heroesStacks/hero";
 import {HeroesStack} from "./heroesStacks/heroesStack";
 import {Card} from "./deck/card";
-import {initialHeroTurnOptions} from "../players/communicationWithPlayer/responseMessagesTypes";
-import GameChatMessage, {gameChatMessageInfo} from "../../chat/gameChatMessage";
+import {initialHeroTurnOptions} from "../players/communicationWithPlayer/responseGameMessages.types";
 import Chat from "../../chat/chat";
 import Table, {tableData} from "../../models/table/table";
+import ChatMessage, {chatMessageInfo} from "../../chat/chatMessage";
 
 type turnsType =
     "waitingForPlayers" |
@@ -28,7 +28,7 @@ export type tableInfo = {
 
     cardsInDeck: number;
 
-    chatMessages: Array<gameChatMessageInfo>;
+    chatMessages: Array<chatMessageInfo>;
 };
 
 export class GameTable extends Table {
@@ -40,7 +40,7 @@ export class GameTable extends Table {
     private readonly deck: Deck;
     private readonly players: Players;
     private readonly heroes: HeroesStack;
-    private readonly chat: Chat<GameChatMessage>;
+    private readonly chat: Chat<ChatMessage>;
 
     private readonly onGameEndCallback: (tableId: string) => void;
 
@@ -55,7 +55,7 @@ export class GameTable extends Table {
         this.deck = new Deck(cards);
         this.players = new Players(table.usersId);
         this.heroes = new HeroesStack(heroes);
-        this.chat = new Chat<GameChatMessage>(30);
+        this.chat = new Chat<ChatMessage>(30);
 
         this.onGameEndCallback = onGameEndCallback;
     }
@@ -335,7 +335,10 @@ export class GameTable extends Table {
 
     // chat message
     protected AddChatMessage(playerId: string, message: string): void {
-        const chatMessage = new GameChatMessage(playerId, message);
+        const chatMessage = new ChatMessage(
+            this.players.GetPlayerWithId(playerId).GetUserPublicData(),
+            message
+        );
 
         this.chat.AddMessage(chatMessage);
 

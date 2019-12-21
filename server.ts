@@ -5,6 +5,8 @@ import {runUpdate} from "./scripts/run.update";
 (async () => {
     const webPort: number = +process.env.npm_package_config_webPort!;
     const gameWSPort: number = +process.env.npm_package_config_gameWSPort!;
+    const globalLobbyWSPort: number = +process.env.npm_package_config_globalLobbyWSPort!;
+
     const isDev: boolean = process.argv.some(arg => arg === "--dev");
     const update: boolean = process.argv.some(arg => arg === "--update");
 
@@ -13,6 +15,6 @@ import {runUpdate} from "./scripts/run.update";
         return;
     }
 
-    if (isDev) await runDevelopmentBuild(webPort, gameWSPort);
+    if (isDev) await runDevelopmentBuild(webPort, gameWSPort, globalLobbyWSPort);
     else await runProductionBuild(webPort, gameWSPort);
 })();
