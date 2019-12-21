@@ -14,7 +14,7 @@ type changeHand = {
 const GetValidUserMassage = (message: any): changeHand | undefined => {
     if (typeof message !== "object") return undefined;
     if (!message["messageType"] && message["messageType"] !== "changeHand") return undefined;
-    if (!message["playerId"] && typeof message["playerId"] !== "number") return undefined;
+    if (!message["playerId"] && typeof message["playerId"] !== "string") return undefined;
     return message as changeHand;
 };
 
@@ -42,13 +42,13 @@ export class Magician extends Hero {
         if (!validMessage) return false;
 
         if (!this.IsPlayerCanUseAbility(players.GetPlayerWithId(playerId))) return false;
-        return players.playersId.has(validMessage.playerId) || validMessage.playerId === null;
+        return players.playersId.has(validMessage.playerId);
     }
 
     public CastPlayerAbility(message: any, playerId: string, players: Players, heroes: HeroesStack, deck: Deck): void {
         const validMessage = GetValidUserMassage(message)!;
 
-        if (validMessage.playerId === null) {
+        if (validMessage.playerId !== playerId) {
             const player1Hand = players.GetPlayerWithId(playerId).hand;
             const player2Hand = players.GetPlayerWithId(validMessage.playerId).hand;
 

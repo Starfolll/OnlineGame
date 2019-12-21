@@ -43,7 +43,7 @@ export type playerInfo = {
     initialTurnOptionsToPickFrom?: Array<string> | undefined;
     initialTurnCardsToPickFrom?: Array<cardInfo> | undefined;
     abilityTurnType?: heroAbilityTypes | undefined;
-    buildLimit?: number;
+    buildLimit?: number | undefined;
 
     hand?: Array<cardInfo>;
     pickedHeroWeight?: number | undefined;
@@ -57,7 +57,7 @@ export class Player extends User {
     private isPlayerDisconnected: boolean = false;
     private connection: WebSocket;
 
-    // game stats
+
     public isKing: boolean = false;
     public isHeroPickTurnMade: boolean = false;
     public isInitialHeroTurnMade: boolean = false;
@@ -71,7 +71,8 @@ export class Player extends User {
     public initialTurnOptionsToPickFrom: Array<string> | undefined = undefined;
     public initialTurnCardsToPickFrom: Array<Card> | undefined = undefined;
     public abilityTurnType: heroAbilityTypes | undefined = undefined;
-    public buildLimit: number = 1;
+    public buildLimit: number | undefined = undefined;
+    public additionalBuildLimit: number = 0;
 
     public hand: Array<Card> = [];
     public heroWeight: number | undefined = undefined;
@@ -106,7 +107,6 @@ export class Player extends User {
 
     public ResetTurns(): void {
         this.heroWeight = undefined;
-        this.buildLimit = 1;
         this.isHeroPickTurnMade = false;
         this.isInitialHeroTurnMade = false;
         this.isAbilityTurnMade = false;
@@ -131,7 +131,8 @@ export class Player extends User {
     }
 
     public SetBuildTurnMade(): void {
-        this.buildLimit = 0;
+        this.buildLimit = undefined;
+        this.additionalBuildLimit = 0;
         this.isBuildTurnMade = true;
     }
 
@@ -152,7 +153,8 @@ export class Player extends User {
     }
 
     public IsDistrictBuildCanBeMade(cardInGameId: number): boolean {
-        return !!this.buildLimit &&
+        return typeof this.buildLimit !== "undefined" &&
+            this.buildLimit + this.additionalBuildLimit > 0 &&
             this.hand.some(c => c.gameId === cardInGameId && this.HasEnoughGold(c.cost)) &&
             !this.IsMaxDistrictsBuilt() &&
             this.IsDistrictCanBePlaced(cardInGameId);
@@ -258,7 +260,7 @@ export class Player extends User {
                 !!this.initialTurnOptionsToPickFrom ||
                 !!this.initialTurnCardsToPickFrom ||
                 !!this.abilityTurnType ||
-                !!this.buildLimit,
+                typeof this.buildLimit !== "undefined",
 
             "heroPickTurnNumber": this.heroPickTurnNumber,
             "heroPickInitialTurnNumber": this.heroPickInitialTurnNumber,
@@ -277,7 +279,7 @@ export class Player extends User {
             if (!!this.heroesWeightToPickFrom) info["heroesWeightToPickFrom"] = this.heroesWeightToPickFrom;
             if (!!this.initialTurnOptionsToPickFrom) info["initialTurnOptionsToPickFrom"] = this.initialTurnOptionsToPickFrom;
             if (!!this.initialTurnCardsToPickFrom) info["initialTurnCardsToPickFrom"] = this.initialTurnCardsToPickFrom;
-            if (!!this.buildLimit) info["buildLimit"] = this.buildLimit;
+            if (typeof this.buildLimit !== "undefined") info["buildLimit"] = this.buildLimit + this.additionalBuildLimit;
         }
 
         if (this.isInitialHeroTurnMade) info["pickedHeroWeight"] = this.heroWeight;
@@ -332,9 +334,9 @@ export class Player extends User {
             )));
     }
 
-    public InformAboutBuildTurnStart(heroWeight: number, playerId: string): void {
+    public InformAboutBuildTurnStart(heroWeight: number, playerId: string, buildLimit: number | undefined): void {
         if (this.IsConnected)
-            this.connection.send(JSON.stringify(GetMessage.HeroBuildTurnStarted(heroWeight, playerId)));
+            this.connection.send(JSON.stringify(GetMessage.HeroBuildTurnStarted(heroWeight, playerId, buildLimit)));
     }
 
 

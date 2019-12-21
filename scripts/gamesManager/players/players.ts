@@ -57,7 +57,7 @@ export class Players {
     }
 
     public AddBuildLimitToPlayer(playerId: string, additionLimit: number): void {
-        this.players[playerId].buildLimit += additionLimit;
+        this.players[playerId].additionalBuildLimit += additionLimit;
     }
 
     public AddGoldToPlayerForEachCardClass(playerId: string, cardClass: cardClass): void {
@@ -260,9 +260,7 @@ export class Players {
         if (!!card) {
             this.players[playerId].gold -= card.cost;
             this.players[playerId].placedCards.push(card);
-
-            const newBuildLimit = !!this.players[playerId].buildLimit ? this.players[playerId].buildLimit - 1 : undefined;
-            if (!!newBuildLimit) this.players[playerId].buildLimit = newBuildLimit;
+            this.players[playerId].buildLimit! -= 1;
 
             this.InformPlayersAboutDistrictBuilt(playerId, card.GetInfo());
         }
@@ -426,11 +424,13 @@ export class Players {
 
     public InformPlayersAboutHeroBuildTurnStart(): void {
         const playerIdTurn = this.GetPlayerIdWithHeroWeight(this.playerHeroWeightTurn)!;
+        const playerBuildLimit = this.GetPlayerWithId(playerIdTurn).buildLimit;
 
         this.playersId.forEach(pId => {
             this.players[pId].InformAboutBuildTurnStart(
                 this.playerHeroWeightTurn,
-                playerIdTurn
+                playerIdTurn,
+                playerIdTurn === pId ? playerBuildLimit : undefined
             );
         });
     }

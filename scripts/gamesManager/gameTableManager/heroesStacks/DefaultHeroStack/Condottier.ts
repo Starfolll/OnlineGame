@@ -43,6 +43,7 @@ export class Condottier extends Hero {
         const validMessage = GetValidUserMassage(message);
         if (!validMessage) return false;
 
+        if (validMessage.playerId === "null") return true;
         const player = players.GetPlayerWithId(playerId);
         const playerToDestroy = players.GetPlayerWithId(validMessage.playerId);
 
@@ -54,6 +55,7 @@ export class Condottier extends Hero {
 
     public CastPlayerAbility(message: any, playerId: string, players: Players, heroes: HeroesStack, deck: Deck): void {
         const validMessage = GetValidUserMassage(message)!;
+        if (validMessage.playerId === "null") return;
 
         players.GetPlayerWithId(validMessage.playerId).placedCards
             .forEach(c => {

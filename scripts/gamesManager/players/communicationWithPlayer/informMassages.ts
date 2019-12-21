@@ -106,11 +106,12 @@ export class GetMessage {
         }
     }
 
-    static HeroBuildTurnStarted(heroId: number, playerId: string): heroBuildTurnStarted {
+    static HeroBuildTurnStarted(heroId: number, playerId: string, buildLimit: number | undefined): heroBuildTurnStarted {
         return {
             "messageType": "heroBuildTurnStarted",
             "heroId": heroId,
-            "playerId": playerId
+            "playerId": playerId,
+            "buildLimit": buildLimit
         }
     }
 

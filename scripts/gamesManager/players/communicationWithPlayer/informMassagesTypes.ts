@@ -78,6 +78,7 @@ export type heroBuildTurnStarted = {
     messageType: string;
     playerId: string;
     heroId: number;
+    buildLimit?: number;
 }
 
 export type districtBuilt = {
