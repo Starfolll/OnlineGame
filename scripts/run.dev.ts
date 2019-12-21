@@ -2,26 +2,30 @@ import WebSocket from "ws";
 import express from "express";
 
 import webPageRoute from "./router/static/webPage.route";
+import usersAvatar from "./router/static/usersAvatar";
 
 import logLetters from "./consoleLogs/logLetters";
 import logInfo from "./consoleLogs/logInfo";
 import logLink from "./consoleLogs/logLink";
 
+import {prisma} from "../generated/prisma-client";
 import DB_Users from "./models/user/db_users";
+import DB_Lobbies from "./models/lobby/db_lobbies";
 
 import {GamesManager} from "./gamesManager/gamesManager";
 import {StartLoggingSystemStatsTimeout} from "./consoleLogs/logSystemInfo";
-import {prisma} from "../generated/prisma-client";
 import GlobalLobbyManager from "./globalLobbyManager/globalLobbyManager";
 import GlobalLobby from "./globalLobbyManager/globalLobby";
-import Db_Lobbies from "./models/lobby/db_lobbies";
 import {Decks} from "./gamesManager/gameTableManager/deck/decks";
 import {HeroesStacks} from "./gamesManager/gameTableManager/heroesStacks/heroesStacks";
-import usersAvatar from "./router/static/usersAvatar";
 
 
 export async function runDevelopmentBuild(webPort: number, gameWSPort: number, globalLobbyWSPort: number) {
     console.clear();
+
+    const envS = process.env.S;
+    console.log(envS);
+
     logLetters("hi!");
     logLetters("dev +_+");
     console.log();
@@ -50,7 +54,7 @@ export async function runDevelopmentBuild(webPort: number, gameWSPort: number, g
     const lobbyManager = new GlobalLobbyManager(
         new WebSocket.Server({port: globalLobbyWSPort}),
         new GlobalLobby(
-            await Db_Lobbies.CreateNewLobby({name: "global 1"}),
+            await DB_Lobbies.CreateNewLobby({name: "global 1"}),
             30
         ),
         () => logInfo(`Lobby manager listening at port ${globalLobbyWSPort}`)
@@ -82,7 +86,7 @@ export async function runDevelopmentBuild(webPort: number, gameWSPort: number, g
     console.log();
 
     await gamesManager.CreateNewTable(
-        {usersId: ["id1"]},
+        {usersId: []},
         Decks.defaultDeck,
         HeroesStacks.defaultStack
     );

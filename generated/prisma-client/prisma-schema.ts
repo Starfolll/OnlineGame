@@ -6,6 +6,10 @@ export const typeDefs = /* GraphQL */ `type AggregateLobby {
   count: Int!
 }
 
+type AggregateRoom {
+  count: Int!
+}
+
 type AggregateTable {
   count: Int!
 }
@@ -22,8 +26,9 @@ scalar DateTime
 
 type Lobby {
   id: ID!
-  usersInLobby(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
   name: String!
+  usersInLobby(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
+  rooms(where: RoomWhereInput, orderBy: RoomOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Room!]
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -36,8 +41,14 @@ type LobbyConnection {
 
 input LobbyCreateInput {
   id: ID
-  usersInLobby: UserCreateManyWithoutLobbyInput
   name: String!
+  usersInLobby: UserCreateManyWithoutLobbyInput
+  rooms: RoomCreateManyWithoutLobbyInput
+}
+
+input LobbyCreateOneWithoutRoomsInput {
+  create: LobbyCreateWithoutRoomsInput
+  connect: LobbyWhereUniqueInput
 }
 
 input LobbyCreateOneWithoutUsersInLobbyInput {
@@ -45,9 +56,16 @@ input LobbyCreateOneWithoutUsersInLobbyInput {
   connect: LobbyWhereUniqueInput
 }
 
+input LobbyCreateWithoutRoomsInput {
+  id: ID
+  name: String!
+  usersInLobby: UserCreateManyWithoutLobbyInput
+}
+
 input LobbyCreateWithoutUsersInLobbyInput {
   id: ID
   name: String!
+  rooms: RoomCreateManyWithoutLobbyInput
 }
 
 type LobbyEdge {
@@ -92,12 +110,20 @@ input LobbySubscriptionWhereInput {
 }
 
 input LobbyUpdateInput {
-  usersInLobby: UserUpdateManyWithoutLobbyInput
   name: String
+  usersInLobby: UserUpdateManyWithoutLobbyInput
+  rooms: RoomUpdateManyWithoutLobbyInput
 }
 
 input LobbyUpdateManyMutationInput {
   name: String
+}
+
+input LobbyUpdateOneRequiredWithoutRoomsInput {
+  create: LobbyCreateWithoutRoomsInput
+  update: LobbyUpdateWithoutRoomsDataInput
+  upsert: LobbyUpsertWithoutRoomsInput
+  connect: LobbyWhereUniqueInput
 }
 
 input LobbyUpdateOneWithoutUsersInLobbyInput {
@@ -109,8 +135,19 @@ input LobbyUpdateOneWithoutUsersInLobbyInput {
   connect: LobbyWhereUniqueInput
 }
 
+input LobbyUpdateWithoutRoomsDataInput {
+  name: String
+  usersInLobby: UserUpdateManyWithoutLobbyInput
+}
+
 input LobbyUpdateWithoutUsersInLobbyDataInput {
   name: String
+  rooms: RoomUpdateManyWithoutLobbyInput
+}
+
+input LobbyUpsertWithoutRoomsInput {
+  update: LobbyUpdateWithoutRoomsDataInput!
+  create: LobbyCreateWithoutRoomsInput!
 }
 
 input LobbyUpsertWithoutUsersInLobbyInput {
@@ -133,9 +170,6 @@ input LobbyWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
-  usersInLobby_every: UserWhereInput
-  usersInLobby_some: UserWhereInput
-  usersInLobby_none: UserWhereInput
   name: String
   name_not: String
   name_in: [String!]
@@ -150,6 +184,12 @@ input LobbyWhereInput {
   name_not_starts_with: String
   name_ends_with: String
   name_not_ends_with: String
+  usersInLobby_every: UserWhereInput
+  usersInLobby_some: UserWhereInput
+  usersInLobby_none: UserWhereInput
+  rooms_every: RoomWhereInput
+  rooms_some: RoomWhereInput
+  rooms_none: RoomWhereInput
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -184,6 +224,12 @@ type Mutation {
   upsertLobby(where: LobbyWhereUniqueInput!, create: LobbyCreateInput!, update: LobbyUpdateInput!): Lobby!
   deleteLobby(where: LobbyWhereUniqueInput!): Lobby
   deleteManyLobbies(where: LobbyWhereInput): BatchPayload!
+  createRoom(data: RoomCreateInput!): Room!
+  updateRoom(data: RoomUpdateInput!, where: RoomWhereUniqueInput!): Room
+  updateManyRooms(data: RoomUpdateManyMutationInput!, where: RoomWhereInput): BatchPayload!
+  upsertRoom(where: RoomWhereUniqueInput!, create: RoomCreateInput!, update: RoomUpdateInput!): Room!
+  deleteRoom(where: RoomWhereUniqueInput!): Room
+  deleteManyRooms(where: RoomWhereInput): BatchPayload!
   createTable(data: TableCreateInput!): Table!
   updateTable(data: TableUpdateInput!, where: TableWhereUniqueInput!): Table
   upsertTable(where: TableWhereUniqueInput!, create: TableCreateInput!, update: TableUpdateInput!): Table!
@@ -218,6 +264,9 @@ type Query {
   lobby(where: LobbyWhereUniqueInput!): Lobby
   lobbies(where: LobbyWhereInput, orderBy: LobbyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Lobby]!
   lobbiesConnection(where: LobbyWhereInput, orderBy: LobbyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): LobbyConnection!
+  room(where: RoomWhereUniqueInput!): Room
+  rooms(where: RoomWhereInput, orderBy: RoomOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Room]!
+  roomsConnection(where: RoomWhereInput, orderBy: RoomOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): RoomConnection!
   table(where: TableWhereUniqueInput!): Table
   tables(where: TableWhereInput, orderBy: TableOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Table]!
   tablesConnection(where: TableWhereInput, orderBy: TableOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): TableConnection!
@@ -227,8 +276,214 @@ type Query {
   node(id: ID!): Node
 }
 
+type Room {
+  id: ID!
+  lobby: Lobby!
+  isPublic: Boolean!
+  usersInRoom(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type RoomConnection {
+  pageInfo: PageInfo!
+  edges: [RoomEdge]!
+  aggregate: AggregateRoom!
+}
+
+input RoomCreateInput {
+  id: ID
+  lobby: LobbyCreateOneWithoutRoomsInput!
+  isPublic: Boolean
+  usersInRoom: UserCreateManyInput
+}
+
+input RoomCreateManyWithoutLobbyInput {
+  create: [RoomCreateWithoutLobbyInput!]
+  connect: [RoomWhereUniqueInput!]
+}
+
+input RoomCreateWithoutLobbyInput {
+  id: ID
+  isPublic: Boolean
+  usersInRoom: UserCreateManyInput
+}
+
+type RoomEdge {
+  node: Room!
+  cursor: String!
+}
+
+enum RoomOrderByInput {
+  id_ASC
+  id_DESC
+  isPublic_ASC
+  isPublic_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type RoomPreviousValues {
+  id: ID!
+  isPublic: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input RoomScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  isPublic: Boolean
+  isPublic_not: Boolean
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  AND: [RoomScalarWhereInput!]
+  OR: [RoomScalarWhereInput!]
+  NOT: [RoomScalarWhereInput!]
+}
+
+type RoomSubscriptionPayload {
+  mutation: MutationType!
+  node: Room
+  updatedFields: [String!]
+  previousValues: RoomPreviousValues
+}
+
+input RoomSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: RoomWhereInput
+  AND: [RoomSubscriptionWhereInput!]
+  OR: [RoomSubscriptionWhereInput!]
+  NOT: [RoomSubscriptionWhereInput!]
+}
+
+input RoomUpdateInput {
+  lobby: LobbyUpdateOneRequiredWithoutRoomsInput
+  isPublic: Boolean
+  usersInRoom: UserUpdateManyInput
+}
+
+input RoomUpdateManyDataInput {
+  isPublic: Boolean
+}
+
+input RoomUpdateManyMutationInput {
+  isPublic: Boolean
+}
+
+input RoomUpdateManyWithoutLobbyInput {
+  create: [RoomCreateWithoutLobbyInput!]
+  delete: [RoomWhereUniqueInput!]
+  connect: [RoomWhereUniqueInput!]
+  set: [RoomWhereUniqueInput!]
+  disconnect: [RoomWhereUniqueInput!]
+  update: [RoomUpdateWithWhereUniqueWithoutLobbyInput!]
+  upsert: [RoomUpsertWithWhereUniqueWithoutLobbyInput!]
+  deleteMany: [RoomScalarWhereInput!]
+  updateMany: [RoomUpdateManyWithWhereNestedInput!]
+}
+
+input RoomUpdateManyWithWhereNestedInput {
+  where: RoomScalarWhereInput!
+  data: RoomUpdateManyDataInput!
+}
+
+input RoomUpdateWithoutLobbyDataInput {
+  isPublic: Boolean
+  usersInRoom: UserUpdateManyInput
+}
+
+input RoomUpdateWithWhereUniqueWithoutLobbyInput {
+  where: RoomWhereUniqueInput!
+  data: RoomUpdateWithoutLobbyDataInput!
+}
+
+input RoomUpsertWithWhereUniqueWithoutLobbyInput {
+  where: RoomWhereUniqueInput!
+  update: RoomUpdateWithoutLobbyDataInput!
+  create: RoomCreateWithoutLobbyInput!
+}
+
+input RoomWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  lobby: LobbyWhereInput
+  isPublic: Boolean
+  isPublic_not: Boolean
+  usersInRoom_every: UserWhereInput
+  usersInRoom_some: UserWhereInput
+  usersInRoom_none: UserWhereInput
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  AND: [RoomWhereInput!]
+  OR: [RoomWhereInput!]
+  NOT: [RoomWhereInput!]
+}
+
+input RoomWhereUniqueInput {
+  id: ID
+}
+
 type Subscription {
   lobby(where: LobbySubscriptionWhereInput): LobbySubscriptionPayload
+  room(where: RoomSubscriptionWhereInput): RoomSubscriptionPayload
   table(where: TableSubscriptionWhereInput): TableSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }
@@ -386,6 +641,11 @@ input UserCreateInput {
   lvl: Int!
   xp: Float!
   gold: Float!
+}
+
+input UserCreateManyInput {
+  create: [UserCreateInput!]
+  connect: [UserWhereUniqueInput!]
 }
 
 input UserCreateManyWithoutLobbyInput {
@@ -616,6 +876,19 @@ input UserSubscriptionWhereInput {
   NOT: [UserSubscriptionWhereInput!]
 }
 
+input UserUpdateDataInput {
+  token: String
+  table: TableUpdateOneWithoutUsersInGameInput
+  lobby: LobbyUpdateOneWithoutUsersInLobbyInput
+  name: String
+  email: String
+  password: String
+  publicName: String
+  lvl: Int
+  xp: Float
+  gold: Float
+}
+
 input UserUpdateInput {
   token: String
   table: TableUpdateOneWithoutUsersInGameInput
@@ -638,6 +911,18 @@ input UserUpdateManyDataInput {
   lvl: Int
   xp: Float
   gold: Float
+}
+
+input UserUpdateManyInput {
+  create: [UserCreateInput!]
+  update: [UserUpdateWithWhereUniqueNestedInput!]
+  upsert: [UserUpsertWithWhereUniqueNestedInput!]
+  delete: [UserWhereUniqueInput!]
+  connect: [UserWhereUniqueInput!]
+  set: [UserWhereUniqueInput!]
+  disconnect: [UserWhereUniqueInput!]
+  deleteMany: [UserScalarWhereInput!]
+  updateMany: [UserUpdateManyWithWhereNestedInput!]
 }
 
 input UserUpdateManyMutationInput {
@@ -704,6 +989,11 @@ input UserUpdateWithoutTableDataInput {
   gold: Float
 }
 
+input UserUpdateWithWhereUniqueNestedInput {
+  where: UserWhereUniqueInput!
+  data: UserUpdateDataInput!
+}
+
 input UserUpdateWithWhereUniqueWithoutLobbyInput {
   where: UserWhereUniqueInput!
   data: UserUpdateWithoutLobbyDataInput!
@@ -712,6 +1002,12 @@ input UserUpdateWithWhereUniqueWithoutLobbyInput {
 input UserUpdateWithWhereUniqueWithoutTableInput {
   where: UserWhereUniqueInput!
   data: UserUpdateWithoutTableDataInput!
+}
+
+input UserUpsertWithWhereUniqueNestedInput {
+  where: UserWhereUniqueInput!
+  update: UserUpdateDataInput!
+  create: UserCreateInput!
 }
 
 input UserUpsertWithWhereUniqueWithoutLobbyInput {

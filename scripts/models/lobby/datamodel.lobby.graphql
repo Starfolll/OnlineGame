@@ -1,9 +1,9 @@
 type Lobby {
     id: ID! @id
+    name: String!
 
     usersInLobby: [User!]! @relation(link: TABLE)
-
-    name: String!
+    rooms: [Room!]! @relation(link: TABLE)
 
     createdAt: DateTime! @createdAt
     updatedAt: DateTime! @updatedAt

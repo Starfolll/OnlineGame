@@ -1,4 +1,4 @@
-import Db_Lobbies from "./db_lobbies";
+import DB_Lobbies from "./db_lobbies";
 import {userData, userPublicData, userUniqueData} from "../user/user";
 import WebSocket from "ws";
 import LobbyUser from "../../globalLobbyManager/lobbyUser";
@@ -55,15 +55,15 @@ export default class Lobby {
 
     // users connection
     protected async GetUserInLobbyInfo(userUniqueData: userUniqueData): Promise<userData | null> {
-        return await Db_Lobbies.GetUserInLobbyInfo(userUniqueData);
+        return await DB_Lobbies.GetUserInLobbyInfo(userUniqueData);
     }
 
     protected async GetUsersIdInLobby(): Promise<Array<string>> {
-        return await Db_Lobbies.GetUsersIdInLobby(this.id);
+        return await DB_Lobbies.GetUsersIdInLobby(this.id);
     }
 
     protected async ConnectUserToLobby(userUniqueData: userUniqueData, connection: WebSocket): Promise<LobbyUser | null> {
-        await Db_Lobbies.ConnectUserToLobby(this.id, userUniqueData);
+        await DB_Lobbies.ConnectUserToLobby(this.id, userUniqueData);
         const userData = await this.GetUserInLobbyInfo(userUniqueData);
         if (!!userData) {
             const lobbyUser = new LobbyUser(userData, connection);
@@ -74,7 +74,7 @@ export default class Lobby {
     }
 
     protected async DisconnectUserFromLobby(userId: string): Promise<void> {
-        await Db_Lobbies.DisconnectUserFromLobby(this.id, {id: userId});
+        await DB_Lobbies.DisconnectUserFromLobby(this.id, {id: userId});
         delete this.usersInLobby[userId];
     }
 

@@ -1,0 +1,10 @@
+type Room{
+    id: ID! @id
+    lobby: Lobby!
+    isPublic: Boolean! @default(value: false)
+
+    usersInRoom: [User!]! @relation(link: TABLE)
+
+    createdAt: DateTime! @createdAt
+    updatedAt: DateTime! @updatedAt
+}

@@ -2,10 +2,14 @@ import {runDevelopmentBuild} from "./scripts/run.dev";
 import {runProductionBuild} from "./scripts/run.prod";
 import {runUpdate} from "./scripts/run.update";
 
+import dotenv from "dotenv";
+
 (async () => {
-    const webPort: number = +process.env.npm_package_config_webPort!;
-    const gameWSPort: number = +process.env.npm_package_config_gameWSPort!;
-    const globalLobbyWSPort: number = +process.env.npm_package_config_globalLobbyWSPort!;
+    const env = dotenv.config();
+
+    const webPort: number = +process.env.WEB_PORT!;
+    const gameWSPort: number = +process.env.GAME_WS_Port!;
+    const globalLobbyWSPort: number = +process.env.GLOBAL_LOBBY_WS_PORT!;
 
     const isDev: boolean = process.argv.some(arg => arg === "--dev");
     const update: boolean = process.argv.some(arg => arg === "--update");

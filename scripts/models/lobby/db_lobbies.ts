@@ -4,7 +4,7 @@ import logError from "../../consoleLogs/logError";
 import {userData, userUniqueData} from "../user/user";
 import logInfo from "../../consoleLogs/logInfo";
 
-export default class Db_Lobbies {
+export default class DB_Lobbies {
     public static async GetLobbyData(lobbyId: string): Promise<lobbyData | undefined> {
         const res = await prisma.lobby({id: lobbyId});
         if (!res?.id) logError(res);
@@ -69,7 +69,7 @@ export default class Db_Lobbies {
             where: {
                 id: lobbyId
             }
-        })
+        });
     }
 
     public static async DisconnectUserFromLobby(lobbyId: string, user: userUniqueData): Promise<void> {
@@ -82,6 +82,6 @@ export default class Db_Lobbies {
             where: {
                 id: lobbyId
             }
-        })
+        });
     }
 }

@@ -6,6 +6,11 @@ export type redirectToGameTable = {
     tableId: string;
 }
 
+export type redirectToRoom = {
+    messageType: string;
+    tableId: string;
+}
+
 export type globalLobbyInfo = {
     messageType: string;
     lobbyData: extendedLobbyData;

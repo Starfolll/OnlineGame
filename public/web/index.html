@@ -7,12 +7,39 @@
     <script src="wsConnection.js"></script>
 
     <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+
         body {
             background: #151515;
+            color: antiquewhite;
+            font-size: 24px;
+            font-family: "DejaVu Math TeX Gyre", monospace;
+            animation: letterSpacingDecrease;
+            animation-duration: 1s;
+            animation-timing-function: ease-in-out;
+            animation-fill-mode: forwards;
+            text-align: center;
+            height: 100vh;
+            display: grid;
+            justify-content: center;
+            align-content: center;
+            overflow: hidden;
+        }
+
+        @keyframes letterSpacingDecrease {
+            0% {
+                letter-spacing: 50px;
+            }
+            100% {
+                letter-spacing: 10px;
+            }
         }
     </style>
 </head>
 <body>
-
+CITADEL
 </body>
 </html>

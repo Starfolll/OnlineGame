@@ -4,6 +4,7 @@ datamodel:
   - /scripts/models/user/datamodel.user.graphql
   - /scripts/models/lobby/datamodel.lobby.graphql
   - /scripts/models/table/datamodel.table.graphql
+  - /scripts/models/room/datamodel.room.graphql
 
 generate:
   - generator: typescript-client

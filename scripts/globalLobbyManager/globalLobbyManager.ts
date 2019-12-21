@@ -5,6 +5,7 @@ import logError from "../consoleLogs/logError";
 import DB_Users from "../models/user/db_users";
 import DB_Tables from "../models/table/db_tables";
 import GetGlobalLobbyMessage from "./communicationWithUser/globalLobby/informGlobalLobbyMessages";
+import DB_Rooms from "../models/room/db_rooms";
 
 export default class GlobalLobbyManager {
     private readonly globalLobby: GlobalLobby;
@@ -21,8 +22,13 @@ export default class GlobalLobbyManager {
                     const userData = await DB_Users.GetUserDataByIdAndToken(validMessage.id, validMessage.token);
                     if (!userData) throw new Error();
 
+                    const roomId = await DB_Rooms.GetUserRoomId({id: userData.id});
+                    if (!!roomId) {
+                        connection.send(JSON.stringify(GetGlobalLobbyMessage.RedirectToRoom(roomId)));
+                        throw new Error();
+                    }
+
                     const tableId = await DB_Tables.GetUserTableId({id: userData.id});
-                    console.log(tableId);
                     if (!!tableId) {
                         connection.send(JSON.stringify(GetGlobalLobbyMessage.RedirectToGameTable(tableId)));
                         throw new Error();

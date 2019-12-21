@@ -1,4 +1,9 @@
-import {globalLobbyInfo, newLobbyChatMessage, redirectToGameTable} from "./informGlobalLobbyMessages.types";
+import {
+    globalLobbyInfo,
+    newLobbyChatMessage,
+    redirectToGameTable,
+    redirectToRoom
+} from "./informGlobalLobbyMessages.types";
 import {extendedLobbyData} from "../../../models/lobby/lobby";
 import {chatMessageInfo} from "../../../chat/chatMessage";
 
@@ -7,6 +12,13 @@ export default class GetGlobalLobbyMessage {
         return {
             "messageType": "redirectToGameTable",
             "tableId": tableId
+        }
+    }
+
+    public static RedirectToRoom(roomId: string): redirectToRoom {
+        return {
+            "messageType": "redirectToRoom",
+            "tableId": roomId
         }
     }
 
