@@ -47,8 +47,12 @@ export default class GlobalLobby extends Lobby {
             const messageType = messageBody["messageType"];
 
             switch (messageType) {
-                case userGlobalLobbyResponse.chatMessage:
+                case userGlobalLobbyResponse.globalLobbyChatMessage:
                     this.UserResponseChatMessage(user, messageBody);
+                    break;
+
+                case userGlobalLobbyResponse.publicLobbySearch:
+                    this.UserResponsePublicLobbySearch(user, messageBody);
                     break;
             }
 
@@ -65,5 +69,12 @@ export default class GlobalLobby extends Lobby {
             validMessage.message,
             user.GetUserPublicData()
         );
+    }
+
+    private UserResponsePublicLobbySearch(user: LobbyUser, messageBody: any): void {
+        const validMessage = IsLobbyMessageValid.GetValidPublicLobbySearch(messageBody);
+        if (!validMessage) return;
+
+        this.ConnectUserToPublicRoom(user).then(r => r);
     }
 }

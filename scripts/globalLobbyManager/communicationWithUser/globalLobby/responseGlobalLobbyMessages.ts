@@ -1,4 +1,4 @@
-import {lobbyChatMessage, userInitialConnection} from "./responseGlobalLobbyMessages.types";
+import {globalLobbyChatMessage, publicLobbySearch, userInitialConnection} from "./responseGlobalLobbyMessages.types";
 
 export default class IsLobbyMessageValid {
     public static GetValidUserInitialConnection(message: any): userInitialConnection | undefined {
@@ -9,10 +9,16 @@ export default class IsLobbyMessageValid {
         return message as userInitialConnection;
     }
 
-    public static GetValidChatMessage(message: any): lobbyChatMessage | undefined {
+    public static GetValidChatMessage(message: any): globalLobbyChatMessage | undefined {
         if (typeof message !== "object") return undefined;
-        if (!message["messageType"] && message["messageType"] !== "chatMessage") return undefined;
+        if (!message["messageType"] && message["messageType"] !== "globalLobbyChatMessage") return undefined;
         if (!message["message"] && typeof message["message"] !== "string") return undefined;
-        return message as lobbyChatMessage;
+        return message as globalLobbyChatMessage;
+    }
+
+    public static GetValidPublicLobbySearch(message: any): publicLobbySearch | undefined {
+        if (typeof message !== "object") return undefined;
+        if (!message["messageType"] && message["messageType"] !== "publicLobbySearch") return undefined;
+        return message as publicLobbySearch;
     }
 }

@@ -280,6 +280,7 @@ type Room {
   id: ID!
   lobby: Lobby!
   isPublic: Boolean!
+  creator: User
   usersInRoom(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -295,6 +296,7 @@ input RoomCreateInput {
   id: ID
   lobby: LobbyCreateOneWithoutRoomsInput!
   isPublic: Boolean
+  creator: UserCreateOneInput
   usersInRoom: UserCreateManyInput
 }
 
@@ -306,6 +308,7 @@ input RoomCreateManyWithoutLobbyInput {
 input RoomCreateWithoutLobbyInput {
   id: ID
   isPublic: Boolean
+  creator: UserCreateOneInput
   usersInRoom: UserCreateManyInput
 }
 
@@ -391,6 +394,7 @@ input RoomSubscriptionWhereInput {
 input RoomUpdateInput {
   lobby: LobbyUpdateOneRequiredWithoutRoomsInput
   isPublic: Boolean
+  creator: UserUpdateOneInput
   usersInRoom: UserUpdateManyInput
 }
 
@@ -421,6 +425,7 @@ input RoomUpdateManyWithWhereNestedInput {
 
 input RoomUpdateWithoutLobbyDataInput {
   isPublic: Boolean
+  creator: UserUpdateOneInput
   usersInRoom: UserUpdateManyInput
 }
 
@@ -453,6 +458,7 @@ input RoomWhereInput {
   lobby: LobbyWhereInput
   isPublic: Boolean
   isPublic_not: Boolean
+  creator: UserWhereInput
   usersInRoom_every: UserWhereInput
   usersInRoom_some: UserWhereInput
   usersInRoom_none: UserWhereInput
@@ -656,6 +662,11 @@ input UserCreateManyWithoutLobbyInput {
 input UserCreateManyWithoutTableInput {
   create: [UserCreateWithoutTableInput!]
   connect: [UserWhereUniqueInput!]
+}
+
+input UserCreateOneInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
 }
 
 input UserCreateWithoutLobbyInput {
@@ -965,6 +976,15 @@ input UserUpdateManyWithWhereNestedInput {
   data: UserUpdateManyDataInput!
 }
 
+input UserUpdateOneInput {
+  create: UserCreateInput
+  update: UserUpdateDataInput
+  upsert: UserUpsertNestedInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: UserWhereUniqueInput
+}
+
 input UserUpdateWithoutLobbyDataInput {
   token: String
   table: TableUpdateOneWithoutUsersInGameInput
@@ -1002,6 +1022,11 @@ input UserUpdateWithWhereUniqueWithoutLobbyInput {
 input UserUpdateWithWhereUniqueWithoutTableInput {
   where: UserWhereUniqueInput!
   data: UserUpdateWithoutTableDataInput!
+}
+
+input UserUpsertNestedInput {
+  update: UserUpdateDataInput!
+  create: UserCreateInput!
 }
 
 input UserUpsertWithWhereUniqueNestedInput {

@@ -4,6 +4,8 @@ import WebSocket from "ws";
 import LobbyUser from "../../globalLobbyManager/lobbyUser";
 import Chat from "../../chat/chat";
 import ChatMessage, {chatMessageInfo} from "../../chat/chatMessage";
+import Room, {extendedRoomData} from "../room/room";
+import DB_Rooms from "../room/db_rooms";
 
 export type extendedLobbyData = {
     lobbyData: lobbyData,
@@ -21,6 +23,9 @@ export default class Lobby {
 
     private readonly usersInLobby: { [userId: string]: LobbyUser } = {};
     private readonly chat: Chat<ChatMessage>;
+
+    private readonly publicRooms: { [id: string]: Room } = {};
+    private readonly privateRooms: { [id: string]: Room } = {};
 
 
     constructor(data: lobbyData, maxSavedMessages: number) {
@@ -50,8 +55,9 @@ export default class Lobby {
     protected AddNewChatMessage(message: string, user: userPublicData): void {
         const chatMessage = new ChatMessage(user, message);
         this.chat.AddMessage(chatMessage);
-        this.InformUsersAboutChatMassage(chatMessage.GetMessageInfo());
+        this.InformUsersAboutGlobalLobbyChatMassage(chatMessage.GetMessageInfo());
     }
+
 
     // users connection
     protected async GetUserInLobbyInfo(userUniqueData: userUniqueData): Promise<userData | null> {
@@ -79,6 +85,61 @@ export default class Lobby {
     }
 
 
+    // room data
+    public GetRoomData(roomId: string, isRoomPublic: boolean): extendedRoomData | undefined {
+        if (isRoomPublic) {
+            if (!!this.publicRooms[roomId]) return this.publicRooms[roomId].GetExtendedRoomData();
+            else return undefined;
+        } else {
+            if (!!this.privateRooms[roomId]) return this.privateRooms[roomId].GetExtendedRoomData();
+            else return undefined;
+        }
+    }
+
+    // connect user to room (public)
+    protected async ConnectUserToPublicRoom(user: LobbyUser): Promise<void> {
+        const freeRoomId: string | undefined = await this.GetFreePublicRoomId();
+
+        if (!freeRoomId) {
+            const newRoomId = await this.CreateNewPublicRoom();
+            this.publicRooms[newRoomId].ConnectUserToRoom(user);
+        } else {
+            this.publicRooms[freeRoomId].ConnectUserToRoom(user);
+        }
+    }
+
+    private async GetFreePublicRoomId(): Promise<string | undefined> {
+        let freeRoomId: string | undefined = undefined;
+
+        const roomsId = Object.keys(this.publicRooms);
+        while (typeof freeRoomId === "undefined" && roomsId.length > 0) {
+            const roomId = roomsId.shift()!;
+            if (!this.publicRooms[roomId].IsRoomFull()) freeRoomId = roomId;
+        }
+
+        return freeRoomId;
+    }
+
+    private async CreateNewPublicRoom(): Promise<string> {
+        const room = new Room(await DB_Rooms.CreateNewRoom({
+            isPublic: true,
+            lobbyId: this.id,
+            maxUsersInRoom: 4
+        }));
+
+        this.publicRooms[room.id] = room;
+
+        return room.id;
+    }
+
+
+    // connect user to room (private)
+    protected async ConnectUserToPrivateRoom(): Promise<void> {
+
+    }
+
+
+    // lobby info
     protected async GetLobbyInfo(): Promise<extendedLobbyData> {
         return {
             lobbyData: this.lobbyData,
@@ -87,7 +148,7 @@ export default class Lobby {
     }
 
     // informatory
-    public InformUsersAboutChatMassage(message: chatMessageInfo): void {
-        Object.keys(this.usersInLobby).forEach(uId => this.usersInLobby[uId].InformAboutChatMessage(message));
+    protected InformUsersAboutGlobalLobbyChatMassage(message: chatMessageInfo): void {
+        Object.keys(this.usersInLobby).forEach(uId => this.usersInLobby[uId].InformAboutGlobalLobbyChatMessage(message));
     }
 }

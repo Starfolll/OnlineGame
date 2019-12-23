@@ -6,6 +6,7 @@ import {
 } from "./informGlobalLobbyMessages.types";
 import {extendedLobbyData} from "../../../models/lobby/lobby";
 import {chatMessageInfo} from "../../../chat/chatMessage";
+import {extendedRoomData} from "../../../models/room/room";
 
 export default class GetGlobalLobbyMessage {
     public static RedirectToGameTable(tableId: string): redirectToGameTable {
@@ -15,10 +16,10 @@ export default class GetGlobalLobbyMessage {
         }
     }
 
-    public static RedirectToRoom(roomId: string): redirectToRoom {
+    public static RedirectToRoom(room: extendedRoomData): redirectToRoom {
         return {
             "messageType": "redirectToRoom",
-            "tableId": roomId
+            "room": room
         }
     }
 
@@ -29,9 +30,9 @@ export default class GetGlobalLobbyMessage {
         }
     }
 
-    public static ChatMessage(message: chatMessageInfo): newLobbyChatMessage {
+    public static GlobalLobbyChatMessage(message: chatMessageInfo): newLobbyChatMessage {
         return {
-            "messageType": "chatMessage",
+            "messageType": "globalLobbyChatMessage",
             "message": message
         }
     }

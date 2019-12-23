@@ -1,7 +1,12 @@
+type UsersInGame @relationTable {
+    user: User!
+    table: Table!
+}
+
 type Table {
     id: ID! @id
 
-    usersInGame: [User!]! @relation(link: TABLE)
+    usersInGame: [User!]! @relation(link: TABLE, name: "UsersInGame")
 
     createdAt: DateTime! @createdAt
     updatedAt: DateTime! @updatedAt

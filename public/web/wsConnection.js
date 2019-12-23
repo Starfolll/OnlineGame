@@ -25,7 +25,20 @@ const connectToLobby = () => {
 
 const sendLobbyChatMessage = (message) => {
    socket.send(JSON.stringify({
-      "messageType": "chatMessage",
+      "messageType": "globalLobbyChatMessage",
+      "message": message
+   }));
+};
+
+const searchForRoom = () => {
+   socket.send(JSON.stringify({
+      "messageType": "publicLobbySearch",
+   }));
+};
+
+const sendRoomChatMessage = (message) => {
+   socket.send(JSON.stringify({
+      "messageType": "roomChatMessage",
       "message": message
    }));
 };

@@ -1,26 +1,31 @@
 import {prisma} from "../../../generated/prisma-client";
-import {userUniqueData} from "../user/user";
+import {userPublicData, userUniqueData} from "../user/user";
 import logError from "../../consoleLogs/logError";
 import logInfo from "../../consoleLogs/logInfo";
 import {roomData} from "./room";
+import DB_Users from "../user/db_users";
 
 export default class DB_Rooms {
     public static async CreateNewRoom(room: {
         lobbyId: string,
         id?: string,
-        isPublic?: false,
-        usersIdInRoom: Array<string>
+        isPublic?: boolean,
+        maxUsersInRoom: number
+        creator?: userUniqueData
     }): Promise<roomData> {
         const res = await prisma.createRoom({
             id: room.id,
             isPublic: room.isPublic || false,
+            creator: {
+                connect: room.creator
+            },
             lobby: {
                 connect: {
                     id: room.lobbyId
                 }
             },
             usersInRoom: {
-                connect: room.usersIdInRoom.map(uId => ({id: uId}))
+                connect: room.creator || []
             }
         });
 
@@ -30,12 +35,17 @@ export default class DB_Rooms {
         return {
             id: res.id,
             isPublic: res.isPublic,
-            usersIdInRoom: room.usersIdInRoom
+            maxUsersInRoom: room.maxUsersInRoom,
+            creator: !!room.creator ? (await DB_Users.GetUserData(room.creator))! : undefined
         }
     }
 
     public static async IsRoomExists(roomId: string): Promise<boolean> {
-        return !!(await prisma.lobby({id: roomId}));
+        return !!(await prisma.room({id: roomId}));
+    }
+
+    public static async IsRoomPublic(roomId: string): Promise<boolean> {
+        return ((await prisma.room({id: roomId}))!).isPublic;
     }
 
     public static async ConnectUserToRoom(roomId: string, user: userUniqueData): Promise<void> {

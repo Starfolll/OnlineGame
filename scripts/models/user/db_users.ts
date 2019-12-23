@@ -1,5 +1,5 @@
 import {prisma} from "../../../generated/prisma-client";
-import {userData} from "./user";
+import {userData, userUniqueData} from "./user";
 
 import cryptoRandomString from "crypto-random-string";
 import bcrypt from "bcrypt";
@@ -49,15 +49,15 @@ export default class DB_Users {
         return res;
     }
 
-    public static async DeleteUser(user: {
-        id?: string
-        name?: string,
-        email?: string,
-    }): Promise<void> {
+    public static async DeleteUser(user: userUniqueData): Promise<void> {
         const res = await prisma.deleteUser(user);
         if (!res.id) logError(res);
     }
 
+
+    public static async GetUserData(user: userUniqueData): Promise<userData | null> {
+        return (await prisma.user(user));
+    }
 
     public static async GetUserDataByEmailAndPassword(email: string, password: string): Promise<userData | null> {
         const user = await prisma.user({email: email});

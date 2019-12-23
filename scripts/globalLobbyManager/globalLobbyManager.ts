@@ -22,16 +22,19 @@ export default class GlobalLobbyManager {
                     const userData = await DB_Users.GetUserDataByIdAndToken(validMessage.id, validMessage.token);
                     if (!userData) throw new Error();
 
-                    const roomId = await DB_Rooms.GetUserRoomId({id: userData.id});
-                    if (!!roomId) {
-                        connection.send(JSON.stringify(GetGlobalLobbyMessage.RedirectToRoom(roomId)));
-                        throw new Error();
-                    }
-
                     const tableId = await DB_Tables.GetUserTableId({id: userData.id});
                     if (!!tableId) {
                         connection.send(JSON.stringify(GetGlobalLobbyMessage.RedirectToGameTable(tableId)));
                         throw new Error();
+                    }
+
+                    const roomId = await DB_Rooms.GetUserRoomId({id: userData.id});
+                    if (!!roomId) {
+                        const isRoomPublic = await DB_Rooms.IsRoomPublic(roomId);
+
+                        connection.send(JSON.stringify(GetGlobalLobbyMessage.RedirectToRoom(
+                            this.globalLobby.GetRoomData(roomId, isRoomPublic)!
+                        )));
                     }
 
                     connection.removeEventListener("message", onMessageHandler);

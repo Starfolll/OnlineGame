@@ -1,5 +1,6 @@
 import {extendedLobbyData} from "../../../models/lobby/lobby";
 import {chatMessageInfo} from "../../../chat/chatMessage";
+import {extendedRoomData} from "../../../models/room/room";
 
 export type redirectToGameTable = {
     messageType: string;
@@ -8,7 +9,7 @@ export type redirectToGameTable = {
 
 export type redirectToRoom = {
     messageType: string;
-    tableId: string;
+    room: extendedRoomData;
 }
 
 export type globalLobbyInfo = {

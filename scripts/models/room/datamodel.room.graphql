@@ -1,9 +1,10 @@
 type Room{
     id: ID! @id
-    lobby: Lobby!
+    lobby: Lobby! @relation(name: "RoomsInLobbyRelation")
     isPublic: Boolean! @default(value: false)
+    creator: User @relation(link: INLINE, name: "RoomCreator")
 
-    usersInRoom: [User!]! @relation(link: TABLE)
+    usersInRoom: [User!]! @relation(link: TABLE, name: "UsersInRoom")
 
     createdAt: DateTime! @createdAt
     updatedAt: DateTime! @updatedAt

@@ -22,10 +22,6 @@ import {HeroesStacks} from "./gamesManager/gameTableManager/heroesStacks/heroesS
 
 export async function runDevelopmentBuild(webPort: number, gameWSPort: number, globalLobbyWSPort: number) {
     console.clear();
-
-    const envS = process.env.S;
-    console.log(envS);
-
     logLetters("hi!");
     logLetters("dev +_+");
     console.log();
@@ -50,7 +46,11 @@ export async function runDevelopmentBuild(webPort: number, gameWSPort: number, g
         () => logInfo(`Game manager listening at port ${gameWSPort}`)
     );
 
+    await prisma.deleteManyRooms();
     await prisma.deleteManyLobbies();
+    await prisma.deleteManyTables();
+    await prisma.deleteManyUsers();
+
     const lobbyManager = new GlobalLobbyManager(
         new WebSocket.Server({port: globalLobbyWSPort}),
         new GlobalLobby(
@@ -61,9 +61,6 @@ export async function runDevelopmentBuild(webPort: number, gameWSPort: number, g
     );
 
     console.log();
-
-    await prisma.deleteManyTables();
-    await prisma.deleteManyUsers();
 
     await DB_Users.CreateNewUser({
         "id": "id1",

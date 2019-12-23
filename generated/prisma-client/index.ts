@@ -517,6 +517,7 @@ export interface RoomWhereInput {
   lobby?: Maybe<LobbyWhereInput>;
   isPublic?: Maybe<Boolean>;
   isPublic_not?: Maybe<Boolean>;
+  creator?: Maybe<UserWhereInput>;
   usersInRoom_every?: Maybe<UserWhereInput>;
   usersInRoom_some?: Maybe<UserWhereInput>;
   usersInRoom_none?: Maybe<UserWhereInput>;
@@ -597,12 +598,13 @@ export interface RoomCreateManyWithoutLobbyInput {
 export interface RoomCreateWithoutLobbyInput {
   id?: Maybe<ID_Input>;
   isPublic?: Maybe<Boolean>;
+  creator?: Maybe<UserCreateOneInput>;
   usersInRoom?: Maybe<UserCreateManyInput>;
 }
 
-export interface UserCreateManyInput {
-  create?: Maybe<UserCreateInput[] | UserCreateInput>;
-  connect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+export interface UserCreateOneInput {
+  create?: Maybe<UserCreateInput>;
+  connect?: Maybe<UserWhereUniqueInput>;
 }
 
 export interface UserCreateInput {
@@ -628,6 +630,11 @@ export interface LobbyCreateWithoutUsersInLobbyInput {
   id?: Maybe<ID_Input>;
   name: String;
   rooms?: Maybe<RoomCreateManyWithoutLobbyInput>;
+}
+
+export interface UserCreateManyInput {
+  create?: Maybe<UserCreateInput[] | UserCreateInput>;
+  connect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
 }
 
 export interface LobbyUpdateInput {
@@ -859,32 +866,17 @@ export interface RoomUpdateWithWhereUniqueWithoutLobbyInput {
 
 export interface RoomUpdateWithoutLobbyDataInput {
   isPublic?: Maybe<Boolean>;
+  creator?: Maybe<UserUpdateOneInput>;
   usersInRoom?: Maybe<UserUpdateManyInput>;
 }
 
-export interface UserUpdateManyInput {
-  create?: Maybe<UserCreateInput[] | UserCreateInput>;
-  update?: Maybe<
-    | UserUpdateWithWhereUniqueNestedInput[]
-    | UserUpdateWithWhereUniqueNestedInput
-  >;
-  upsert?: Maybe<
-    | UserUpsertWithWhereUniqueNestedInput[]
-    | UserUpsertWithWhereUniqueNestedInput
-  >;
-  delete?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
-  connect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
-  set?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
-  disconnect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
-  deleteMany?: Maybe<UserScalarWhereInput[] | UserScalarWhereInput>;
-  updateMany?: Maybe<
-    UserUpdateManyWithWhereNestedInput[] | UserUpdateManyWithWhereNestedInput
-  >;
-}
-
-export interface UserUpdateWithWhereUniqueNestedInput {
-  where: UserWhereUniqueInput;
-  data: UserUpdateDataInput;
+export interface UserUpdateOneInput {
+  create?: Maybe<UserCreateInput>;
+  update?: Maybe<UserUpdateDataInput>;
+  upsert?: Maybe<UserUpsertNestedInput>;
+  delete?: Maybe<Boolean>;
+  disconnect?: Maybe<Boolean>;
+  connect?: Maybe<UserWhereUniqueInput>;
 }
 
 export interface UserUpdateDataInput {
@@ -917,6 +909,36 @@ export interface LobbyUpdateWithoutUsersInLobbyDataInput {
 export interface LobbyUpsertWithoutUsersInLobbyInput {
   update: LobbyUpdateWithoutUsersInLobbyDataInput;
   create: LobbyCreateWithoutUsersInLobbyInput;
+}
+
+export interface UserUpsertNestedInput {
+  update: UserUpdateDataInput;
+  create: UserCreateInput;
+}
+
+export interface UserUpdateManyInput {
+  create?: Maybe<UserCreateInput[] | UserCreateInput>;
+  update?: Maybe<
+    | UserUpdateWithWhereUniqueNestedInput[]
+    | UserUpdateWithWhereUniqueNestedInput
+  >;
+  upsert?: Maybe<
+    | UserUpsertWithWhereUniqueNestedInput[]
+    | UserUpsertWithWhereUniqueNestedInput
+  >;
+  delete?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  connect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  set?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  disconnect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  deleteMany?: Maybe<UserScalarWhereInput[] | UserScalarWhereInput>;
+  updateMany?: Maybe<
+    UserUpdateManyWithWhereNestedInput[] | UserUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface UserUpdateWithWhereUniqueNestedInput {
+  where: UserWhereUniqueInput;
+  data: UserUpdateDataInput;
 }
 
 export interface UserUpsertWithWhereUniqueNestedInput {
@@ -986,6 +1008,7 @@ export interface RoomCreateInput {
   id?: Maybe<ID_Input>;
   lobby: LobbyCreateOneWithoutRoomsInput;
   isPublic?: Maybe<Boolean>;
+  creator?: Maybe<UserCreateOneInput>;
   usersInRoom?: Maybe<UserCreateManyInput>;
 }
 
@@ -1003,6 +1026,7 @@ export interface LobbyCreateWithoutRoomsInput {
 export interface RoomUpdateInput {
   lobby?: Maybe<LobbyUpdateOneRequiredWithoutRoomsInput>;
   isPublic?: Maybe<Boolean>;
+  creator?: Maybe<UserUpdateOneInput>;
   usersInRoom?: Maybe<UserUpdateManyInput>;
 }
 
@@ -1387,6 +1411,7 @@ export interface RoomPromise extends Promise<Room>, Fragmentable {
   id: () => Promise<ID_Output>;
   lobby: <T = LobbyPromise>() => T;
   isPublic: () => Promise<Boolean>;
+  creator: <T = UserPromise>() => T;
   usersInRoom: <T = FragmentableArray<User>>(args?: {
     where?: UserWhereInput;
     orderBy?: UserOrderByInput;
@@ -1406,6 +1431,7 @@ export interface RoomSubscription
   id: () => Promise<AsyncIterator<ID_Output>>;
   lobby: <T = LobbySubscription>() => T;
   isPublic: () => Promise<AsyncIterator<Boolean>>;
+  creator: <T = UserSubscription>() => T;
   usersInRoom: <T = Promise<AsyncIterator<UserSubscription>>>(args?: {
     where?: UserWhereInput;
     orderBy?: UserOrderByInput;
@@ -1425,6 +1451,7 @@ export interface RoomNullablePromise
   id: () => Promise<ID_Output>;
   lobby: <T = LobbyPromise>() => T;
   isPublic: () => Promise<Boolean>;
+  creator: <T = UserPromise>() => T;
   usersInRoom: <T = FragmentableArray<User>>(args?: {
     where?: UserWhereInput;
     orderBy?: UserOrderByInput;
@@ -1959,7 +1986,19 @@ export const models: Model[] = [
     embedded: false
   },
   {
+    name: "UsersInLobbyRelation",
+    embedded: false
+  },
+  {
+    name: "RoomsInLobbyRelation",
+    embedded: false
+  },
+  {
     name: "Lobby",
+    embedded: false
+  },
+  {
+    name: "UsersInGame",
     embedded: false
   },
   {

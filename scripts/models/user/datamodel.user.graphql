@@ -5,8 +5,8 @@ type User {
     createdAt: DateTime! @createdAt
     updatedAt: DateTime! @updatedAt
 
-    table: Table
-    lobby: Lobby
+    table: Table @relation(name: "UsersInGame")
+    lobby: Lobby @relation(name: "UsersInLobbyRelation")
 
     name: String! @unique
     email: String! @unique

@@ -1,9 +1,19 @@
+type UsersInLobbyRelation @relationTable {
+    user: User!
+    lobby: Lobby!
+}
+
+type RoomsInLobbyRelation @relationTable {
+    room: Room!
+    lobby: Lobby!
+}
+
 type Lobby {
     id: ID! @id
     name: String!
 
-    usersInLobby: [User!]! @relation(link: TABLE)
-    rooms: [Room!]! @relation(link: TABLE)
+    usersInLobby: [User!]! @relation(link: TABLE, name: "UsersInLobbyRelation")
+    rooms: [Room!]! @relation(link: TABLE, name: "RoomsInLobbyRelation")
 
     createdAt: DateTime! @createdAt
     updatedAt: DateTime! @updatedAt
