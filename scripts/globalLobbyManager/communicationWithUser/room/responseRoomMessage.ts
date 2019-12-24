@@ -1,4 +1,4 @@
-import {roomChatMessage} from "./responseRoomMessage.types";
+import {leaveRoom, roomChatMessage} from "./responseRoomMessage.types";
 
 export default class IsRoomMessageValid {
     public static GetValidChatMessage(message: any): roomChatMessage | undefined {
@@ -6,5 +6,11 @@ export default class IsRoomMessageValid {
         if (!message["messageType"] && message["messageType"] !== "roomChatMessage") return undefined;
         if (!message["message"] && typeof message["message"] !== "string") return undefined;
         return message as roomChatMessage;
+    }
+
+    public static GetValidLeaveRoom(message: any): leaveRoom | undefined {
+        if (typeof message !== "object") return undefined;
+        if (!message["messageType"] && message["messageType"] !== "leaveRoom") return undefined;
+        return message as leaveRoom;
     }
 }

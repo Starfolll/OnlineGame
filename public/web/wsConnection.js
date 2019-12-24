@@ -43,6 +43,12 @@ const sendRoomChatMessage = (message) => {
    }));
 };
 
+const leaveRoom = () => {
+   socket.send(JSON.stringify({
+      "messageType": "leaveRoom"
+   }));
+};
+
 // game
 const connectToGame = (tableId) => {
    socket = new WebSocket(`ws://${window.location.hostname}:8080`);

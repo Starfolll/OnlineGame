@@ -55,38 +55,50 @@ export default class Room {
 
         this.usersInRoom[user.id] = user;
 
-        this.AttachUserOnMessageSend(user);
-        this.AttachUserOnDisconnected(user);
+        const onDisconnectHandler = this.GetUserOnDisconnectedFunction(user);
+        this.BindUserOnMessageSend(user, onDisconnectHandler);
+
         user.InformAboutConnectedToRoom(this.GetExtendedRoomData());
         this.InformUsersAboutUserConnected(user.GetUserPublicData());
     }
 
-    private async DisconnectUserFromRoom(userId: string): Promise<void> {
+    private async RemoveUserFromRoom(userId: string): Promise<void> {
         await DB_Rooms.DisconnectUserFromRoom(this.id, {id: userId});
         delete this.usersInRoom[userId];
-        this.InformUsersAboutUserDisconnected(userId);
+        this.InformUsersAboutUserRemoved(userId);
     }
 
 
-    // events
-    protected AttachUserOnMessageSend(user: LobbyUser): void {
+    // events function
+    protected BindUserOnMessageSend(user: LobbyUser, onDisconnectedHandler: any): void {
         const onMessageHandler = (event: { data: any; type: string; target: WebSocket }): void => {
-            this.ReadUserResponse(user.id, event.data);
+            const removeHandler = this.GetRemoveHandlerFunction(user, onMessageHandler, onDisconnectedHandler);
+            this.ReadUserResponse(
+                user.id,
+                event.data,
+                removeHandler
+            );
         };
 
         user.connection.addEventListener("message", onMessageHandler);
+        user.connection.addEventListener("close", onDisconnectedHandler);
     }
 
-    protected AttachUserOnDisconnected(user: LobbyUser): void {
-        const onDisconnected = (event: { wasClean: boolean; code: number; reason: string; target: WebSocket }): void => {
-            this.DisconnectUserFromRoom(user.id).then(r => r);
+    protected GetUserOnDisconnectedFunction(user: LobbyUser) {
+        return (event: { wasClean: boolean; code: number; reason: string; target: WebSocket }): void => {
+            this.RemoveUserFromRoom(user.id).then(r => r);
         };
+    }
 
-        user.connection.addEventListener("close", onDisconnected);
+    protected GetRemoveHandlerFunction(user: LobbyUser, onMessageHandler: any, onDisconnectHandler: any) {
+        return () => {
+            user.connection.removeEventListener("message", onMessageHandler);
+            user.connection.removeEventListener("close", onDisconnectHandler);
+        };
     }
 
 
-    private ReadUserResponse(userId: string, message: string): void {
+    private ReadUserResponse(userId: string, message: string, handlerRemoval: any): void {
         try {
             const messageBody = JSON.parse(message);
 
@@ -97,6 +109,8 @@ export default class Room {
                 case userRoomResponse.chatMessage:
                     this.UserResponseChatMessage(userId, messageBody);
                     break;
+                case userRoomResponse.leaveRoom:
+                    this.UserResponseLeaveRoom(userId, messageBody, handlerRemoval);
             }
         } catch (e) {
 
@@ -115,6 +129,14 @@ export default class Room {
         this.chat.AddMessage(message);
         this.InformUsersAboutRoomChatMessage(message.GetMessageInfo());
     }
+
+    protected UserResponseLeaveRoom(userId: string, messageBody: any, handlerRemoval: any): void {
+        const validMessage = IsRoomMessageValid.GetValidLeaveRoom(messageBody);
+        if (!validMessage) return;
+
+        handlerRemoval();
+    }
+
 
     // room info
     public GetExtendedRoomData(): extendedRoomData {
@@ -148,9 +170,9 @@ export default class Room {
         });
     }
 
-    public InformUsersAboutUserDisconnected(userId: string): void {
+    public InformUsersAboutUserRemoved(userId: string): void {
         this.usersIdInRoom.forEach(uId => {
-            this.usersInRoom[uId].InformAboutRoomUserRemoved(userId);
+            if (userId !== uId) this.usersInRoom[uId].InformAboutRoomUserRemoved(userId);
         });
     }
 }

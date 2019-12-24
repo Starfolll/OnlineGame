@@ -1,11 +1,14 @@
 import WebSocket from "ws";
-import GlobalLobby from "./globalLobby";
-import IsLobbyMessageValid from "./communicationWithUser/globalLobby/responseGlobalLobbyMessages";
-import logError from "../consoleLogs/logError";
+
 import DB_Users from "../models/user/db_users";
 import DB_Tables from "../models/table/db_tables";
-import GetGlobalLobbyMessage from "./communicationWithUser/globalLobby/informGlobalLobbyMessages";
 import DB_Rooms from "../models/room/db_rooms";
+
+import logError from "../consoleLogs/logError";
+
+import GlobalLobby from "./globalLobby";
+import IsLobbyMessageValid from "./communicationWithUser/globalLobby/responseGlobalLobbyMessages";
+import GetGlobalLobbyMessage from "./communicationWithUser/globalLobby/informGlobalLobbyMessages";
 
 export default class GlobalLobbyManager {
     private readonly globalLobby: GlobalLobby;
@@ -30,10 +33,8 @@ export default class GlobalLobbyManager {
 
                     const roomId = await DB_Rooms.GetUserRoomId({id: userData.id});
                     if (!!roomId) {
-                        const isRoomPublic = await DB_Rooms.IsRoomPublic(roomId);
-
                         connection.send(JSON.stringify(GetGlobalLobbyMessage.RedirectToRoom(
-                            this.globalLobby.GetRoomData(roomId, isRoomPublic)!
+                            this.globalLobby.GetRoomData(roomId, true)!
                         )));
                     }
 
