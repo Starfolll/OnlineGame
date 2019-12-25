@@ -1,8 +1,8 @@
 import {prisma} from "../../../generated/prisma-client";
 import {lobbyData} from "./lobby";
-import logError from "../../consoleLogs/logError";
-import {userData, userUniqueData} from "../user/user";
-import logInfo from "../../consoleLogs/logInfo";
+import logError from "../../utils/consoleLogs/logError";
+import {userUniqueData} from "../user/user";
+import logInfo from "../../utils/consoleLogs/logInfo";
 
 export default class DB_Lobbies {
     public static async GetLobbyData(lobbyId: string): Promise<lobbyData | undefined> {
@@ -53,10 +53,8 @@ export default class DB_Lobbies {
         })).map(u => u.id);
     }
 
-    public static async GetUserInLobbyInfo(userUniqueData: userUniqueData): Promise<userData | null> {
-        const user = await prisma.user(userUniqueData);
-        if (!user) return null;
-        return user as userData;
+    public static async IsUserInLobby(lobbyId: string, userUniqueData: userUniqueData): Promise<boolean> {
+        return (await prisma.lobbies({where: {usersInLobby_some: userUniqueData}})).length > 0;
     }
 
     public static async ConnectUserToLobby(lobbyId: string, user: userUniqueData): Promise<void> {

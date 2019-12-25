@@ -4,11 +4,23 @@ import Lobby, {lobbyData} from "../models/lobby/lobby";
 import LobbyUser from "./lobbyUser";
 import IsLobbyMessageValid from "./communicationWithUser/globalLobby/responseGlobalLobbyMessages";
 import {userGlobalLobbyResponse} from "./communicationWithUser/globalLobby/responseGlobalLobbyMessages.types";
+import DB_Rooms from "../models/room/db_rooms";
+import {Card} from "../gamesManager/gameTableManager/deck/card";
+import {Hero} from "../gamesManager/gameTableManager/heroesStacks/hero";
+import {tableData} from "../models/table/table";
 
 
 export default class GlobalLobby extends Lobby {
-    constructor(data: lobbyData, maxSavedMessages: number) {
-        super(data, maxSavedMessages);
+    constructor(
+        data: lobbyData,
+        gamesManagerNewTableFunction: (
+            table: { usersId: Array<string> },
+            cards: Array<Card>,
+            heroes: { [heroWeight: number]: Hero }
+        ) => Promise<tableData>,
+        maxSavedMessages: number
+    ) {
+        super(data, gamesManagerNewTableFunction, maxSavedMessages);
     }
 
 
@@ -75,6 +87,8 @@ export default class GlobalLobby extends Lobby {
         const validMessage = IsLobbyMessageValid.GetValidPublicLobbySearch(messageBody);
         if (!validMessage) return;
 
-        this.ConnectUserToPublicRoom(user).then(r => r);
+        DB_Rooms.GetUserRoomId({id: user.id}).then(rId => {
+            if (!rId) this.ConnectUserToPublicRoom(user).then(r => r);
+        });
     }
 }

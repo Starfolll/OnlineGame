@@ -1,7 +1,7 @@
 import {prisma} from "../../../generated/prisma-client";
 import {userPublicData, userUniqueData} from "../user/user";
-import logError from "../../consoleLogs/logError";
-import logInfo from "../../consoleLogs/logInfo";
+import logError from "../../utils/consoleLogs/logError";
+import logInfo from "../../utils/consoleLogs/logInfo";
 import {roomData} from "./room";
 import DB_Users from "../user/db_users";
 

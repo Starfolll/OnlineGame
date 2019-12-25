@@ -5,9 +5,9 @@ import {Hero, heroInfo} from "./heroesStacks/hero";
 import {HeroesStack} from "./heroesStacks/heroesStack";
 import {Card} from "./deck/card";
 import {initialHeroTurnOptions} from "../players/communicationWithPlayer/responseGameMessages.types";
-import Chat from "../../chat/chat";
+import Chat from "../../utils/chat/chat";
 import Table, {tableData} from "../../models/table/table";
-import ChatMessage, {chatMessageInfo} from "../../chat/chatMessage";
+import ChatMessage, {chatMessageInfo} from "../../utils/chat/chatMessage";
 
 type turnsType =
     "waitingForPlayers" |

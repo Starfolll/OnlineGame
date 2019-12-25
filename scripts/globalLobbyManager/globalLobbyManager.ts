@@ -4,16 +4,21 @@ import DB_Users from "../models/user/db_users";
 import DB_Tables from "../models/table/db_tables";
 import DB_Rooms from "../models/room/db_rooms";
 
-import logError from "../consoleLogs/logError";
+import logError from "../utils/consoleLogs/logError";
 
 import GlobalLobby from "./globalLobby";
 import IsLobbyMessageValid from "./communicationWithUser/globalLobby/responseGlobalLobbyMessages";
 import GetGlobalLobbyMessage from "./communicationWithUser/globalLobby/informGlobalLobbyMessages";
+import DB_Lobbies from "../models/lobby/db_lobbies";
 
 export default class GlobalLobbyManager {
     private readonly globalLobby: GlobalLobby;
 
-    constructor(gameWSS: WebSocket.Server, globalLobby: GlobalLobby, cb?: Function) {
+    constructor(
+        gameWSS: WebSocket.Server,
+        globalLobby: GlobalLobby,
+        cb?: Function
+    ) {
         this.globalLobby = globalLobby;
 
         gameWSS.on("connection", (connection: WebSocket) => {
@@ -24,6 +29,12 @@ export default class GlobalLobbyManager {
 
                     const userData = await DB_Users.GetUserDataByIdAndToken(validMessage.id, validMessage.token);
                     if (!userData) throw new Error();
+
+                    const lobbyId = await DB_Lobbies.IsUserInLobby(this.globalLobby.id, {id: userData.id});
+                    if (lobbyId) {
+                        connection.close(1007, "clone");
+                        return;
+                    }
 
                     const tableId = await DB_Tables.GetUserTableId({id: userData.id});
                     if (!!tableId) {

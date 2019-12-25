@@ -1,4 +1,4 @@
-import {chatMessageInfo} from "../../../chat/chatMessage";
+import {chatMessageInfo} from "../../../utils/chat/chatMessage";
 import {userPublicData} from "../../../models/user/user";
 
 export type newRoomChatMessage = {
@@ -14,4 +14,9 @@ export type userConnectedToRoom = {
 export type userRemovedFromRoom = {
     messageType: string;
     userId: string;
+}
+
+export type gameStart = {
+    messageType: string;
+    tableId: string;
 }

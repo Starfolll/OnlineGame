@@ -4,8 +4,8 @@ import {userData, userUniqueData} from "./user";
 import cryptoRandomString from "crypto-random-string";
 import bcrypt from "bcrypt";
 
-import logInfo from "../../consoleLogs/logInfo";
-import logError from "../../consoleLogs/logError";
+import logInfo from "../../utils/consoleLogs/logInfo";
+import logError from "../../utils/consoleLogs/logError";
 
 export default class DB_Users {
     public static async IsUserExists(

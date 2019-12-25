@@ -1,7 +1,7 @@
 import {prisma} from "../../../generated/prisma-client";
-import logGameInfo from "../../consoleLogs/logGameInfo";
+import logGameInfo from "../../utils/consoleLogs/logGameInfo";
 import {tableData} from "./table";
-import logError from "../../consoleLogs/logError";
+import logError from "../../utils/consoleLogs/logError";
 import {userUniqueData} from "../user/user";
 
 export default class DB_Tables {

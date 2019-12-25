@@ -1,5 +1,5 @@
 import {extendedLobbyData} from "../../../models/lobby/lobby";
-import {chatMessageInfo} from "../../../chat/chatMessage";
+import {chatMessageInfo} from "../../../utils/chat/chatMessage";
 import {extendedRoomData} from "../../../models/room/room";
 
 export type redirectToGameTable = {

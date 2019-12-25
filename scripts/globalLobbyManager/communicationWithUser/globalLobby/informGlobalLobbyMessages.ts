@@ -5,7 +5,7 @@ import {
     redirectToRoom
 } from "./informGlobalLobbyMessages.types";
 import {extendedLobbyData} from "../../../models/lobby/lobby";
-import {chatMessageInfo} from "../../../chat/chatMessage";
+import {chatMessageInfo} from "../../../utils/chat/chatMessage";
 import {extendedRoomData} from "../../../models/room/room";
 
 export default class GetGlobalLobbyMessage {

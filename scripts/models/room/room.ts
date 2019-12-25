@@ -1,11 +1,19 @@
-import Chat from "../../chat/chat";
-import ChatMessage, {chatMessageInfo} from "../../chat/chatMessage";
-import {userPublicData} from "../user/user";
-import LobbyUser from "../../globalLobbyManager/lobbyUser";
 import WebSocket from "ws";
+
+import {userPublicData} from "../user/user";
+
 import DB_Rooms from "./db_rooms";
+
+import Chat from "../../utils/chat/chat";
+import ChatMessage, {chatMessageInfo} from "../../utils/chat/chatMessage";
+import LobbyUser from "../../globalLobbyManager/lobbyUser";
 import {userRoomResponse} from "../../globalLobbyManager/communicationWithUser/room/responseRoomMessage.types";
 import IsRoomMessageValid from "../../globalLobbyManager/communicationWithUser/room/responseRoomMessage";
+import {tableData} from "../table/table";
+import {Card} from "../../gamesManager/gameTableManager/deck/card";
+import {Hero} from "../../gamesManager/gameTableManager/heroesStacks/hero";
+import {HeroesStacks} from "../../gamesManager/gameTableManager/heroesStacks/heroesStacks";
+import {Decks} from "../../gamesManager/gameTableManager/deck/decks";
 
 export type extendedRoomData = {
     roomData: roomData;
@@ -28,12 +36,27 @@ export default class Room {
     private readonly usersInRoom: { [userId: string]: LobbyUser } = {};
     private readonly chat: Chat<ChatMessage>;
 
+    private readonly gamesManagerCreateNewTable: (
+        table: { usersId: Array<string> },
+        cards: Array<Card>,
+        heroes: { [heroWeight: number]: Hero }
+    ) => Promise<tableData>;
 
-    constructor(roomData: roomData, creator?: LobbyUser) {
+    constructor(
+        roomData: roomData,
+        gamesManagerNewTableFunction: (
+            table: { usersId: Array<string> },
+            cards: Array<Card>,
+            heroes: { [heroWeight: number]: Hero }
+        ) => Promise<tableData>,
+        creator?: LobbyUser,
+    ) {
         this.id = roomData.id;
         this.isPublic = roomData.isPublic;
         this.maxUsersInRoom = roomData.maxUsersInRoom;
         this.creator = creator;
+
+        this.gamesManagerCreateNewTable = gamesManagerNewTableFunction;
 
         this.chat = new Chat<ChatMessage>(30);
     }
@@ -60,6 +83,8 @@ export default class Room {
 
         user.InformAboutConnectedToRoom(this.GetExtendedRoomData());
         this.InformUsersAboutUserConnected(user.GetUserPublicData());
+
+        if (this.IsRoomFull() && this.isPublic) this.StartPublicGame();
     }
 
     private async RemoveUserFromRoom(userId: string): Promise<void> {
@@ -69,14 +94,35 @@ export default class Room {
     }
 
 
+    // start game
+    private async StartPublicGame(): Promise<void> {
+        const gameTableData = await this.gamesManagerCreateNewTable(
+            {usersId: this.usersIdInRoom},
+            Decks.defaultDeck,
+            HeroesStacks.defaultStack
+        );
+        this.InformUsersAboutGameStart(gameTableData.id);
+        this.RemoveUsersEventHandlers();
+    }
+
+    private RemoveUsersEventHandlers(): void {
+        this.usersIdInRoom.forEach(uId => {
+            this.usersInRoom[uId].connection.removeAllListeners();
+            this.usersInRoom[uId].connection.close(1000, "redirect to game server");
+        });
+    }
+
     // events function
     protected BindUserOnMessageSend(user: LobbyUser, onDisconnectedHandler: any): void {
         const onMessageHandler = (event: { data: any; type: string; target: WebSocket }): void => {
-            const removeHandler = this.GetRemoveHandlerFunction(user, onMessageHandler, onDisconnectedHandler);
             this.ReadUserResponse(
                 user.id,
                 event.data,
-                removeHandler
+                this.GetRemoveHandlerFunction(
+                    user,
+                    onMessageHandler,
+                    onDisconnectedHandler
+                )
             );
         };
 
@@ -94,6 +140,7 @@ export default class Room {
         return () => {
             user.connection.removeEventListener("message", onMessageHandler);
             user.connection.removeEventListener("close", onDisconnectHandler);
+            this.RemoveUserFromRoom(user.id).then(r => r);
         };
     }
 
@@ -172,7 +219,13 @@ export default class Room {
 
     public InformUsersAboutUserRemoved(userId: string): void {
         this.usersIdInRoom.forEach(uId => {
-            if (userId !== uId) this.usersInRoom[uId].InformAboutRoomUserRemoved(userId);
+            this.usersInRoom[uId].InformAboutRoomUserRemoved(userId);
+        });
+    }
+
+    public InformUsersAboutGameStart(tableId: string): void {
+        this.usersIdInRoom.forEach(uId => {
+            this.usersInRoom[uId].InformAboutGameStart(tableId);
         });
     }
 }

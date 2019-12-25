@@ -9,12 +9,11 @@
     "url": "https://github.com/Starfolll/OnlineGame"
   },
   "scripts": {
-    "start": "node ./scripts/build/server.js",
     "build": "tsc",
-    "bs": "tsc && npm start",
-    "dev": "ts-node server.ts --dev",
     "push": "ts-node server.ts --update",
-    "mutate": "prisma deploy"
+    "games-manager-dev": "ts-node server.ts --dev --server-mode-games-manager",
+    "lobby-manager-dev": "ts-node server.ts --dev --server-mode-lobby-manager-dev",
+    "static-and-api-dev": "ts-node server.ts --dev --server-modes-static-and-api-serve"
   },
   "engines": {
     "node": ">=12.x.x"

@@ -1,5 +1,5 @@
-import {chatMessageInfo} from "../../../chat/chatMessage";
-import {newRoomChatMessage, userConnectedToRoom, userRemovedFromRoom} from "./informRoomMessages.types";
+import {chatMessageInfo} from "../../../utils/chat/chatMessage";
+import {gameStart, newRoomChatMessage, userConnectedToRoom, userRemovedFromRoom} from "./informRoomMessages.types";
 import {userPublicData} from "../../../models/user/user";
 
 export default class GetRoomMessage {
@@ -10,7 +10,7 @@ export default class GetRoomMessage {
         }
     }
 
-    public static UserConnected(user: userPublicData): userConnectedToRoom{
+    public static UserConnected(user: userPublicData): userConnectedToRoom {
         return {
             "messageType": "userConnectedToRoom",
             "user": user
@@ -21,6 +21,13 @@ export default class GetRoomMessage {
         return {
             "messageType": "userRemovedFromRoom",
             "userId": userId
+        }
+    }
+
+    public static GameStart(tableId: string): gameStart {
+        return {
+            "messageType": "gameStart",
+            "tableId": tableId
         }
     }
 }

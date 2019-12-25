@@ -24,7 +24,7 @@ import {
 } from "./informGameMassages.types";
 import {heroDebuffsTypes} from "../../gameTableManager/heroesStacks/heroDebuffsTypes";
 import {heroAbilityTypes} from "../../gameTableManager/heroesStacks/heroAbilityTypes";
-import {chatMessageInfo} from "../../../chat/chatMessage";
+import {chatMessageInfo} from "../../../utils/chat/chatMessage";
 
 
 export class GetGameMessage {

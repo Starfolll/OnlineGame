@@ -3,7 +3,7 @@ import WebSocket from "ws";
 import User, {userData, userPublicData} from "../models/user/user";
 import GetGlobalLobbyMessage from "./communicationWithUser/globalLobby/informGlobalLobbyMessages";
 import {extendedLobbyData} from "../models/lobby/lobby";
-import {chatMessageInfo} from "../chat/chatMessage";
+import {chatMessageInfo} from "../utils/chat/chatMessage";
 import {extendedRoomData} from "../models/room/room";
 import GetRoomMessage from "./communicationWithUser/room/informRoomMessages";
 
@@ -43,5 +43,9 @@ export default class LobbyUser extends User {
 
     public InformAboutRoomUserRemoved(userId: string): void {
         this.connection.send(JSON.stringify(GetRoomMessage.UserRemoved(userId)));
+    }
+
+    public InformAboutGameStart(tableId: string): void {
+        this.connection.send(JSON.stringify(GetRoomMessage.GameStart(tableId)))
     }
 }

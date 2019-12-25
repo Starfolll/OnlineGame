@@ -2,10 +2,14 @@ import DB_Lobbies from "./db_lobbies";
 import {userData, userPublicData, userUniqueData} from "../user/user";
 import WebSocket from "ws";
 import LobbyUser from "../../globalLobbyManager/lobbyUser";
-import Chat from "../../chat/chat";
-import ChatMessage, {chatMessageInfo} from "../../chat/chatMessage";
+import Chat from "../../utils/chat/chat";
+import ChatMessage, {chatMessageInfo} from "../../utils/chat/chatMessage";
 import Room, {extendedRoomData} from "../room/room";
 import DB_Rooms from "../room/db_rooms";
+import DB_Users from "../user/db_users";
+import {Card} from "../../gamesManager/gameTableManager/deck/card";
+import {Hero} from "../../gamesManager/gameTableManager/heroesStacks/hero";
+import {tableData} from "../table/table";
 
 export type extendedLobbyData = {
     lobbyData: lobbyData,
@@ -27,10 +31,26 @@ export default class Lobby {
     private readonly publicRooms: { [id: string]: Room } = {};
     private readonly privateRooms: { [id: string]: Room } = {};
 
+    private readonly gamesManagerCreateNewTable: (
+        table: { usersId: Array<string> },
+        cards: Array<Card>,
+        heroes: { [heroWeight: number]: Hero }
+    ) => Promise<tableData>;
 
-    constructor(data: lobbyData, maxSavedMessages: number) {
+
+    constructor(
+        data: lobbyData,
+        gamesManagerNewTableFunction: (
+            table: { usersId: Array<string> },
+            cards: Array<Card>,
+            heroes: { [heroWeight: number]: Hero }
+        ) => Promise<tableData>,
+        maxSavedMessages: number
+    ) {
         this.id = data.id;
         this.name = data.name;
+
+        this.gamesManagerCreateNewTable = gamesManagerNewTableFunction;
 
         this.chat = new Chat<ChatMessage>(maxSavedMessages);
         this.chat.AddMessage(new ChatMessage(
@@ -61,7 +81,7 @@ export default class Lobby {
 
     // users connection
     protected async GetUserInLobbyInfo(userUniqueData: userUniqueData): Promise<userData | null> {
-        return await DB_Lobbies.GetUserInLobbyInfo(userUniqueData);
+        return await DB_Users.GetUserData(userUniqueData);
     }
 
     protected async GetUsersIdInLobby(): Promise<Array<string>> {
@@ -124,8 +144,8 @@ export default class Lobby {
         const room = new Room(await DB_Rooms.CreateNewRoom({
             isPublic: true,
             lobbyId: this.id,
-            maxUsersInRoom: 4
-        }));
+            maxUsersInRoom: 1
+        }), this.gamesManagerCreateNewTable);
 
         this.publicRooms[room.id] = room;
 

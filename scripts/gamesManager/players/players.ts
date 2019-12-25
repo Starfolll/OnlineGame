@@ -3,7 +3,7 @@ import {Card, cardClass, cardInfo} from "../gameTableManager/deck/card";
 import {tableInfo} from "../gameTableManager/gameTable";
 import {heroDebuffsTypes} from "../gameTableManager/heroesStacks/heroDebuffsTypes";
 import {heroAbilityTypes} from "../gameTableManager/heroesStacks/heroAbilityTypes";
-import chatMessage, {chatMessageInfo} from "../../chat/chatMessage";
+import chatMessage, {chatMessageInfo} from "../../utils/chat/chatMessage";
 
 
 export type tableInfoWithPlayers = {

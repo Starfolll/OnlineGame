@@ -7,7 +7,7 @@ import {tableInfoWithPlayers} from "./players";
 import {heroDebuffsTypes} from "../gameTableManager/heroesStacks/heroDebuffsTypes";
 import {heroAbilityTypes} from "../gameTableManager/heroesStacks/heroAbilityTypes";
 import User, {userData} from "../../models/user/user";
-import {chatMessageInfo} from "../../chat/chatMessage";
+import {chatMessageInfo} from "../../utils/chat/chatMessage";
 
 
 export type playerPreGameInfo = {

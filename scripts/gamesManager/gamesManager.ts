@@ -6,9 +6,10 @@ import {Hero} from "./gameTableManager/heroesStacks/hero";
 import {Card} from "./gameTableManager/deck/card";
 import {IsGameMessageValid} from "./players/communicationWithPlayer/responseGameMessages";
 
-import logError from "../consoleLogs/logError";
+import logError from "../utils/consoleLogs/logError";
 import DB_Users from "../models/user/db_users";
 import DB_Tables from "../models/table/db_tables";
+import {tableData} from "../models/table/table";
 
 export class GamesManager {
     private readonly tables: { [id: string]: GameTableManager } = {};
@@ -49,7 +50,7 @@ export class GamesManager {
         table: { usersId: Array<string> },
         cards: Array<Card>,
         heroes: { [heroWeight: number]: Hero }
-    ): Promise<void> {
+    ): Promise<tableData> {
         const tableDataUpdated = await DB_Tables.CreateNewTable(table.usersId);
 
         this.tables[tableDataUpdated.id] = new GameTableManager(
@@ -58,6 +59,11 @@ export class GamesManager {
             heroes,
             this.onGameEndCallback
         );
+
+        return {
+            "id": tableDataUpdated.id,
+            "usersId": table.usersId
+        }
     }
 
     public async ConnectPlayerToTable(tableId: string, player: Player): Promise<void> {

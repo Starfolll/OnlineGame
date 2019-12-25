@@ -4,16 +4,16 @@ import express from "express";
 import webPageRoute from "./router/static/webPage.route";
 import usersAvatar from "./router/static/usersAvatar";
 
-import logLetters from "./consoleLogs/logLetters";
-import logInfo from "./consoleLogs/logInfo";
-import logLink from "./consoleLogs/logLink";
+import logLetters from "./utils/consoleLogs/logLetters";
+import logInfo from "./utils/consoleLogs/logInfo";
+import logLink from "./utils/consoleLogs/logLink";
 
 import {prisma} from "../generated/prisma-client";
 import DB_Users from "./models/user/db_users";
 import DB_Lobbies from "./models/lobby/db_lobbies";
 
 import {GamesManager} from "./gamesManager/gamesManager";
-import {StartLoggingSystemStatsTimeout} from "./consoleLogs/logSystemInfo";
+import {StartLoggingSystemStatsTimeout} from "./utils/consoleLogs/logSystemInfo";
 import GlobalLobbyManager from "./globalLobbyManager/globalLobbyManager";
 import GlobalLobby from "./globalLobbyManager/globalLobby";
 import {Decks} from "./gamesManager/gameTableManager/deck/decks";
@@ -51,10 +51,11 @@ export async function runDevelopmentBuild(webPort: number, gameWSPort: number, g
     await prisma.deleteManyTables();
     await prisma.deleteManyUsers();
 
-    const lobbyManager = new GlobalLobbyManager(
+    new GlobalLobbyManager(
         new WebSocket.Server({port: globalLobbyWSPort}),
         new GlobalLobby(
             await DB_Lobbies.CreateNewLobby({name: "global 1"}),
+            gamesManager.CreateNewTable,
             30
         ),
         () => logInfo(`Lobby manager listening at port ${globalLobbyWSPort}`)
