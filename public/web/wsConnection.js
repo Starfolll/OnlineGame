@@ -51,7 +51,7 @@ const leaveRoom = () => {
 
 // game
 const connectToGame = (tableId) => {
-   socket = new WebSocket(`ws://${window.location.hostname}:8080`);
+   socket = new WebSocket(`ws://${window.location.hostname}:8010`);
 
    socket.onopen = () => {
       socket.send(JSON.stringify({

@@ -9,11 +9,6 @@ import ChatMessage, {chatMessageInfo} from "../../utils/chat/chatMessage";
 import LobbyUser from "../../globalLobbyManager/lobbyUser";
 import {userRoomResponse} from "../../globalLobbyManager/communicationWithUser/room/responseRoomMessage.types";
 import IsRoomMessageValid from "../../globalLobbyManager/communicationWithUser/room/responseRoomMessage";
-import {tableData} from "../table/table";
-import {Card} from "../../gamesManager/gameTableManager/deck/card";
-import {Hero} from "../../gamesManager/gameTableManager/heroesStacks/hero";
-import {HeroesStacks} from "../../gamesManager/gameTableManager/heroesStacks/heroesStacks";
-import {Decks} from "../../gamesManager/gameTableManager/deck/decks";
 
 export type extendedRoomData = {
     roomData: roomData;
@@ -36,27 +31,20 @@ export default class Room {
     private readonly usersInRoom: { [userId: string]: LobbyUser } = {};
     private readonly chat: Chat<ChatMessage>;
 
-    private readonly gamesManagerCreateNewTable: (
-        table: { usersId: Array<string> },
-        cards: Array<Card>,
-        heroes: { [heroWeight: number]: Hero }
-    ) => Promise<tableData>;
+    private readonly onRoomDeleteHandler: (isRoomPublic: boolean, roomId: string) => void;
+
 
     constructor(
         roomData: roomData,
-        gamesManagerNewTableFunction: (
-            table: { usersId: Array<string> },
-            cards: Array<Card>,
-            heroes: { [heroWeight: number]: Hero }
-        ) => Promise<tableData>,
-        creator?: LobbyUser,
+        onRoomDeleteHandler: (isRoomPublic: boolean, roomId: string) => void,
+        creator?: LobbyUser
     ) {
         this.id = roomData.id;
         this.isPublic = roomData.isPublic;
         this.maxUsersInRoom = roomData.maxUsersInRoom;
         this.creator = creator;
 
-        this.gamesManagerCreateNewTable = gamesManagerNewTableFunction;
+        this.onRoomDeleteHandler = onRoomDeleteHandler;
 
         this.chat = new Chat<ChatMessage>(30);
     }
@@ -96,13 +84,19 @@ export default class Room {
 
     // start game
     private async StartPublicGame(): Promise<void> {
-        const gameTableData = await this.gamesManagerCreateNewTable(
-            {usersId: this.usersIdInRoom},
-            Decks.defaultDeck,
-            HeroesStacks.defaultStack
-        );
-        this.InformUsersAboutGameStart(gameTableData.id);
+        const res = await fetch("http://localhost:8015/api/create-new-game-table", {
+            headers: {"Content-Type": "application/json"},
+            method: "POST",
+            body: JSON.stringify({
+                usersId: this.usersIdInRoom
+            })
+        });
+        const data = await res.json();
+        const tableId = data.tableId;
+
+        this.InformUsersAboutGameStart(tableId);
         this.RemoveUsersEventHandlers();
+        this.onRoomDeleteHandler(this.isPublic, this.id);
     }
 
     private RemoveUsersEventHandlers(): void {

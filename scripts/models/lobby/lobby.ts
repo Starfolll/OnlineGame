@@ -7,9 +7,7 @@ import ChatMessage, {chatMessageInfo} from "../../utils/chat/chatMessage";
 import Room, {extendedRoomData} from "../room/room";
 import DB_Rooms from "../room/db_rooms";
 import DB_Users from "../user/db_users";
-import {Card} from "../../gamesManager/gameTableManager/deck/card";
-import {Hero} from "../../gamesManager/gameTableManager/heroesStacks/hero";
-import {tableData} from "../table/table";
+import {prisma} from "../../../generated/prisma-client";
 
 export type extendedLobbyData = {
     lobbyData: lobbyData,
@@ -31,26 +29,10 @@ export default class Lobby {
     private readonly publicRooms: { [id: string]: Room } = {};
     private readonly privateRooms: { [id: string]: Room } = {};
 
-    private readonly gamesManagerCreateNewTable: (
-        table: { usersId: Array<string> },
-        cards: Array<Card>,
-        heroes: { [heroWeight: number]: Hero }
-    ) => Promise<tableData>;
 
-
-    constructor(
-        data: lobbyData,
-        gamesManagerNewTableFunction: (
-            table: { usersId: Array<string> },
-            cards: Array<Card>,
-            heroes: { [heroWeight: number]: Hero }
-        ) => Promise<tableData>,
-        maxSavedMessages: number
-    ) {
+    constructor(data: lobbyData, maxSavedMessages: number) {
         this.id = data.id;
         this.name = data.name;
-
-        this.gamesManagerCreateNewTable = gamesManagerNewTableFunction;
 
         this.chat = new Chat<ChatMessage>(maxSavedMessages);
         this.chat.AddMessage(new ChatMessage(
@@ -105,7 +87,7 @@ export default class Lobby {
     }
 
 
-    // room data
+    // room
     public GetRoomData(roomId: string, isRoomPublic: boolean): extendedRoomData | undefined {
         if (isRoomPublic) {
             if (!!this.publicRooms[roomId]) return this.publicRooms[roomId].GetExtendedRoomData();
@@ -115,6 +97,14 @@ export default class Lobby {
             else return undefined;
         }
     }
+
+    private DeleteRoom(isRoomPublic: boolean, roomId: string): void {
+        if (isRoomPublic) delete this.publicRooms[roomId];
+        else delete this.privateRooms[roomId];
+
+        prisma.deleteRoom({id: roomId});
+    }
+
 
     // connect user to room (public)
     protected async ConnectUserToPublicRoom(user: LobbyUser): Promise<void> {
@@ -144,8 +134,8 @@ export default class Lobby {
         const room = new Room(await DB_Rooms.CreateNewRoom({
             isPublic: true,
             lobbyId: this.id,
-            maxUsersInRoom: 1
-        }), this.gamesManagerCreateNewTable);
+            maxUsersInRoom: 1,
+        }), this.DeleteRoom);
 
         this.publicRooms[room.id] = room;
 

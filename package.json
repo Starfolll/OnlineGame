@@ -9,11 +9,12 @@
     "url": "https://github.com/Starfolll/OnlineGame"
   },
   "scripts": {
+    "start": "ts-node server.ts",
     "build": "tsc",
     "push": "ts-node server.ts --update",
-    "games-manager-dev": "ts-node server.ts --dev --server-mode-games-manager",
-    "lobby-manager-dev": "ts-node server.ts --dev --server-mode-lobby-manager-dev",
-    "static-and-api-dev": "ts-node server.ts --dev --server-modes-static-and-api-serve"
+    "games-manager-dev": "ts-node server.ts --server-mode-games-manager",
+    "lobby-manager-dev": "ts-node server.ts --server-mode-lobby-manager",
+    "static-and-api-dev": "ts-node server.ts --server-mode-static-and-api-serve"
   },
   "engines": {
     "node": ">=12.x.x"
@@ -59,6 +60,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "graphql": "^14.5.8",
+    "prisma": "^1.34.10",
     "prisma-client-lib": "^1.34.10",
     "ts-node": "^8.5.4",
     "typescript": "^3.7.3",

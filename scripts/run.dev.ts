@@ -52,12 +52,10 @@ export async function runDevelopmentBuild(webPort: number, gameWSPort: number, g
     await prisma.deleteManyUsers();
 
     new GlobalLobbyManager(
-        new WebSocket.Server({port: globalLobbyWSPort}),
-        new GlobalLobby(
-            await DB_Lobbies.CreateNewLobby({name: "global 1"}),
-            gamesManager.CreateNewTable,
-            30
-        ),
+        new WebSocket.Server({
+            port: globalLobbyWSPort
+        }),
+        new GlobalLobby(await DB_Lobbies.CreateNewLobby({name: "global 1"}), 30),
         () => logInfo(`Lobby manager listening at port ${globalLobbyWSPort}`)
     );
 

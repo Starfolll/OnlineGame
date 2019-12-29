@@ -5,24 +5,12 @@ import LobbyUser from "./lobbyUser";
 import IsLobbyMessageValid from "./communicationWithUser/globalLobby/responseGlobalLobbyMessages";
 import {userGlobalLobbyResponse} from "./communicationWithUser/globalLobby/responseGlobalLobbyMessages.types";
 import DB_Rooms from "../models/room/db_rooms";
-import {Card} from "../gamesManager/gameTableManager/deck/card";
-import {Hero} from "../gamesManager/gameTableManager/heroesStacks/hero";
-import {tableData} from "../models/table/table";
 
 
 export default class GlobalLobby extends Lobby {
-    constructor(
-        data: lobbyData,
-        gamesManagerNewTableFunction: (
-            table: { usersId: Array<string> },
-            cards: Array<Card>,
-            heroes: { [heroWeight: number]: Hero }
-        ) => Promise<tableData>,
-        maxSavedMessages: number
-    ) {
-        super(data, gamesManagerNewTableFunction, maxSavedMessages);
+    constructor(data: lobbyData, maxSavedMessages: number) {
+        super(data, maxSavedMessages);
     }
-
 
     public async ConnectUser(user: userUniqueData, connection: WebSocket): Promise<void> {
         const lobbyUser = await this.ConnectUserToLobby(user, connection);
