@@ -2,3 +2,5 @@
 /scripts/build
 /generated
 .env
+generated
+build

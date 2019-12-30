@@ -2,13 +2,11 @@ import dotenv from "dotenv";
 import {runUpdate} from "./scripts/run.update";
 
 import logError from "./scripts/utils/consoleLogs/logError";
-import logInfo from "./scripts/utils/consoleLogs/logInfo";
 import GameManagerServerDev from "./scripts/run.gameManager.dev";
 import GlobalLobbyManagerServerDev from "./scripts/run.lobbyManager.dev";
 import StaticAndApiServeServerDev from "./scripts/run.staticAndApiServe.dev";
 
 (async () => {
-    logInfo("booting server");
     dotenv.config();
 
     const isDev: boolean = process.env.BUILD_MODE === "dev";

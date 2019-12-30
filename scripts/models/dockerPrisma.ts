@@ -1,6 +1,8 @@
 import {Prisma} from "../../generated/prisma-client";
 
-export default new Prisma({
+const dockerPrisma = new Prisma({
     ...Prisma,
     endpoint: "http://prisma:4466"
 });
+
+export default dockerPrisma;

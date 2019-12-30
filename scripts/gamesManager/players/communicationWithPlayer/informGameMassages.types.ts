@@ -3,7 +3,7 @@ import {tableInfoWithPlayers} from "../players";
 import {Card, cardInfo} from "../../gameTableManager/deck/card";
 import {heroDebuffsTypes} from "../../gameTableManager/heroesStacks/heroDebuffsTypes";
 import {heroAbilityTypes} from "../../gameTableManager/heroesStacks/heroAbilityTypes";
-import {gameChatMessageInfo} from "../../../utils/chat/gameChatMessage";
+import {chatMessageInfo} from "../../../utils/chat/chatMessage";
 
 export type preGameInfo = {
     messageType: string;
@@ -114,5 +114,5 @@ export type playerHandChanged = {
 
 export type gameMessage = {
     messageType: string;
-    message: gameChatMessageInfo;
+    message: chatMessageInfo;
 }

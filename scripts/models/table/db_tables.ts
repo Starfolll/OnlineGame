@@ -1,12 +1,12 @@
-import {prisma} from "../../../generated/prisma-client";
 import logGameInfo from "../../utils/consoleLogs/logGameInfo";
 import {tableData} from "./table";
 import logError from "../../utils/consoleLogs/logError";
 import {userUniqueData} from "../user/user";
+import dockerPrisma from "../dockerPrisma";
 
 export default class DB_Tables {
     public static async CreateNewTable(usersId: Array<string>): Promise<tableData> {
-        const res = await prisma.createTable({
+        const res = await dockerPrisma.createTable({
             usersInGame: {
                 connect: usersId.map(uId => ({
                     id: uId
@@ -24,14 +24,14 @@ export default class DB_Tables {
     }
 
     public static async DeleteTable(tableId: string): Promise<void> {
-        const res = await prisma.deleteTable({id: tableId});
+        const res = await dockerPrisma.deleteTable({id: tableId});
         if (!res.id) logError(res);
     }
 
     public static async GetUsersIdInTable(tableId: string): Promise<Array<string>> {
-        return (await prisma.users({
+        return (await dockerPrisma.users({
             where: {
-                table: await prisma.table({
+                table: await dockerPrisma.table({
                     id: tableId
                 })
             }
@@ -39,11 +39,11 @@ export default class DB_Tables {
     }
 
     public static async IsTableExists(tableId: string): Promise<boolean> {
-        return !!(await prisma.table({id: tableId}));
+        return !!(await dockerPrisma.table({id: tableId}));
     }
 
     public static async GetUserTableId(user: userUniqueData): Promise<string | undefined> {
-        const tables = await prisma.tables({
+        const tables = await dockerPrisma.tables({
             where: {
                 usersInGame_some: user
             }

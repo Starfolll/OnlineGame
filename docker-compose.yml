@@ -1,7 +1,7 @@
 version: '3'
+
+
 services:
-
-
   prisma:
     env_file:
       - .env
@@ -33,17 +33,62 @@ services:
 
 
   static-and-api:
+    user: ${DOCKER_USER}
     env_file:
       - .env
-    image: node:12.10.0
+    image: node:${DOCKER_NODE_VERISON}
     volumes:
-      - .:/srv/online-game
-    working_dir: /srv/online-game
+      - .:${DOCKER_FILE_DIRECTORY}
+    working_dir: ${DOCKER_FILE_DIRECTORY}
+    links:
+      - prisma
     depends_on:
       - prisma
     ports:
       - ${DOCKER_PUBLIC_WEB_AND_API_PORT}:${PUBLIC_WEB_AND_API_PORT}
-    command: npm run static-and-api-dev
+    expose:
+      - ${DOCKER_PUBLIC_WEB_AND_API_PORT}
+    command: npm run static-and-api
+
+
+  games-manager:
+    user: ${DOCKER_USER}
+    env_file:
+      - .env
+    image: node:${DOCKER_NODE_VERISON}
+    volumes:
+      - .:${DOCKER_FILE_DIRECTORY}
+    working_dir: ${DOCKER_FILE_DIRECTORY}
+    links:
+      - prisma
+    depends_on:
+      - prisma
+    ports:
+      - ${DOCKER_PUBLIC_GAME_WS_PORT}:${PUBLIC_GAME_WS_PORT}
+      - ${DOCKER_PRIVATE_GAME_API_PORT}:${PRIVATE_GAME_API_PORT}
+    expose:
+      - ${DOCKER_PUBLIC_GAME_WS_PORT}
+      - ${DOCKER_PRIVATE_GAME_API_PORT}
+    command: npm run games-manager
+
+
+  lobby-manager:
+    user: ${DOCKER_USER}
+    env_file:
+      - .env
+    image: node:${DOCKER_NODE_VERISON}
+    volumes:
+      - .:${DOCKER_FILE_DIRECTORY}
+    working_dir: ${DOCKER_FILE_DIRECTORY}
+    links:
+      - prisma
+    depends_on:
+      - prisma
+    ports:
+      - ${DOCKER_PUBLIC_GLOBAL_LOBBY_WS_PORT}:${PUBLIC_GLOBAL_LOBBY_WS_PORT}
+    expose:
+      - ${DOCKER_PUBLIC_GLOBAL_LOBBY_WS_PORT}
+    command: npm run lobby-manager
 
 
 volumes:

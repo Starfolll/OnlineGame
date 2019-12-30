@@ -9,12 +9,12 @@
     "url": "https://github.com/Starfolll/OnlineGame"
   },
   "scripts": {
-    "start": "ts-node server.ts",
-    "build": "tsc",
+    "start": "npm run build && sudo docker-compose down && sudo docker-compose up",
+    "build": "tsc && prisma deploy",
     "push": "ts-node server.ts --update",
-    "games-manager-dev": "ts-node server.ts --server-mode-games-manager",
-    "lobby-manager-dev": "ts-node server.ts --server-mode-lobby-manager",
-    "static-and-api-dev": "ts-node server.ts --server-mode-static-and-api-serve"
+    "games-manager": "ts-node server.ts --server-mode-games-manager",
+    "lobby-manager": "ts-node server.ts --server-mode-lobby-manager",
+    "static-and-api": "ts-node server.ts --server-mode-static-and-api-serve"
   },
   "engines": {
     "node": ">=12.x.x"
@@ -44,7 +44,10 @@
     "game",
     "onlineGame",
     "cardGame",
-    "gitHub"
+    "gitHub",
+    "docker",
+    "docker-compose",
+    "prisma"
   ],
   "dependencies": {
     "@types/bcrypt": "^3.0.0",

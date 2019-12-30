@@ -1,9 +1,9 @@
-import {prisma} from "../../../generated/prisma-client";
-import {userPublicData, userUniqueData} from "../user/user";
+import {userUniqueData} from "../user/user";
 import logError from "../../utils/consoleLogs/logError";
 import logInfo from "../../utils/consoleLogs/logInfo";
 import {roomData} from "./room";
 import DB_Users from "../user/db_users";
+import dockerPrisma from "../dockerPrisma";
 
 export default class DB_Rooms {
     public static async CreateNewRoom(room: {
@@ -13,7 +13,7 @@ export default class DB_Rooms {
         maxUsersInRoom: number
         creator?: userUniqueData
     }): Promise<roomData> {
-        const res = await prisma.createRoom({
+        const res = await dockerPrisma.createRoom({
             id: room.id,
             isPublic: room.isPublic || false,
             creator: {
@@ -41,15 +41,15 @@ export default class DB_Rooms {
     }
 
     public static async IsRoomExists(roomId: string): Promise<boolean> {
-        return !!(await prisma.room({id: roomId}));
+        return !!(await dockerPrisma.room({id: roomId}));
     }
 
     public static async IsRoomPublic(roomId: string): Promise<boolean> {
-        return ((await prisma.room({id: roomId}))!).isPublic;
+        return ((await dockerPrisma.room({id: roomId}))!).isPublic;
     }
 
     public static async ConnectUserToRoom(roomId: string, user: userUniqueData): Promise<void> {
-        await prisma.updateRoom({
+        await dockerPrisma.updateRoom({
             data: {
                 usersInRoom: {
                     connect: user
@@ -62,7 +62,7 @@ export default class DB_Rooms {
     }
 
     public static async DisconnectUserFromRoom(roomId: string, user: userUniqueData): Promise<void> {
-        await prisma.updateRoom({
+        await dockerPrisma.updateRoom({
             data: {
                 usersInRoom: {
                     disconnect: user
@@ -75,7 +75,7 @@ export default class DB_Rooms {
     }
 
     public static async GetUserRoomId(user: userUniqueData): Promise<string | undefined> {
-        const tables = await prisma.rooms({
+        const tables = await dockerPrisma.rooms({
             where: {
                 usersInRoom_some: user
             }
