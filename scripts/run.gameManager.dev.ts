@@ -9,6 +9,7 @@ import {Decks} from "./gamesManager/gameTableManager/deck/decks";
 import {HeroesStacks} from "./gamesManager/gameTableManager/heroesStacks/heroesStacks";
 import logLink from "./utils/consoleLogs/logLink";
 import dockerPrisma from "./models/dockerPrisma";
+import {tableData} from "./models/table/table";
 
 
 export default class GameManagerServerDev {
@@ -29,10 +30,6 @@ export default class GameManagerServerDev {
             logInfo("Mode: GAME MANAGER");
             logInfo(`Server version: ${process.env.npm_package_version}`);
             StartLoggingSystemStatsTimeout(120000 * 3);
-            // console.log();
-
-            logLink(`http://localhost:4466`, "Prisma playground");
-            logLink(`http://localhost:4466/_admin`, "Prisma admin panel");
             // console.log();
 
             await dockerPrisma.deleteManyTables();
@@ -62,16 +59,15 @@ export default class GameManagerServerDev {
             const data = req.body;
             const usersId = data.usersId;
 
-            const tableId = await this.CreateNewGameTable({usersId: usersId});
-            res.json({tableId: tableId});
+            res.json(await this.CreateNewGameTable({usersId: usersId}));
         });
     }
 
-    private async CreateNewGameTable(tableUsers: { usersId: Array<string> }): Promise<string> {
+    private async CreateNewGameTable(tableUsers: { usersId: Array<string> }): Promise<tableData> {
         return (await this.gamesManager!.CreateNewTable(
             tableUsers,
             Decks.defaultDeck,
             HeroesStacks.defaultStack
-        )).id;
+        ));
     }
 }

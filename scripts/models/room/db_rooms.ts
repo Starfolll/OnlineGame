@@ -40,6 +40,10 @@ export default class DB_Rooms {
         }
     }
 
+    public static async DeleteRoom(roomId: string): Promise<void> {
+        await dockerPrisma.deleteRoom({id: roomId});
+    }
+
     public static async IsRoomExists(roomId: string): Promise<boolean> {
         return !!(await dockerPrisma.room({id: roomId}));
     }

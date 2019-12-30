@@ -7,7 +7,6 @@ import ChatMessage, {chatMessageInfo} from "../../utils/chat/chatMessage";
 import Room, {extendedRoomData} from "../room/room";
 import DB_Rooms from "../room/db_rooms";
 import DB_Users from "../user/db_users";
-import {prisma} from "../../../generated/prisma-client";
 
 export type extendedLobbyData = {
     lobbyData: lobbyData,
@@ -98,11 +97,11 @@ export default class Lobby {
         }
     }
 
-    private DeleteRoom(isRoomPublic: boolean, roomId: string): void {
+    private async DeleteRoom(isRoomPublic: boolean, roomId: string): Promise<void> {
+        await DB_Rooms.DeleteRoom(roomId);
+
         if (isRoomPublic) delete this.publicRooms[roomId];
         else delete this.privateRooms[roomId];
-
-        prisma.deleteRoom({id: roomId});
     }
 
 
@@ -135,7 +134,7 @@ export default class Lobby {
             isPublic: true,
             lobbyId: this.id,
             maxUsersInRoom: 1,
-        }), this.DeleteRoom);
+        }), (isRoomPublic: boolean, roomId: string) => this.DeleteRoom(isRoomPublic, roomId));
 
         this.publicRooms[room.id] = room;
 

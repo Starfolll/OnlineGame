@@ -9,6 +9,7 @@ import ChatMessage, {chatMessageInfo} from "../../utils/chat/chatMessage";
 import LobbyUser from "../../globalLobbyManager/lobbyUser";
 import {userRoomResponse} from "../../globalLobbyManager/communicationWithUser/room/responseRoomMessage.types";
 import IsRoomMessageValid from "../../globalLobbyManager/communicationWithUser/room/responseRoomMessage";
+import GamesManagerApiRequests from "../../gamesManager/gamesManagerApiRequests";
 
 export type extendedRoomData = {
     roomData: roomData;
@@ -84,17 +85,9 @@ export default class Room {
 
     // start game
     private async StartPublicGame(): Promise<void> {
-        const res = await fetch("http://localhost:8015/api/create-new-game-table", {
-            headers: {"Content-Type": "application/json"},
-            method: "POST",
-            body: JSON.stringify({
-                usersId: this.usersIdInRoom
-            })
-        });
-        const data = await res.json();
-        const tableId = data.tableId;
+        const tableData = (await GamesManagerApiRequests.CreateNewTable(this.usersIdInRoom));
 
-        this.InformUsersAboutGameStart(tableId);
+        this.InformUsersAboutGameStart(tableData.id);
         this.RemoveUsersEventHandlers();
         this.onRoomDeleteHandler(this.isPublic, this.id);
     }

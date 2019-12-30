@@ -26,10 +26,6 @@ export default class GlobalLobbyManagerServerDev {
             StartLoggingSystemStatsTimeout(120000 * 3);
             // console.log();
 
-            logLink(`http://localhost:4466`, "Prisma playground");
-            logLink(`http://localhost:4466/_admin`, "Prisma admin panel");
-            // console.log();
-
             await dockerPrisma.deleteManyRooms();
             await dockerPrisma.deleteManyLobbies();
 
