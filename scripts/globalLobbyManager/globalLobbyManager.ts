@@ -28,7 +28,7 @@ export default class GlobalLobbyManager {
                     if (!validMessage) throw new Error();
 
                     const userData = await DB_Users.GetUserDataByIdAndToken(validMessage.id, validMessage.token);
-                    if (!userData) throw new Error();
+                    if (!userData || !userData.isVerified) throw new Error();
 
                     const lobbyId = await DB_Lobbies.IsUserInLobby(this.globalLobby.id, {id: userData.id});
                     if (lobbyId) {

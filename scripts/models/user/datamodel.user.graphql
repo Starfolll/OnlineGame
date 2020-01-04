@@ -2,6 +2,9 @@ type User {
     id: ID! @id
     token: String!
 
+    isVerified: Boolean! @default(value: false)
+    verificationLink: String
+
     createdAt: DateTime! @createdAt
     updatedAt: DateTime! @updatedAt
 

@@ -9,7 +9,7 @@ import ChatMessage, {chatMessageInfo} from "../../utils/chat/chatMessage";
 import LobbyUser from "../../globalLobbyManager/lobbyUser";
 import {userRoomResponse} from "../../globalLobbyManager/communicationWithUser/room/responseRoomMessage.types";
 import IsRoomMessageValid from "../../globalLobbyManager/communicationWithUser/room/responseRoomMessage";
-import GamesManagerApiRequests from "../../gamesManager/gamesManagerApiRequests";
+import GamesManagerApiRequests from "../../api/gamesManager/gamesManager.api.requests";
 
 export type extendedRoomData = {
     roomData: roomData;

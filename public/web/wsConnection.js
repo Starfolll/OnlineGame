@@ -16,7 +16,10 @@ const connectToLobby = () => {
    };
 
    socket.onmessage = (e) => {
-      console.log(JSON.parse(e.data));
+      const messageBody = JSON.parse(e.data);
+      console.log(messageBody);
+
+      if (messageBody.messageType === "gameStart") connectToGame(messageBody.tableId);
    };
 
    socket.onerror = (err) => console.error(" | connection error", err);

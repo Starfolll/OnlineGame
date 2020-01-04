@@ -5,38 +5,86 @@ import usersAvatar from "./router/static/usersAvatar";
 import logInfo from "./utils/consoleLogs/logInfo";
 import logLink from "./utils/consoleLogs/logLink";
 import {StartLoggingSystemStatsTimeout} from "./utils/consoleLogs/logSystemInfo";
+import StaticApi from "./api/static/static.api";
+import * as core from "express-serve-static-core";
 
 
-export default class StaticAndApiServeServerDev {
+export default class StaticAndApiServeServerDev extends StaticApi {
     private webPort: number | undefined;
+    private publicApp: core.Express | undefined;
+
 
     constructor() {
+        super();
         (async () => {
-            // console.clear();
-            // logLetters("hi!");
-            // logLetters("dev +_+");
-            // console.log();
-
-            // console.log();
             logInfo("Mode: STATIC AND API SERVE");
             logInfo(`Server version: ${process.env.npm_package_version}`);
             StartLoggingSystemStatsTimeout(120000 * 3);
-            // console.log();
 
             logLink(`http://localhost:4466`, "Prisma playground");
             logLink(`http://localhost:4466/_admin`, "Prisma admin panel");
-            // console.log();
 
             this.webPort = +process.env.PUBLIC_WEB_AND_API_PORT!;
 
-            const app = express();
+            this.publicApp = express();
 
-            app.use("/", webPageRoute);
-            app.use("/usersAvatars", usersAvatar);
+            this.publicApp.use(express.json());
+            this.publicApp.use("/", webPageRoute);
+            this.publicApp.use("/usersAvatars", usersAvatar);
 
-            app.listen(this.webPort);
+            this.AppBindPostLoginUser("/api/users/actions/login", this.publicApp);
+            this.AppBindPostSignUpUser("/api/users/actions/signUp", this.publicApp);
+
+            this.AppBindGetVerifyUser(
+                "/api/users/actions/verify/:name/:verificationLink/",
+                this.publicApp,
+                "name",
+                "verificationLink"
+            );
+
+            this.publicApp.listen(this.webPort);
             logInfo(`Web listening at port ${this.webPort}`);
-            // console.log();
+
+            // api test //
+            //
+            // await fetch(`http://localhost:${this.webPort}/api/users/actions/login`, {
+            //     method: "POST",
+            //     headers: {"Content-Type": "application/json"},
+            //     body: JSON.stringify({
+            //         email: "admin1@admin.com",
+            //         password: "1234567890"
+            //     })
+            // })
+            //     .then(res => res.json())
+            //     .then(data => console.log(JSON.stringify(data, null, 2)));
+            //
+            // await fetch(`http://localhost:${this.webPort}/api/users/actions/signUp`, {
+            //     method: "POST",
+            //     headers: {"Content-Type": "application/json"},
+            //     body: JSON.stringify({
+            //         email: "andrey.kovyarov@gmail.com",
+            //         password: "1234567890",
+            //         name: "andrey",
+            //         publicName: "Starfolll"
+            //     })
+            // })
+            //     .then(res => res.json())
+            //     .then(data => console.log(JSON.stringify(data, null, 2)));
+            //
+            // await fetch(`http://localhost:${this.webPort}/api/users/actions/verify/admin1/15gDYRYMsg6wgtYbZr41K6ye2sCVniLY6odZemFOVcFrxJ8Wjuu15JGQ7-wJhLlH~iyIcRh_d6d_gw4NC-7PsOrb9T5iJVhzD9YD6oCs4si0rohRYhba72i0/`)
+            //     .then(res => res.text())
+            //     .then(data => console.log(data));
+            //
+            // await fetch(`http://localhost:${this.webPort}/api/users/actions/login`, {
+            //     method: "POST",
+            //     headers: {"Content-Type": "application/json"},
+            //     body: JSON.stringify({
+            //         email: "admin1@admin.com",
+            //         password: "1234567890"
+            //     })
+            // })
+            //     .then(res => res.json())
+            //     .then(data => console.log(JSON.stringify(data, null, 2)));
         })();
     }
 }

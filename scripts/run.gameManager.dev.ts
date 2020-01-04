@@ -5,14 +5,11 @@ import logInfo from "./utils/consoleLogs/logInfo";
 
 import {GamesManager} from "./gamesManager/gamesManager";
 import {StartLoggingSystemStatsTimeout} from "./utils/consoleLogs/logSystemInfo";
-import {Decks} from "./gamesManager/gameTableManager/deck/decks";
-import {HeroesStacks} from "./gamesManager/gameTableManager/heroesStacks/heroesStacks";
-import logLink from "./utils/consoleLogs/logLink";
 import dockerPrisma from "./models/dockerPrisma";
-import {tableData} from "./models/table/table";
+import GamesManagerApi from "./api/gamesManager/gamesManager.api";
 
 
-export default class GameManagerServerDev {
+export default class GameManagerServerDev extends GamesManagerApi {
     private gamesManager: GamesManager | undefined;
     private privateApiApp: core.Express | undefined;
 
@@ -20,6 +17,7 @@ export default class GameManagerServerDev {
     private privateApiPort: number | undefined;
 
     constructor() {
+        super();
         (async () => {
             // console.clear();
             // logLetters("hi!");
@@ -45,29 +43,12 @@ export default class GameManagerServerDev {
             );
 
             this.privateApiApp.use(express.json());
-            this.AppBindPostCreateNewGameTable();
+            this.AppBindPostCreateNewGameTable("/api/create-new-game-table", this.privateApiApp, this.gamesManager);
 
             this.privateApiApp.listen(this.privateApiPort);
             logInfo(`Games manager API listening at port ${this.privateApiPort}`);
             logInfo(`Games manager WS listening at port ${this.publicGameWSPort}`);
             // console.log();
         })();
-    }
-
-    private AppBindPostCreateNewGameTable(): void {
-        this.privateApiApp!.post("/api/create-new-game-table", async (req, res) => {
-            const data = req.body;
-            const usersId = data.usersId;
-
-            res.json(await this.CreateNewGameTable({usersId: usersId}));
-        });
-    }
-
-    private async CreateNewGameTable(tableUsers: { usersId: Array<string> }): Promise<tableData> {
-        return (await this.gamesManager!.CreateNewTable(
-            tableUsers,
-            Decks.defaultDeck,
-            HeroesStacks.defaultStack
-        ));
     }
 }

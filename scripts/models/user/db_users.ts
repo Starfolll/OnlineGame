@@ -25,7 +25,9 @@ export default class DB_Users {
 
 
     public static async CreateNewUser(user: {
-        id?: string
+        id?: string,
+        isVerified?: boolean,
+        verificationLink?: string
         name: string,
         email: string,
         password: string,
@@ -38,10 +40,11 @@ export default class DB_Users {
         const res = await dockerPrisma.createUser({
             ...user,
             password: await bcrypt.hash(user.password, 10),
-            token: user.token || cryptoRandomString({length: 60}),
-            lvl: user.lvl || 1,
-            xp: user.xp || 0,
-            gold: user.gold || 0
+            token: user.token ?? cryptoRandomString({length: 60}),
+            verificationLink: user.verificationLink ?? cryptoRandomString({length: 120, type: "url-safe"}),
+            lvl: user.lvl ?? 1,
+            xp: user.xp ?? 0,
+            gold: user.gold ?? 0
         });
 
         if (!res.id) logError(res);
@@ -58,6 +61,16 @@ export default class DB_Users {
 
     public static async GetUserData(user: userUniqueData): Promise<userData | null> {
         return (await dockerPrisma.user(user));
+    }
+
+    public static async VerifyUser(user: userUniqueData): Promise<void> {
+        await dockerPrisma.updateUser({
+            where: user,
+            data: {
+                isVerified: true,
+                verificationLink: null
+            }
+        })
     }
 
     public static async GetUserDataByEmailAndPassword(email: string, password: string): Promise<userData | null> {

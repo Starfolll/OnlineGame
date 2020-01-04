@@ -1,4 +1,4 @@
-import {tableData} from "../models/table/table";
+import {tableData} from "../../models/table/table";
 
 export default class GamesManagerApiRequests {
     public static async CreateNewTable(usersIdInRoom: Array<string>): Promise<tableData> {

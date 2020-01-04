@@ -30,7 +30,7 @@ export class GamesManager {
                     if (!validMessage) throw new Error();
                     const userData = await DB_Users.GetUserDataByIdAndToken(validMessage.id, validMessage.token);
 
-                    if (!userData) throw new Error();
+                    if (!userData || !userData.isVerified) throw new Error();
                     if (!(await DB_Tables.IsTableExists(validMessage.tableId))) throw new Error();
 
                     connection.removeEventListener("message", onMessageHandler);

@@ -15,16 +15,9 @@ export default class GlobalLobbyManagerServerDev {
 
     constructor() {
         (async () => {
-            // console.clear();
-            // logLetters("hi!");
-            // logLetters("dev +_+");
-            // console.log();
-
-            // console.log();
             logInfo("Mode: LOBBY MANAGER");
             logInfo(`Server version: ${process.env.npm_package_version}`);
             StartLoggingSystemStatsTimeout(120000 * 3);
-            // console.log();
 
             await dockerPrisma.deleteManyRooms();
             await dockerPrisma.deleteManyLobbies();

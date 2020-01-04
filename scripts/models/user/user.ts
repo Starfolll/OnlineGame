@@ -8,6 +8,7 @@ export type userUniqueData = {
 
 export type userData = {
     id: string;
+    isVerified: boolean;
     token: string;
     name: string;
     email: string;
@@ -18,6 +19,7 @@ export type userData = {
     lvl: number;
     xp: number;
     gold: number;
+    verificationLink?: string;
 }
 
 export type userPublicData = {
@@ -28,6 +30,8 @@ export type userPublicData = {
 export default class User {
     public readonly id: string;
     public readonly token: string;
+
+    public readonly isVerified: boolean;
 
     public readonly name: string;
     public readonly email: string;
@@ -43,6 +47,8 @@ export default class User {
     constructor(data: userData) {
         this.id = data.id;
         this.token = data.token;
+
+        this.isVerified = data.isVerified;
 
         this.name = data.name;
         this.email = data.email;

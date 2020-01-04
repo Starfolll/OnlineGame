@@ -1,8 +1,11 @@
 import {Prisma} from "../../generated/prisma-client";
+import dotenv from "dotenv";
 
+dotenv.config();
+const prismaEndpoint = `http://${process.env.PRISMA_ENDPOINT}:${process.env.PRISMA_SERVE_PORT}`;
 const dockerPrisma = new Prisma({
     ...Prisma,
-    endpoint: "http://prisma:4466"
+    endpoint: prismaEndpoint
 });
 
 export default dockerPrisma;
