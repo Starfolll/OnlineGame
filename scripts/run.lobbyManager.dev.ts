@@ -5,7 +5,7 @@ import GlobalLobbyManager from "./globalLobbyManager/globalLobbyManager";
 import WebSocket from "ws";
 import GlobalLobby from "./globalLobbyManager/globalLobby";
 import DB_Lobbies from "./models/lobby/db_lobbies";
-import dockerPrisma from "./models/dockerPrisma";
+import wrappedPrisma from "./models/wrappedPrisma";
 
 
 export default class GlobalLobbyManagerServerDev {
@@ -19,8 +19,8 @@ export default class GlobalLobbyManagerServerDev {
             logInfo(`Server version: ${process.env.npm_package_version}`);
             StartLoggingSystemStatsTimeout(120000 * 3);
 
-            await dockerPrisma.deleteManyRooms();
-            await dockerPrisma.deleteManyLobbies();
+            await wrappedPrisma.deleteManyRooms();
+            await wrappedPrisma.deleteManyLobbies();
 
             this.lobbyManagerWSPort = +process.env.PUBLIC_GLOBAL_LOBBY_WS_PORT!;
 

@@ -3,9 +3,9 @@ import dotenv from "dotenv";
 
 dotenv.config();
 const prismaEndpoint = `http://${process.env.PRISMA_ENDPOINT}:${process.env.PRISMA_SERVE_PORT}`;
-const dockerPrisma = new Prisma({
+const wrappedPrisma = new Prisma({
     ...Prisma,
     endpoint: prismaEndpoint
 });
 
-export default dockerPrisma;
+export default wrappedPrisma;

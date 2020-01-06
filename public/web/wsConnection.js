@@ -3,8 +3,35 @@ let socket;
 let id = "null";
 let token = "null";
 
+// static api
+const api = {
+   signUp: async (name, email, password, publicName) => {
+      const res = await fetch("http://localhost:8000/api/users/actions/createUser", {
+         method: "POST",
+         headers: {"Content-Type": "application/json"},
+         body: JSON.stringify({name, email, password, publicName})
+      });
+
+      const data = await res.json();
+      console.log(data);
+   },
+   login: async (email, password) => {
+      const res = await fetch("http://localhost:8000/api/users/actions/login", {
+         method: "POST",
+         headers: {"Content-Type": "application/json"},
+         body: JSON.stringify({email, password})
+      });
+
+      const data = await res.json();
+      console.log(data);
+   }
+};
+
 // lobby
-const connectToLobby = () => {
+const connectToLobby = (uId = id, uToken = token) => {
+   token = uToken;
+   id = uId;
+
    socket = new WebSocket(`ws://${window.location.hostname}:8081`);
 
    socket.onopen = () => {

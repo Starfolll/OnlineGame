@@ -3,7 +3,7 @@ import logError from "../../utils/consoleLogs/logError";
 import logInfo from "../../utils/consoleLogs/logInfo";
 import {roomData} from "./room";
 import DB_Users from "../user/db_users";
-import dockerPrisma from "../dockerPrisma";
+import wrappedPrisma from "../wrappedPrisma";
 
 export default class DB_Rooms {
     public static async CreateNewRoom(room: {
@@ -13,7 +13,7 @@ export default class DB_Rooms {
         maxUsersInRoom: number
         creator?: userUniqueData
     }): Promise<roomData> {
-        const res = await dockerPrisma.createRoom({
+        const res = await wrappedPrisma.createRoom({
             id: room.id,
             isPublic: room.isPublic || false,
             creator: {
@@ -41,19 +41,19 @@ export default class DB_Rooms {
     }
 
     public static async DeleteRoom(roomId: string): Promise<void> {
-        await dockerPrisma.deleteRoom({id: roomId});
+        await wrappedPrisma.deleteRoom({id: roomId});
     }
 
     public static async IsRoomExists(roomId: string): Promise<boolean> {
-        return !!(await dockerPrisma.room({id: roomId}));
+        return !!(await wrappedPrisma.room({id: roomId}));
     }
 
     public static async IsRoomPublic(roomId: string): Promise<boolean> {
-        return ((await dockerPrisma.room({id: roomId}))!).isPublic;
+        return ((await wrappedPrisma.room({id: roomId}))!).isPublic;
     }
 
     public static async ConnectUserToRoom(roomId: string, user: userUniqueData): Promise<void> {
-        await dockerPrisma.updateRoom({
+        await wrappedPrisma.updateRoom({
             data: {
                 usersInRoom: {
                     connect: user
@@ -66,7 +66,7 @@ export default class DB_Rooms {
     }
 
     public static async DisconnectUserFromRoom(roomId: string, user: userUniqueData): Promise<void> {
-        await dockerPrisma.updateRoom({
+        await wrappedPrisma.updateRoom({
             data: {
                 usersInRoom: {
                     disconnect: user
@@ -79,7 +79,7 @@ export default class DB_Rooms {
     }
 
     public static async GetUserRoomId(user: userUniqueData): Promise<string | undefined> {
-        const tables = await dockerPrisma.rooms({
+        const tables = await wrappedPrisma.rooms({
             where: {
                 usersInRoom_some: user
             }

@@ -1,40 +1,56 @@
 import Joi from "joi";
 
-const validationPatterns = {
+const validationRegexPatterns = {
     signUp: {
         name: /^[-_.~A-Za-z0-9]+$/,
     }
 };
 
+const joiEmailCredentialsSchema = {
+    email: Joi.string().min(6).max(255).email().required(),
+    password: Joi.string().min(8).max(255).required(),
+};
+
+const joiTokenCredentialsSchema = {
+    id: Joi.string().required(),
+    token: Joi.string().required(),
+};
+
+const joiPublicNameSchema = {
+    publicName: Joi.string().min(2).max(20).required(),
+};
+
+const joiNameSchema = {
+    name: Joi.string().min(2).max(255).required().regex(validationRegexPatterns.signUp.name)
+};
+
 export const staticApiRequestValidationSchemas = {
     userLoginSchema: {
-        email: Joi.string().max(255).required().email(),
-        password: Joi.string().max(255).required()
+        ...joiEmailCredentialsSchema
     },
     userSignUpSchema: {
-        email: Joi.string().min(6).max(255).email().required(),
-        password: Joi.string().min(8).max(255).required(),
-        publicName: Joi.string().min(2).max(20).required(),
-        name: Joi.string().min(2).max(255).required().regex(validationPatterns.signUp.name)
+        ...joiEmailCredentialsSchema,
+        ...joiPublicNameSchema,
+        ...joiNameSchema
     },
     userSendFriendInviteSchema: {
-        id: Joi.string().required(),
-        token: Joi.string().required(),
-        name: Joi.string().required()
+        ...joiTokenCredentialsSchema,
+        ...joiNameSchema
     },
     userAcceptFriendsInviteSchema: {
-        id: Joi.string().required(),
-        token: Joi.string().required(),
+        ...joiTokenCredentialsSchema,
         friendId: Joi.string().required()
     },
     userRejectFriendInviteSchema: {
-        id: Joi.string().required(),
-        token: Joi.string().required(),
+        ...joiTokenCredentialsSchema,
         inviteUserId: Joi.string().required()
     },
     userDeleteFriendSchema: {
-        id: Joi.string().required(),
-        token: Joi.string().required(),
+        ...joiTokenCredentialsSchema,
         friendId: Joi.string().required()
+    },
+    userChangePublicNameSchema: {
+        ...joiTokenCredentialsSchema,
+        ...joiPublicNameSchema
     }
 };

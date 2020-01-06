@@ -121,7 +121,13 @@ export default class StaticApi {
                 "error": "invalid data"
             });
 
+
             const userToInvite = new User(userToInviteData);
+            if ((await userToInvite.GetUserFriends()).some(u => u.id === body.id)) return res.status(400).json({
+                "sent": false,
+                "error": "you are already friends with that user"
+            });
+
             if ((await userToInvite.GetUserInvites()).length >= this.usersInvitesLimit) return res.status(400).json({
                 "sent": false,
                 "error": "invite list full"
@@ -246,6 +252,34 @@ export default class StaticApi {
         });
     }
 
+    protected AppBindPostChangeUserPublicName(route: string, app: core.Express): void {
+        app.post(route, async (req, res) => {
+            const body: {
+                id: string,
+                token: string,
+                publicName: string
+            } = req.body;
+
+            const {error} = Joi.validate(body, staticApiRequestValidationSchemas.userChangePublicNameSchema);
+            if (!!error) return res.status(400).json({
+                "changed": false,
+                "error": error,
+            });
+
+            const userData = await DB_Users.GetUserDataByIdAndToken(body.id, body.token);
+            if (!userData || !userData.isVerified) return res.status(400).json({
+                "changed": false,
+                "error": "invalid data"
+            });
+
+            const user = new User(userData);
+            await user.ChangeUserPublicName(body.publicName);
+
+            res.status(200).json({
+                "changed": true
+            });
+        });
+    }
 
     //get
     protected AppBindGetVerifyUser(route: string, app: core.Express, paramUserName: string, paramVerificationLink: string): void {

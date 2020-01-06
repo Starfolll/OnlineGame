@@ -5,25 +5,10 @@ import bcrypt from "bcrypt";
 
 import logInfo from "../../utils/consoleLogs/logInfo";
 import logError from "../../utils/consoleLogs/logError";
-import dockerPrisma from "../dockerPrisma";
+import wrappedPrisma from "../wrappedPrisma";
 
 
 export default class DB_Users {
-    public static async IsUserExists(
-        user: {
-            name?: undefined | string,
-            email?: undefined | string,
-            id?: undefined | string
-        }
-    ): Promise<boolean> {
-        return !!(await dockerPrisma.user({
-            name: user.name,
-            email: user.email,
-            id: user.id
-        }));
-    }
-
-
     public static async CreateNewUser(user: {
         id?: string,
         isVerified?: boolean,
@@ -37,7 +22,7 @@ export default class DB_Users {
         xp?: number,
         gold?: number
     }): Promise<userData> {
-        const res = await dockerPrisma.createUser({
+        const res = await wrappedPrisma.createUser({
             ...user,
             password: await bcrypt.hash(user.password, 10),
             token: user.token ?? cryptoRandomString({length: 60}),
@@ -53,28 +38,39 @@ export default class DB_Users {
         return res;
     }
 
+    public static async SetUserPublicName(user: userUniqueData, name: string): Promise<void> {
+        const res = await wrappedPrisma.updateUser({
+            where: user,
+            data: {
+                publicName: name
+            }
+        });
+        if (!res.id) logError(res);
+    }
+
     public static async DeleteUser(user: userUniqueData): Promise<void> {
-        const res = await dockerPrisma.deleteUser(user);
+        const res = await wrappedPrisma.deleteUser(user);
         if (!res.id) logError(res);
     }
 
 
     public static async GetUserData(user: userUniqueData): Promise<userData | null> {
-        return (await dockerPrisma.user(user));
+        return (await wrappedPrisma.user(user));
     }
 
     public static async VerifyUser(user: userUniqueData): Promise<void> {
-        await dockerPrisma.updateUser({
+        const res = await wrappedPrisma.updateUser({
             where: user,
             data: {
                 isVerified: true,
                 verificationLink: null
             }
-        })
+        });
+        if (!res.id) logError(res);
     }
 
     public static async GetUserInvites(user: userUniqueData): Promise<Array<userData>> {
-        return (await dockerPrisma.users({
+        return (await wrappedPrisma.users({
             where: {
                 friendInvites_some: user,
             }
@@ -82,27 +78,27 @@ export default class DB_Users {
     }
 
     public static async GetUserFriends(user: userUniqueData): Promise<Array<userData>> {
-        return (await dockerPrisma.users({
+        return (await wrappedPrisma.users({
             where: {
                 friends_some: user,
-
             }
         }));
     }
 
     public static async DeleteUserInvite(user: userUniqueData, fromUser: userUniqueData): Promise<void> {
-        await dockerPrisma.updateUser({
+        const res = await wrappedPrisma.updateUser({
             where: user,
             data: {
                 friendInvites: {
                     disconnect: fromUser
                 }
             }
-        })
+        });
+        if (!res.id) logError(res);
     }
 
     public static async AddInviteToUser(toUser: userUniqueData, fromUser: userUniqueData): Promise<void> {
-        await dockerPrisma.updateUser({
+        const res = await wrappedPrisma.updateUser({
             where: fromUser,
             data: {
                 friendInvites: {
@@ -110,10 +106,11 @@ export default class DB_Users {
                 }
             }
         });
+        if (!res.id) logError(res);
     }
 
     public static async DisconnectFriendFromUser(user: userUniqueData, friend: userUniqueData): Promise<void> {
-        await dockerPrisma.updateUser({
+        const res1 = await wrappedPrisma.updateUser({
             where: user,
             data: {
                 friends: {
@@ -121,8 +118,9 @@ export default class DB_Users {
                 }
             }
         });
+        if (!res1.id) logError(res1);
 
-        await dockerPrisma.updateUser({
+        const res2 = await wrappedPrisma.updateUser({
             where: friend,
             data: {
                 friends: {
@@ -130,10 +128,11 @@ export default class DB_Users {
                 }
             }
         });
+        if (!res2.id) logError(res2);
     }
 
     public static async AddFriendToUser(toUser: userUniqueData, fromUser: userUniqueData): Promise<void> {
-        await dockerPrisma.updateUser({
+        const res1 = await wrappedPrisma.updateUser({
             where: toUser,
             data: {
                 friends: {
@@ -144,8 +143,10 @@ export default class DB_Users {
                 }
             }
         });
+        if (!res1.id) logError(res1);
 
-        await dockerPrisma.updateUser({
+
+        const res2 = await wrappedPrisma.updateUser({
             where: fromUser,
             data: {
                 friends: {
@@ -153,17 +154,18 @@ export default class DB_Users {
                 }
             }
         });
+        if (!res2.id) logError(res2);
     }
 
     public static async GetUserDataByEmailAndPassword(email: string, password: string): Promise<userData | null> {
-        const user = await dockerPrisma.user({email: email});
+        const user = await wrappedPrisma.user({email: email});
         if (!user) return null;
         if (!(await bcrypt.compare(password, user.password))) return null;
         return user as userData;
     }
 
     public static async GetUserDataByIdAndToken(id: string, token: string): Promise<userData | null> {
-        const user = await dockerPrisma.user({id: id});
+        const user = await wrappedPrisma.user({id: id});
         if (!user) return null;
         if (user.token !== token) return null;
         return user as userData;

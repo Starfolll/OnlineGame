@@ -101,6 +101,10 @@ export default class User {
 
 
     // database promises
+    public async ChangeUserPublicName(name: string): Promise<void> {
+        await DB_Users.SetUserPublicName({id: this.id}, name);
+    }
+
     public async GetUserInvites(): Promise<Array<userData>> {
         return await DB_Users.GetUserInvites({id: this.id});
     }

@@ -5,7 +5,7 @@ import logInfo from "./utils/consoleLogs/logInfo";
 
 import {GamesManager} from "./gamesManager/gamesManager";
 import {StartLoggingSystemStatsTimeout} from "./utils/consoleLogs/logSystemInfo";
-import dockerPrisma from "./models/dockerPrisma";
+import wrappedPrisma from "./models/wrappedPrisma";
 import GamesManagerApi from "./api/gamesManager/gamesManager.api";
 
 
@@ -30,7 +30,7 @@ export default class GameManagerServerDev extends GamesManagerApi {
             StartLoggingSystemStatsTimeout(120000 * 3);
             // console.log();
 
-            await dockerPrisma.deleteManyTables();
+            await wrappedPrisma.deleteManyTables();
 
             this.privateApiPort = +process.env.PRIVATE_GAME_API_PORT!;
             this.publicGameWSPort = +process.env.PUBLIC_GAME_WS_PORT!;
