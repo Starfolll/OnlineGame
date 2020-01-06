@@ -7,9 +7,18 @@ import {staticApiRequestValidationSchemas} from "./static.api.reqValidationsSche
 import emailTransporter from "../../mailer/transporter.account";
 import transporterEmails from "../../mailer/transporter.emails";
 import cryptoRandomString from "crypto-random-string";
+import User from "../../models/user/user";
+import dotenv from "dotenv";
 
 
+dotenv.config();
 export default class StaticApi {
+    protected usersInvitesLimit: number = +process.env.PUBLIC_WEB_AND_API_USERS_INVITES_LIMIT!;
+    protected usersFriendsLimit: number = +process.env.PUBLIC_WEB_AND_API_USERS_FRIENDS_LIMIT!;
+    protected automaticValidateUsers: boolean = process.env.AUTOMATIC_VALIDATE_USERS! === "true";
+
+
+    //post
     protected AppBindPostLoginUser(route: string, app: core.Express): void {
         app.post(route, async (req, res) => {
             const body: { email: string, password: string } = req.body;
@@ -20,29 +29,20 @@ export default class StaticApi {
                 "error": error,
             });
 
-            const user = await DB_Users.GetUserDataByEmailAndPassword(body.email, body.password);
-            if (!user) return res.status(400).json({
+            const userData = await DB_Users.GetUserDataByEmailAndPassword(body.email, body.password);
+            if (!userData) return res.status(400).json({
                 "verified": false,
                 "error": "wrongPasswordOrEmail"
             });
 
-            if (!user.isVerified) return res.status(400).json({
+            if (!userData.isVerified) return res.status(400).json({
                 "verified": false,
                 "error": "verifyYourEmail"
             });
 
             res.status(200).json({
                 "verified": true,
-                "userData": {
-                    "id": user.id,
-                    "token": user.token,
-                    "name": user.name,
-                    "email": user.email,
-                    "publicName": user.publicName,
-                    "lvl": user.lvl,
-                    "xp": user.xp,
-                    "gold": user.gold,
-                }
+                "userData": await (new User(userData)).GetUserOnLoginData()
             })
         });
     }
@@ -72,27 +72,182 @@ export default class StaticApi {
                 }
             });
 
-            const verificationLink = cryptoRandomString({length: 120, type: "url-safe"});
+            const verificationLink: string | null =
+                !this.automaticValidateUsers ? cryptoRandomString({length: 120, type: "url-safe"}) : null;
             await DB_Users.CreateNewUser({
                 verificationLink,
+                isVerified: this.automaticValidateUsers,
                 email: body.email,
                 name: body.name,
                 password: body.password,
                 publicName: body.publicName
             });
 
-            await emailTransporter.sendMail(transporterEmails.verificationUserEmail(
+            if (!this.automaticValidateUsers) await emailTransporter.sendMail(transporterEmails.verificationUserEmail(
                 body.email,
                 `http://localhost:8000/api/users/actions/verify/${body.name}/${verificationLink}`
             ));
 
             res.status(200).send({
                 "verified": true,
-                "info": "check your email"
+                "info": !this.automaticValidateUsers ? "check your email" : "welcome"
             });
         });
     }
 
+    protected AppBindPostSendFriendInvite(route: string, app: core.Express): void {
+        app.post(route, async (req, res) => {
+            const body: {
+                id: string;
+                token: string;
+                name: string;
+            } = req.body;
+
+            const {error} = Joi.validate(body, staticApiRequestValidationSchemas.userSendFriendInviteSchema);
+            if (!!error) return res.status(400).json({
+                "sent": false,
+                "error": error,
+            });
+
+            const userData = await DB_Users.GetUserDataByIdAndToken(body.id, body.token);
+            if (!userData || !userData.isVerified || userData.name === body.name) return res.status(400).json({
+                "sent": false,
+                "error": "invalid data"
+            });
+
+            const userToInviteData = await DB_Users.GetUserData({name: body.name});
+            if (!userToInviteData || !userToInviteData.isVerified) return res.status(400).json({
+                "sent": false,
+                "error": "invalid data"
+            });
+
+            const userToInvite = new User(userToInviteData);
+            if ((await userToInvite.GetUserInvites()).length >= this.usersInvitesLimit) return res.status(400).json({
+                "sent": false,
+                "error": "invite list full"
+            });
+
+            const user = new User(userData);
+            if ((await user.GetUserInvites()).some(i => i.id === userToInvite.id)) return res.status(400).json({
+                "sent": false,
+                "error": "you already have invite from this user"
+            });
+
+            await user.SendUserInvite({id: userToInviteData.id});
+
+            res.status(200).send({
+                "sent": true
+            });
+        });
+    }
+
+    protected AppBindPostAcceptUserFriendInvite(route: string, app: core.Express): void {
+        app.post(route, async (req, res) => {
+            const body: {
+                id: string;
+                token: string;
+                friendId: string;
+            } = req.body;
+
+            const {error} = Joi.validate(body, staticApiRequestValidationSchemas.userAcceptFriendsInviteSchema);
+            if (!!error) return res.status(400).json({
+                "accepted": false,
+                "error": error,
+            });
+
+            const userData = await DB_Users.GetUserDataByIdAndToken(body.id, body.token);
+            if (!userData || !userData.isVerified) return res.status(400).json({
+                "accepted": false,
+                "error": "invalid data"
+            });
+
+            const user = new User(userData);
+            const userInvites = await user.GetUserInvites();
+            if (userInvites.length >= this.usersFriendsLimit || !userInvites.some(f => f.id === body.friendId)) return res.status(400).json({
+                "accepted": false,
+                "error": "invalid data"
+            });
+
+            await user.AcceptUserFriendInvite({id: body.friendId});
+
+            res.status(200).json({
+                "accepted": true
+            });
+        });
+    }
+
+    protected AppBindPostRejectUserFriendInvite(route: string, app: core.Express): void {
+        app.post(route, async (req, res) => {
+            const body: {
+                id: string,
+                token: string,
+                inviteUserId: string
+            } = req.body;
+
+            const {error} = Joi.validate(body, staticApiRequestValidationSchemas.userRejectFriendInviteSchema);
+            if (!!error) return res.status(400).json({
+                "rejected": false,
+                "error": error,
+            });
+
+            const userData = await DB_Users.GetUserDataByIdAndToken(body.id, body.token);
+            if (!userData || !userData.isVerified) return res.status(400).json({
+                "rejected": false,
+                "error": "invalid data"
+            });
+
+            const user = new User(userData);
+            const userInvites = await user.GetUserInvites();
+            if (!userInvites.some(i => i.id === body.inviteUserId)) return res.status(400).json({
+                "rejected": false,
+                "error": "invalid data"
+            });
+
+            await user.RejectUserFriendInvite({id: body.inviteUserId});
+
+            res.send({
+                "rejected": true
+            });
+        });
+    }
+
+    protected AppBindPostDeleteUserFromFriendsList(route: string, app: core.Express): void {
+        app.post(route, async (req, res) => {
+            const body: {
+                id: string,
+                token: string,
+                friendId: string
+            } = req.body;
+
+            const {error} = Joi.validate(body, staticApiRequestValidationSchemas.userDeleteFriendSchema);
+            if (!!error) return res.status(400).json({
+                "deleted": false,
+                "error": error,
+            });
+
+            const userData = await DB_Users.GetUserDataByIdAndToken(body.id, body.token);
+            if (!userData || !userData.isVerified) return res.status(400).json({
+                "deleted": false,
+                "error": "invalid data"
+            });
+
+            const user = new User(userData);
+            const userFriends = await user.GetUserFriends();
+            if (!userFriends.some(f => f.id === body.friendId)) return res.status(400).json({
+                "deleted": false,
+                "error": "invalid data"
+            });
+
+            await user.RemoveUserFromFriends({id: body.friendId});
+
+            res.status(200).json({
+                "deleted": true
+            });
+        });
+    }
+
+
+    //get
     protected AppBindGetVerifyUser(route: string, app: core.Express, paramUserName: string, paramVerificationLink: string): void {
         app.get(route, async (req, res) => {
             const userName = req.params[paramUserName];

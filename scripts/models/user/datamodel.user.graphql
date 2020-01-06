@@ -17,6 +17,9 @@ type User {
 
     publicName: String!
 
+    friends: [User!]! @relation(name: "UsersFriends")
+    friendInvites: [User!]! @relation(name: "UsersFriendInvites")
+
     lvl: Int!
     xp: Float!
     gold: Float!

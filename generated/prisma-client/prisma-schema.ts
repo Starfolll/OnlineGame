@@ -626,6 +626,8 @@ type User {
   email: String!
   password: String!
   publicName: String!
+  friends(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
+  friendInvites(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
   lvl: Int!
   xp: Float!
   gold: Float!
@@ -648,6 +650,8 @@ input UserCreateInput {
   email: String!
   password: String!
   publicName: String!
+  friends: UserCreateManyWithoutFriendsInput
+  friendInvites: UserCreateManyWithoutFriendInvitesInput
   lvl: Int!
   xp: Float!
   gold: Float!
@@ -655,6 +659,16 @@ input UserCreateInput {
 
 input UserCreateManyInput {
   create: [UserCreateInput!]
+  connect: [UserWhereUniqueInput!]
+}
+
+input UserCreateManyWithoutFriendInvitesInput {
+  create: [UserCreateWithoutFriendInvitesInput!]
+  connect: [UserWhereUniqueInput!]
+}
+
+input UserCreateManyWithoutFriendsInput {
+  create: [UserCreateWithoutFriendsInput!]
   connect: [UserWhereUniqueInput!]
 }
 
@@ -673,6 +687,40 @@ input UserCreateOneInput {
   connect: UserWhereUniqueInput
 }
 
+input UserCreateWithoutFriendInvitesInput {
+  id: ID
+  token: String!
+  isVerified: Boolean
+  verificationLink: String
+  table: TableCreateOneWithoutUsersInGameInput
+  lobby: LobbyCreateOneWithoutUsersInLobbyInput
+  name: String!
+  email: String!
+  password: String!
+  publicName: String!
+  friends: UserCreateManyWithoutFriendsInput
+  lvl: Int!
+  xp: Float!
+  gold: Float!
+}
+
+input UserCreateWithoutFriendsInput {
+  id: ID
+  token: String!
+  isVerified: Boolean
+  verificationLink: String
+  table: TableCreateOneWithoutUsersInGameInput
+  lobby: LobbyCreateOneWithoutUsersInLobbyInput
+  name: String!
+  email: String!
+  password: String!
+  publicName: String!
+  friendInvites: UserCreateManyWithoutFriendInvitesInput
+  lvl: Int!
+  xp: Float!
+  gold: Float!
+}
+
 input UserCreateWithoutLobbyInput {
   id: ID
   token: String!
@@ -683,6 +731,8 @@ input UserCreateWithoutLobbyInput {
   email: String!
   password: String!
   publicName: String!
+  friends: UserCreateManyWithoutFriendsInput
+  friendInvites: UserCreateManyWithoutFriendInvitesInput
   lvl: Int!
   xp: Float!
   gold: Float!
@@ -698,6 +748,8 @@ input UserCreateWithoutTableInput {
   email: String!
   password: String!
   publicName: String!
+  friends: UserCreateManyWithoutFriendsInput
+  friendInvites: UserCreateManyWithoutFriendInvitesInput
   lvl: Int!
   xp: Float!
   gold: Float!
@@ -927,6 +979,8 @@ input UserUpdateDataInput {
   email: String
   password: String
   publicName: String
+  friends: UserUpdateManyWithoutFriendsInput
+  friendInvites: UserUpdateManyWithoutFriendInvitesInput
   lvl: Int
   xp: Float
   gold: Float
@@ -942,6 +996,8 @@ input UserUpdateInput {
   email: String
   password: String
   publicName: String
+  friends: UserUpdateManyWithoutFriendsInput
+  friendInvites: UserUpdateManyWithoutFriendInvitesInput
   lvl: Int
   xp: Float
   gold: Float
@@ -985,6 +1041,30 @@ input UserUpdateManyMutationInput {
   gold: Float
 }
 
+input UserUpdateManyWithoutFriendInvitesInput {
+  create: [UserCreateWithoutFriendInvitesInput!]
+  delete: [UserWhereUniqueInput!]
+  connect: [UserWhereUniqueInput!]
+  set: [UserWhereUniqueInput!]
+  disconnect: [UserWhereUniqueInput!]
+  update: [UserUpdateWithWhereUniqueWithoutFriendInvitesInput!]
+  upsert: [UserUpsertWithWhereUniqueWithoutFriendInvitesInput!]
+  deleteMany: [UserScalarWhereInput!]
+  updateMany: [UserUpdateManyWithWhereNestedInput!]
+}
+
+input UserUpdateManyWithoutFriendsInput {
+  create: [UserCreateWithoutFriendsInput!]
+  delete: [UserWhereUniqueInput!]
+  connect: [UserWhereUniqueInput!]
+  set: [UserWhereUniqueInput!]
+  disconnect: [UserWhereUniqueInput!]
+  update: [UserUpdateWithWhereUniqueWithoutFriendsInput!]
+  upsert: [UserUpsertWithWhereUniqueWithoutFriendsInput!]
+  deleteMany: [UserScalarWhereInput!]
+  updateMany: [UserUpdateManyWithWhereNestedInput!]
+}
+
 input UserUpdateManyWithoutLobbyInput {
   create: [UserCreateWithoutLobbyInput!]
   delete: [UserWhereUniqueInput!]
@@ -1023,6 +1103,38 @@ input UserUpdateOneInput {
   connect: UserWhereUniqueInput
 }
 
+input UserUpdateWithoutFriendInvitesDataInput {
+  token: String
+  isVerified: Boolean
+  verificationLink: String
+  table: TableUpdateOneWithoutUsersInGameInput
+  lobby: LobbyUpdateOneWithoutUsersInLobbyInput
+  name: String
+  email: String
+  password: String
+  publicName: String
+  friends: UserUpdateManyWithoutFriendsInput
+  lvl: Int
+  xp: Float
+  gold: Float
+}
+
+input UserUpdateWithoutFriendsDataInput {
+  token: String
+  isVerified: Boolean
+  verificationLink: String
+  table: TableUpdateOneWithoutUsersInGameInput
+  lobby: LobbyUpdateOneWithoutUsersInLobbyInput
+  name: String
+  email: String
+  password: String
+  publicName: String
+  friendInvites: UserUpdateManyWithoutFriendInvitesInput
+  lvl: Int
+  xp: Float
+  gold: Float
+}
+
 input UserUpdateWithoutLobbyDataInput {
   token: String
   isVerified: Boolean
@@ -1032,6 +1144,8 @@ input UserUpdateWithoutLobbyDataInput {
   email: String
   password: String
   publicName: String
+  friends: UserUpdateManyWithoutFriendsInput
+  friendInvites: UserUpdateManyWithoutFriendInvitesInput
   lvl: Int
   xp: Float
   gold: Float
@@ -1046,6 +1160,8 @@ input UserUpdateWithoutTableDataInput {
   email: String
   password: String
   publicName: String
+  friends: UserUpdateManyWithoutFriendsInput
+  friendInvites: UserUpdateManyWithoutFriendInvitesInput
   lvl: Int
   xp: Float
   gold: Float
@@ -1054,6 +1170,16 @@ input UserUpdateWithoutTableDataInput {
 input UserUpdateWithWhereUniqueNestedInput {
   where: UserWhereUniqueInput!
   data: UserUpdateDataInput!
+}
+
+input UserUpdateWithWhereUniqueWithoutFriendInvitesInput {
+  where: UserWhereUniqueInput!
+  data: UserUpdateWithoutFriendInvitesDataInput!
+}
+
+input UserUpdateWithWhereUniqueWithoutFriendsInput {
+  where: UserWhereUniqueInput!
+  data: UserUpdateWithoutFriendsDataInput!
 }
 
 input UserUpdateWithWhereUniqueWithoutLobbyInput {
@@ -1075,6 +1201,18 @@ input UserUpsertWithWhereUniqueNestedInput {
   where: UserWhereUniqueInput!
   update: UserUpdateDataInput!
   create: UserCreateInput!
+}
+
+input UserUpsertWithWhereUniqueWithoutFriendInvitesInput {
+  where: UserWhereUniqueInput!
+  update: UserUpdateWithoutFriendInvitesDataInput!
+  create: UserCreateWithoutFriendInvitesInput!
+}
+
+input UserUpsertWithWhereUniqueWithoutFriendsInput {
+  where: UserWhereUniqueInput!
+  update: UserUpdateWithoutFriendsDataInput!
+  create: UserCreateWithoutFriendsInput!
 }
 
 input UserUpsertWithWhereUniqueWithoutLobbyInput {
@@ -1208,6 +1346,12 @@ input UserWhereInput {
   publicName_not_starts_with: String
   publicName_ends_with: String
   publicName_not_ends_with: String
+  friends_every: UserWhereInput
+  friends_some: UserWhereInput
+  friends_none: UserWhereInput
+  friendInvites_every: UserWhereInput
+  friendInvites_some: UserWhereInput
+  friendInvites_none: UserWhereInput
   lvl: Int
   lvl_not: Int
   lvl_in: [Int!]

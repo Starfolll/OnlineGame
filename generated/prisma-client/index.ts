@@ -395,6 +395,12 @@ export interface UserWhereInput {
   publicName_not_starts_with?: Maybe<String>;
   publicName_ends_with?: Maybe<String>;
   publicName_not_ends_with?: Maybe<String>;
+  friends_every?: Maybe<UserWhereInput>;
+  friends_some?: Maybe<UserWhereInput>;
+  friends_none?: Maybe<UserWhereInput>;
+  friendInvites_every?: Maybe<UserWhereInput>;
+  friendInvites_some?: Maybe<UserWhereInput>;
+  friendInvites_none?: Maybe<UserWhereInput>;
   lvl?: Maybe<Int>;
   lvl_not?: Maybe<Int>;
   lvl_in?: Maybe<Int[] | Int>;
@@ -598,6 +604,8 @@ export interface UserCreateWithoutLobbyInput {
   email: String;
   password: String;
   publicName: String;
+  friends?: Maybe<UserCreateManyWithoutFriendsInput>;
+  friendInvites?: Maybe<UserCreateManyWithoutFriendInvitesInput>;
   lvl: Int;
   xp: Float;
   gold: Float;
@@ -610,6 +618,41 @@ export interface TableCreateOneWithoutUsersInGameInput {
 
 export interface TableCreateWithoutUsersInGameInput {
   id?: Maybe<ID_Input>;
+}
+
+export interface UserCreateManyWithoutFriendsInput {
+  create?: Maybe<
+    UserCreateWithoutFriendsInput[] | UserCreateWithoutFriendsInput
+  >;
+  connect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+}
+
+export interface UserCreateWithoutFriendsInput {
+  id?: Maybe<ID_Input>;
+  token: String;
+  isVerified?: Maybe<Boolean>;
+  verificationLink?: Maybe<String>;
+  table?: Maybe<TableCreateOneWithoutUsersInGameInput>;
+  lobby?: Maybe<LobbyCreateOneWithoutUsersInLobbyInput>;
+  name: String;
+  email: String;
+  password: String;
+  publicName: String;
+  friendInvites?: Maybe<UserCreateManyWithoutFriendInvitesInput>;
+  lvl: Int;
+  xp: Float;
+  gold: Float;
+}
+
+export interface LobbyCreateOneWithoutUsersInLobbyInput {
+  create?: Maybe<LobbyCreateWithoutUsersInLobbyInput>;
+  connect?: Maybe<LobbyWhereUniqueInput>;
+}
+
+export interface LobbyCreateWithoutUsersInLobbyInput {
+  id?: Maybe<ID_Input>;
+  name: String;
+  rooms?: Maybe<RoomCreateManyWithoutLobbyInput>;
 }
 
 export interface RoomCreateManyWithoutLobbyInput {
@@ -640,20 +683,35 @@ export interface UserCreateInput {
   email: String;
   password: String;
   publicName: String;
+  friends?: Maybe<UserCreateManyWithoutFriendsInput>;
+  friendInvites?: Maybe<UserCreateManyWithoutFriendInvitesInput>;
   lvl: Int;
   xp: Float;
   gold: Float;
 }
 
-export interface LobbyCreateOneWithoutUsersInLobbyInput {
-  create?: Maybe<LobbyCreateWithoutUsersInLobbyInput>;
-  connect?: Maybe<LobbyWhereUniqueInput>;
+export interface UserCreateManyWithoutFriendInvitesInput {
+  create?: Maybe<
+    UserCreateWithoutFriendInvitesInput[] | UserCreateWithoutFriendInvitesInput
+  >;
+  connect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
 }
 
-export interface LobbyCreateWithoutUsersInLobbyInput {
+export interface UserCreateWithoutFriendInvitesInput {
   id?: Maybe<ID_Input>;
+  token: String;
+  isVerified?: Maybe<Boolean>;
+  verificationLink?: Maybe<String>;
+  table?: Maybe<TableCreateOneWithoutUsersInGameInput>;
+  lobby?: Maybe<LobbyCreateOneWithoutUsersInLobbyInput>;
   name: String;
-  rooms?: Maybe<RoomCreateManyWithoutLobbyInput>;
+  email: String;
+  password: String;
+  publicName: String;
+  friends?: Maybe<UserCreateManyWithoutFriendsInput>;
+  lvl: Int;
+  xp: Float;
+  gold: Float;
 }
 
 export interface UserCreateManyInput {
@@ -701,6 +759,8 @@ export interface UserUpdateWithoutLobbyDataInput {
   email?: Maybe<String>;
   password?: Maybe<String>;
   publicName?: Maybe<String>;
+  friends?: Maybe<UserUpdateManyWithoutFriendsInput>;
+  friendInvites?: Maybe<UserUpdateManyWithoutFriendInvitesInput>;
   lvl?: Maybe<Int>;
   xp?: Maybe<Float>;
   gold?: Maybe<Float>;
@@ -713,10 +773,167 @@ export interface TableUpdateOneWithoutUsersInGameInput {
   connect?: Maybe<TableWhereUniqueInput>;
 }
 
-export interface UserUpsertWithWhereUniqueWithoutLobbyInput {
+export interface UserUpdateManyWithoutFriendsInput {
+  create?: Maybe<
+    UserCreateWithoutFriendsInput[] | UserCreateWithoutFriendsInput
+  >;
+  delete?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  connect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  set?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  disconnect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  update?: Maybe<
+    | UserUpdateWithWhereUniqueWithoutFriendsInput[]
+    | UserUpdateWithWhereUniqueWithoutFriendsInput
+  >;
+  upsert?: Maybe<
+    | UserUpsertWithWhereUniqueWithoutFriendsInput[]
+    | UserUpsertWithWhereUniqueWithoutFriendsInput
+  >;
+  deleteMany?: Maybe<UserScalarWhereInput[] | UserScalarWhereInput>;
+  updateMany?: Maybe<
+    UserUpdateManyWithWhereNestedInput[] | UserUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface UserUpdateWithWhereUniqueWithoutFriendsInput {
   where: UserWhereUniqueInput;
-  update: UserUpdateWithoutLobbyDataInput;
-  create: UserCreateWithoutLobbyInput;
+  data: UserUpdateWithoutFriendsDataInput;
+}
+
+export interface UserUpdateWithoutFriendsDataInput {
+  token?: Maybe<String>;
+  isVerified?: Maybe<Boolean>;
+  verificationLink?: Maybe<String>;
+  table?: Maybe<TableUpdateOneWithoutUsersInGameInput>;
+  lobby?: Maybe<LobbyUpdateOneWithoutUsersInLobbyInput>;
+  name?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+  publicName?: Maybe<String>;
+  friendInvites?: Maybe<UserUpdateManyWithoutFriendInvitesInput>;
+  lvl?: Maybe<Int>;
+  xp?: Maybe<Float>;
+  gold?: Maybe<Float>;
+}
+
+export interface LobbyUpdateOneWithoutUsersInLobbyInput {
+  create?: Maybe<LobbyCreateWithoutUsersInLobbyInput>;
+  update?: Maybe<LobbyUpdateWithoutUsersInLobbyDataInput>;
+  upsert?: Maybe<LobbyUpsertWithoutUsersInLobbyInput>;
+  delete?: Maybe<Boolean>;
+  disconnect?: Maybe<Boolean>;
+  connect?: Maybe<LobbyWhereUniqueInput>;
+}
+
+export interface LobbyUpdateWithoutUsersInLobbyDataInput {
+  name?: Maybe<String>;
+  rooms?: Maybe<RoomUpdateManyWithoutLobbyInput>;
+}
+
+export interface RoomUpdateManyWithoutLobbyInput {
+  create?: Maybe<RoomCreateWithoutLobbyInput[] | RoomCreateWithoutLobbyInput>;
+  delete?: Maybe<RoomWhereUniqueInput[] | RoomWhereUniqueInput>;
+  connect?: Maybe<RoomWhereUniqueInput[] | RoomWhereUniqueInput>;
+  set?: Maybe<RoomWhereUniqueInput[] | RoomWhereUniqueInput>;
+  disconnect?: Maybe<RoomWhereUniqueInput[] | RoomWhereUniqueInput>;
+  update?: Maybe<
+    | RoomUpdateWithWhereUniqueWithoutLobbyInput[]
+    | RoomUpdateWithWhereUniqueWithoutLobbyInput
+  >;
+  upsert?: Maybe<
+    | RoomUpsertWithWhereUniqueWithoutLobbyInput[]
+    | RoomUpsertWithWhereUniqueWithoutLobbyInput
+  >;
+  deleteMany?: Maybe<RoomScalarWhereInput[] | RoomScalarWhereInput>;
+  updateMany?: Maybe<
+    RoomUpdateManyWithWhereNestedInput[] | RoomUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface RoomUpdateWithWhereUniqueWithoutLobbyInput {
+  where: RoomWhereUniqueInput;
+  data: RoomUpdateWithoutLobbyDataInput;
+}
+
+export interface RoomUpdateWithoutLobbyDataInput {
+  isPublic?: Maybe<Boolean>;
+  creator?: Maybe<UserUpdateOneInput>;
+  usersInRoom?: Maybe<UserUpdateManyInput>;
+}
+
+export interface UserUpdateOneInput {
+  create?: Maybe<UserCreateInput>;
+  update?: Maybe<UserUpdateDataInput>;
+  upsert?: Maybe<UserUpsertNestedInput>;
+  delete?: Maybe<Boolean>;
+  disconnect?: Maybe<Boolean>;
+  connect?: Maybe<UserWhereUniqueInput>;
+}
+
+export interface UserUpdateDataInput {
+  token?: Maybe<String>;
+  isVerified?: Maybe<Boolean>;
+  verificationLink?: Maybe<String>;
+  table?: Maybe<TableUpdateOneWithoutUsersInGameInput>;
+  lobby?: Maybe<LobbyUpdateOneWithoutUsersInLobbyInput>;
+  name?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+  publicName?: Maybe<String>;
+  friends?: Maybe<UserUpdateManyWithoutFriendsInput>;
+  friendInvites?: Maybe<UserUpdateManyWithoutFriendInvitesInput>;
+  lvl?: Maybe<Int>;
+  xp?: Maybe<Float>;
+  gold?: Maybe<Float>;
+}
+
+export interface UserUpdateManyWithoutFriendInvitesInput {
+  create?: Maybe<
+    UserCreateWithoutFriendInvitesInput[] | UserCreateWithoutFriendInvitesInput
+  >;
+  delete?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  connect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  set?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  disconnect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  update?: Maybe<
+    | UserUpdateWithWhereUniqueWithoutFriendInvitesInput[]
+    | UserUpdateWithWhereUniqueWithoutFriendInvitesInput
+  >;
+  upsert?: Maybe<
+    | UserUpsertWithWhereUniqueWithoutFriendInvitesInput[]
+    | UserUpsertWithWhereUniqueWithoutFriendInvitesInput
+  >;
+  deleteMany?: Maybe<UserScalarWhereInput[] | UserScalarWhereInput>;
+  updateMany?: Maybe<
+    UserUpdateManyWithWhereNestedInput[] | UserUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface UserUpdateWithWhereUniqueWithoutFriendInvitesInput {
+  where: UserWhereUniqueInput;
+  data: UserUpdateWithoutFriendInvitesDataInput;
+}
+
+export interface UserUpdateWithoutFriendInvitesDataInput {
+  token?: Maybe<String>;
+  isVerified?: Maybe<Boolean>;
+  verificationLink?: Maybe<String>;
+  table?: Maybe<TableUpdateOneWithoutUsersInGameInput>;
+  lobby?: Maybe<LobbyUpdateOneWithoutUsersInLobbyInput>;
+  name?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+  publicName?: Maybe<String>;
+  friends?: Maybe<UserUpdateManyWithoutFriendsInput>;
+  lvl?: Maybe<Int>;
+  xp?: Maybe<Float>;
+  gold?: Maybe<Float>;
+}
+
+export interface UserUpsertWithWhereUniqueWithoutFriendInvitesInput {
+  where: UserWhereUniqueInput;
+  update: UserUpdateWithoutFriendInvitesDataInput;
+  create: UserCreateWithoutFriendInvitesInput;
 }
 
 export interface UserScalarWhereInput {
@@ -883,80 +1100,6 @@ export interface UserUpdateManyDataInput {
   gold?: Maybe<Float>;
 }
 
-export interface RoomUpdateManyWithoutLobbyInput {
-  create?: Maybe<RoomCreateWithoutLobbyInput[] | RoomCreateWithoutLobbyInput>;
-  delete?: Maybe<RoomWhereUniqueInput[] | RoomWhereUniqueInput>;
-  connect?: Maybe<RoomWhereUniqueInput[] | RoomWhereUniqueInput>;
-  set?: Maybe<RoomWhereUniqueInput[] | RoomWhereUniqueInput>;
-  disconnect?: Maybe<RoomWhereUniqueInput[] | RoomWhereUniqueInput>;
-  update?: Maybe<
-    | RoomUpdateWithWhereUniqueWithoutLobbyInput[]
-    | RoomUpdateWithWhereUniqueWithoutLobbyInput
-  >;
-  upsert?: Maybe<
-    | RoomUpsertWithWhereUniqueWithoutLobbyInput[]
-    | RoomUpsertWithWhereUniqueWithoutLobbyInput
-  >;
-  deleteMany?: Maybe<RoomScalarWhereInput[] | RoomScalarWhereInput>;
-  updateMany?: Maybe<
-    RoomUpdateManyWithWhereNestedInput[] | RoomUpdateManyWithWhereNestedInput
-  >;
-}
-
-export interface RoomUpdateWithWhereUniqueWithoutLobbyInput {
-  where: RoomWhereUniqueInput;
-  data: RoomUpdateWithoutLobbyDataInput;
-}
-
-export interface RoomUpdateWithoutLobbyDataInput {
-  isPublic?: Maybe<Boolean>;
-  creator?: Maybe<UserUpdateOneInput>;
-  usersInRoom?: Maybe<UserUpdateManyInput>;
-}
-
-export interface UserUpdateOneInput {
-  create?: Maybe<UserCreateInput>;
-  update?: Maybe<UserUpdateDataInput>;
-  upsert?: Maybe<UserUpsertNestedInput>;
-  delete?: Maybe<Boolean>;
-  disconnect?: Maybe<Boolean>;
-  connect?: Maybe<UserWhereUniqueInput>;
-}
-
-export interface UserUpdateDataInput {
-  token?: Maybe<String>;
-  isVerified?: Maybe<Boolean>;
-  verificationLink?: Maybe<String>;
-  table?: Maybe<TableUpdateOneWithoutUsersInGameInput>;
-  lobby?: Maybe<LobbyUpdateOneWithoutUsersInLobbyInput>;
-  name?: Maybe<String>;
-  email?: Maybe<String>;
-  password?: Maybe<String>;
-  publicName?: Maybe<String>;
-  lvl?: Maybe<Int>;
-  xp?: Maybe<Float>;
-  gold?: Maybe<Float>;
-}
-
-export interface LobbyUpdateOneWithoutUsersInLobbyInput {
-  create?: Maybe<LobbyCreateWithoutUsersInLobbyInput>;
-  update?: Maybe<LobbyUpdateWithoutUsersInLobbyDataInput>;
-  upsert?: Maybe<LobbyUpsertWithoutUsersInLobbyInput>;
-  delete?: Maybe<Boolean>;
-  disconnect?: Maybe<Boolean>;
-  connect?: Maybe<LobbyWhereUniqueInput>;
-}
-
-export interface LobbyUpdateWithoutUsersInLobbyDataInput {
-  name?: Maybe<String>;
-  rooms?: Maybe<RoomUpdateManyWithoutLobbyInput>;
-}
-
-export interface LobbyUpsertWithoutUsersInLobbyInput {
-  update: LobbyUpdateWithoutUsersInLobbyDataInput;
-  create: LobbyCreateWithoutUsersInLobbyInput;
-}
-
 export interface UserUpsertNestedInput {
   update: UserUpdateDataInput;
   create: UserCreateInput;
@@ -1046,6 +1189,23 @@ export interface RoomUpdateManyDataInput {
   isPublic?: Maybe<Boolean>;
 }
 
+export interface LobbyUpsertWithoutUsersInLobbyInput {
+  update: LobbyUpdateWithoutUsersInLobbyDataInput;
+  create: LobbyCreateWithoutUsersInLobbyInput;
+}
+
+export interface UserUpsertWithWhereUniqueWithoutFriendsInput {
+  where: UserWhereUniqueInput;
+  update: UserUpdateWithoutFriendsDataInput;
+  create: UserCreateWithoutFriendsInput;
+}
+
+export interface UserUpsertWithWhereUniqueWithoutLobbyInput {
+  where: UserWhereUniqueInput;
+  update: UserUpdateWithoutLobbyDataInput;
+  create: UserCreateWithoutLobbyInput;
+}
+
 export interface LobbyUpdateManyMutationInput {
   name?: Maybe<String>;
 }
@@ -1117,6 +1277,8 @@ export interface UserCreateWithoutTableInput {
   email: String;
   password: String;
   publicName: String;
+  friends?: Maybe<UserCreateManyWithoutFriendsInput>;
+  friendInvites?: Maybe<UserCreateManyWithoutFriendInvitesInput>;
   lvl: Int;
   xp: Float;
   gold: Float;
@@ -1160,6 +1322,8 @@ export interface UserUpdateWithoutTableDataInput {
   email?: Maybe<String>;
   password?: Maybe<String>;
   publicName?: Maybe<String>;
+  friends?: Maybe<UserUpdateManyWithoutFriendsInput>;
+  friendInvites?: Maybe<UserUpdateManyWithoutFriendInvitesInput>;
   lvl?: Maybe<Int>;
   xp?: Maybe<Float>;
   gold?: Maybe<Float>;
@@ -1181,6 +1345,8 @@ export interface UserUpdateInput {
   email?: Maybe<String>;
   password?: Maybe<String>;
   publicName?: Maybe<String>;
+  friends?: Maybe<UserUpdateManyWithoutFriendsInput>;
+  friendInvites?: Maybe<UserUpdateManyWithoutFriendInvitesInput>;
   lvl?: Maybe<Int>;
   xp?: Maybe<Float>;
   gold?: Maybe<Float>;
@@ -1362,6 +1528,24 @@ export interface UserPromise extends Promise<User>, Fragmentable {
   email: () => Promise<String>;
   password: () => Promise<String>;
   publicName: () => Promise<String>;
+  friends: <T = FragmentableArray<User>>(args?: {
+    where?: UserWhereInput;
+    orderBy?: UserOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  friendInvites: <T = FragmentableArray<User>>(args?: {
+    where?: UserWhereInput;
+    orderBy?: UserOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
   lvl: () => Promise<Int>;
   xp: () => Promise<Float>;
   gold: () => Promise<Float>;
@@ -1382,6 +1566,24 @@ export interface UserSubscription
   email: () => Promise<AsyncIterator<String>>;
   password: () => Promise<AsyncIterator<String>>;
   publicName: () => Promise<AsyncIterator<String>>;
+  friends: <T = Promise<AsyncIterator<UserSubscription>>>(args?: {
+    where?: UserWhereInput;
+    orderBy?: UserOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  friendInvites: <T = Promise<AsyncIterator<UserSubscription>>>(args?: {
+    where?: UserWhereInput;
+    orderBy?: UserOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
   lvl: () => Promise<AsyncIterator<Int>>;
   xp: () => Promise<AsyncIterator<Float>>;
   gold: () => Promise<AsyncIterator<Float>>;
@@ -1402,6 +1604,24 @@ export interface UserNullablePromise
   email: () => Promise<String>;
   password: () => Promise<String>;
   publicName: () => Promise<String>;
+  friends: <T = FragmentableArray<User>>(args?: {
+    where?: UserWhereInput;
+    orderBy?: UserOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  friendInvites: <T = FragmentableArray<User>>(args?: {
+    where?: UserWhereInput;
+    orderBy?: UserOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
   lvl: () => Promise<Int>;
   xp: () => Promise<Float>;
   gold: () => Promise<Float>;

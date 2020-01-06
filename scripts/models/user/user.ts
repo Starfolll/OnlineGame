@@ -1,4 +1,5 @@
 import DB_Tables from "../table/db_tables";
+import DB_Users from "./db_users";
 
 export type userUniqueData = {
     id?: string;
@@ -20,11 +21,27 @@ export type userData = {
     xp: number;
     gold: number;
     verificationLink?: string;
+    friends?: Array<userData>;
+    invites?: Array<userData>;
 }
 
 export type userPublicData = {
     id: string;
     publicName: string;
+    lvl: number;
+}
+
+export type userOnLoginData = {
+    id: string;
+    token: string;
+    name: string;
+    publicName: string;
+    lvl: number;
+    xp: number;
+    gold: number;
+    friends?: Array<userPublicData>;
+    invites?: Array<userPublicData>;
+    tableId?: string;
 }
 
 export default class User {
@@ -61,14 +78,52 @@ export default class User {
         this.gold = data.gold;
     }
 
-
-    public GetUserPublicData(): userPublicData {
+    public async GetUserOnLoginData(): Promise<userOnLoginData> {
         return {
-            id: this.id,
-            publicName: this.publicName
+            ...this.GetUserPublicData(),
+            "token": this.token,
+            "name": this.name,
+            "xp": this.xp,
+            "gold": this.gold,
+            "friends": (await this.GetUserFriends()).map(u => new User(u).GetUserPublicData()),
+            "invites": (await this.GetUserInvites()).map(u => new User(u).GetUserPublicData()),
+            "tableId": await this.GetUserTableId()
         }
     }
 
+    public GetUserPublicData(): userPublicData {
+        return {
+            "id": this.id,
+            "publicName": this.publicName,
+            "lvl": this.lvl
+        }
+    }
+
+
+    // database promises
+    public async GetUserInvites(): Promise<Array<userData>> {
+        return await DB_Users.GetUserInvites({id: this.id});
+    }
+
+    public async GetUserFriends(): Promise<Array<userData>> {
+        return await DB_Users.GetUserFriends({id: this.id});
+    }
+
+    public async SendUserInvite(user: userUniqueData): Promise<void> {
+        await DB_Users.AddInviteToUser(user, {id: this.id});
+    }
+
+    public async AcceptUserFriendInvite(user: userUniqueData): Promise<void> {
+        await DB_Users.AddFriendToUser(user, {id: this.id});
+    }
+
+    public async RemoveUserFromFriends(user: userUniqueData): Promise<void> {
+        await DB_Users.DisconnectFriendFromUser(user, {id: this.id});
+    }
+
+    public async RejectUserFriendInvite(user: userUniqueData): Promise<void> {
+        await DB_Users.DeleteUserInvite({id: this.id}, user);
+    }
 
     public async GetUserTableId(): Promise<string | undefined> {
         return await DB_Tables.GetUserTableId({id: this.id});

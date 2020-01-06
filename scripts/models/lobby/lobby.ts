@@ -37,7 +37,8 @@ export default class Lobby {
         this.chat.AddMessage(new ChatMessage(
             {
                 id: "server",
-                publicName: "SERVER"
+                publicName: "SERVER",
+                lvl: Infinity
             },
             `Global lobby [ ${data.name} ]`,
             true

@@ -27,7 +27,7 @@ export default class DB_Users {
     public static async CreateNewUser(user: {
         id?: string,
         isVerified?: boolean,
-        verificationLink?: string
+        verificationLink: string | null
         name: string,
         email: string,
         password: string,
@@ -41,7 +41,7 @@ export default class DB_Users {
             ...user,
             password: await bcrypt.hash(user.password, 10),
             token: user.token ?? cryptoRandomString({length: 60}),
-            verificationLink: user.verificationLink ?? cryptoRandomString({length: 120, type: "url-safe"}),
+            verificationLink: user.verificationLink ?? null,
             lvl: user.lvl ?? 1,
             xp: user.xp ?? 0,
             gold: user.gold ?? 0
@@ -71,6 +71,88 @@ export default class DB_Users {
                 verificationLink: null
             }
         })
+    }
+
+    public static async GetUserInvites(user: userUniqueData): Promise<Array<userData>> {
+        return (await dockerPrisma.users({
+            where: {
+                friendInvites_some: user,
+            }
+        }));
+    }
+
+    public static async GetUserFriends(user: userUniqueData): Promise<Array<userData>> {
+        return (await dockerPrisma.users({
+            where: {
+                friends_some: user,
+
+            }
+        }));
+    }
+
+    public static async DeleteUserInvite(user: userUniqueData, fromUser: userUniqueData): Promise<void> {
+        await dockerPrisma.updateUser({
+            where: user,
+            data: {
+                friendInvites: {
+                    disconnect: fromUser
+                }
+            }
+        })
+    }
+
+    public static async AddInviteToUser(toUser: userUniqueData, fromUser: userUniqueData): Promise<void> {
+        await dockerPrisma.updateUser({
+            where: fromUser,
+            data: {
+                friendInvites: {
+                    connect: toUser
+                }
+            }
+        });
+    }
+
+    public static async DisconnectFriendFromUser(user: userUniqueData, friend: userUniqueData): Promise<void> {
+        await dockerPrisma.updateUser({
+            where: user,
+            data: {
+                friends: {
+                    disconnect: friend
+                }
+            }
+        });
+
+        await dockerPrisma.updateUser({
+            where: friend,
+            data: {
+                friends: {
+                    disconnect: user
+                }
+            }
+        });
+    }
+
+    public static async AddFriendToUser(toUser: userUniqueData, fromUser: userUniqueData): Promise<void> {
+        await dockerPrisma.updateUser({
+            where: toUser,
+            data: {
+                friends: {
+                    connect: fromUser
+                },
+                friendInvites: {
+                    disconnect: fromUser
+                }
+            }
+        });
+
+        await dockerPrisma.updateUser({
+            where: fromUser,
+            data: {
+                friends: {
+                    connect: toUser
+                }
+            }
+        });
     }
 
     public static async GetUserDataByEmailAndPassword(email: string, password: string): Promise<userData | null> {

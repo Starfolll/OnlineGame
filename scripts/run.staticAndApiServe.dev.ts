@@ -30,10 +30,14 @@ export default class StaticAndApiServeServerDev extends StaticApi {
 
             this.publicApp.use(express.json());
             this.publicApp.use("/", webPageRoute);
-            this.publicApp.use("/usersAvatars", usersAvatar);
+            this.publicApp.use("/api/users/avatars/", usersAvatar);
 
             this.AppBindPostLoginUser("/api/users/actions/login", this.publicApp);
             this.AppBindPostSignUpUser("/api/users/actions/signUp", this.publicApp);
+            this.AppBindPostSendFriendInvite("/api/users/actions/sendInvite", this.publicApp);
+            this.AppBindPostAcceptUserFriendInvite("/api/users/actions/acceptInvite", this.publicApp);
+            this.AppBindPostRejectUserFriendInvite("/api/users/actions/rejectInvite", this.publicApp);
+            this.AppBindPostDeleteUserFromFriendsList("/api/users/actions/deleteFriend", this.publicApp);
 
             this.AppBindGetVerifyUser(
                 "/api/users/actions/verify/:name/:verificationLink/",
@@ -46,17 +50,6 @@ export default class StaticAndApiServeServerDev extends StaticApi {
             logInfo(`Web listening at port ${this.webPort}`);
 
             // api test //
-            //
-            // await fetch(`http://localhost:${this.webPort}/api/users/actions/login`, {
-            //     method: "POST",
-            //     headers: {"Content-Type": "application/json"},
-            //     body: JSON.stringify({
-            //         email: "admin1@admin.com",
-            //         password: "1234567890"
-            //     })
-            // })
-            //     .then(res => res.json())
-            //     .then(data => console.log(JSON.stringify(data, null, 2)));
             //
             // await fetch(`http://localhost:${this.webPort}/api/users/actions/signUp`, {
             //     method: "POST",
@@ -71,6 +64,41 @@ export default class StaticAndApiServeServerDev extends StaticApi {
             //     .then(res => res.json())
             //     .then(data => console.log(JSON.stringify(data, null, 2)));
             //
+            // await fetch(`http://localhost:${this.webPort}/api/users/actions/signUp`, {
+            //     method: "POST",
+            //     headers: {"Content-Type": "application/json"},
+            //     body: JSON.stringify({
+            //         email: "admin.admin1@gmail.com",
+            //         password: "1234567890",
+            //         name: "admin1",
+            //         publicName: "admin"
+            //     })
+            // })
+            //     .then(res => res.json())
+            //     .then(data => console.log(JSON.stringify(data, null, 2)));
+            // //
+            // await fetch(`http://localhost:${this.webPort}/api/users/actions/sendInvite`, {
+            //     method: "POST",
+            //     headers: {"Content-Type": "application/json"},
+            //     body: JSON.stringify({
+            //         email: "andrey.kovyarov@gmail.com",
+            //         password: "1234567890"
+            //     })
+            // })
+            //     .then(res => res.json())
+            //     .then(data => console.log(JSON.stringify(data, null, 2)));
+            // //
+            // await fetch(`http://localhost:${this.webPort}/api/users/actions/login`, {
+            //     method: "POST",
+            //     headers: {"Content-Type": "application/json"},
+            //     body: JSON.stringify({
+            //         email: "andrey.kovyarov@gmail.com",
+            //         password: "1234567890"
+            //     })
+            // })
+            //     .then(res => res.json())
+            //     .then(data => console.log(JSON.stringify(data, null, 2)));
+            // //
             // await fetch(`http://localhost:${this.webPort}/api/users/actions/verify/admin1/15gDYRYMsg6wgtYbZr41K6ye2sCVniLY6odZemFOVcFrxJ8Wjuu15JGQ7-wJhLlH~iyIcRh_d6d_gw4NC-7PsOrb9T5iJVhzD9YD6oCs4si0rohRYhba72i0/`)
             //     .then(res => res.text())
             //     .then(data => console.log(data));
