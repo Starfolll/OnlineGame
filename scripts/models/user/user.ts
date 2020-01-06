@@ -122,7 +122,7 @@ export default class User {
     }
 
     public async RejectUserFriendInvite(user: userUniqueData): Promise<void> {
-        await DB_Users.DeleteUserInvite({id: this.id}, user);
+        await DB_Users.DeleteUserInvite(user, {id: this.id});
     }
 
     public async GetUserTableId(): Promise<string | undefined> {
