@@ -7,6 +7,7 @@ import ChatMessage, {chatMessageInfo} from "../../utils/chat/chatMessage";
 import Room, {extendedRoomData} from "../room/room";
 import DB_Rooms from "../room/db_rooms";
 import DB_Users from "../user/db_users";
+import dotenv from "dotenv";
 
 export type extendedLobbyData = {
     lobbyData: lobbyData,
@@ -18,6 +19,7 @@ export type lobbyData = {
     name?: string;
 }
 
+dotenv.config();
 export default class Lobby {
     public readonly id: string;
     public readonly name?: string;
@@ -28,6 +30,8 @@ export default class Lobby {
     private readonly publicRooms: { [id: string]: Room } = {};
     private readonly privateRooms: { [id: string]: Room } = {};
 
+    private readonly maxUsersInPublicRoom: number = +process.env.PUBLIC_GLOBAL_LOBBY_MAX_USERS_IN_PUBLIC_ROOM!;
+    private readonly maxUsersInPrivateRoom: number = +process.env.PUBLIC_GLOBAL_LOBBY_MAX_USERS_IN_PRIVATE_ROOM!;
 
     constructor(data: lobbyData, maxSavedMessages: number) {
         this.id = data.id;
@@ -110,11 +114,13 @@ export default class Lobby {
     protected async ConnectUserToPublicRoom(user: LobbyUser): Promise<void> {
         const freeRoomId: string | undefined = await this.GetFreePublicRoomId();
 
-        if (!freeRoomId) {
-            const newRoomId = await this.CreateNewPublicRoom();
-            this.publicRooms[newRoomId].ConnectUserToRoom(user);
-        } else {
-            this.publicRooms[freeRoomId].ConnectUserToRoom(user);
+        if (!(await this.IsUserAlreadyInRoom(user))) {
+            if (!freeRoomId) {
+                const newRoomId = await this.CreateNewPublicRoom();
+                this.publicRooms[newRoomId].ConnectUserToRoom(user);
+            } else {
+                this.publicRooms[freeRoomId!].ConnectUserToRoom(user);
+            }
         }
     }
 
@@ -132,10 +138,12 @@ export default class Lobby {
 
     private async CreateNewPublicRoom(): Promise<string> {
         const room = new Room(await DB_Rooms.CreateNewRoom({
-            isPublic: true,
-            lobbyId: this.id,
-            maxUsersInRoom: 1,
-        }), (isRoomPublic: boolean, roomId: string) => this.DeleteRoom(isRoomPublic, roomId));
+                isPublic: true,
+                lobbyId: this.id,
+                maxUsersInRoom: this.maxUsersInPublicRoom,
+            }),
+            ((isRoomPublic: boolean, roomId: string) => this.DeleteRoom(isRoomPublic, roomId))
+        );
 
         this.publicRooms[room.id] = room;
 
@@ -144,8 +152,32 @@ export default class Lobby {
 
 
     // connect user to room (private)
-    protected async ConnectUserToPrivateRoom(): Promise<void> {
+    protected async IsUserAlreadyInRoom(user: LobbyUser | userUniqueData): Promise<boolean> {
+        return !!(await DB_Rooms.GetUserRoomId({id: user.id}))
+    }
 
+    protected async CreateNewPrivateRoom(userCreator: LobbyUser): Promise<Room | undefined> {
+        if (await this.IsUserAlreadyInRoom(userCreator)) return undefined;
+
+        const room = new Room(await DB_Rooms.CreateNewRoom({
+                lobbyId: this.id,
+                creator: {id: userCreator.id} as userUniqueData,
+                isPublic: false,
+                maxUsersInRoom: this.maxUsersInPrivateRoom
+            }),
+            ((isRoomPublic: boolean, roomId: string) => this.DeleteRoom(isRoomPublic, roomId)),
+            userCreator
+        );
+
+        this.privateRooms[room.id] = room;
+
+        return room;
+    }
+
+    protected async ConnectUserToPrivateRoom(user: LobbyUser, roomId: string): Promise<void> {
+        if (!!this.privateRooms[roomId] && !await this.IsUserAlreadyInRoom(user)) {
+            this.privateRooms[roomId].ConnectUserToRoom(user);
+        }
     }
 
 

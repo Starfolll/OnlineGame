@@ -1,6 +1,8 @@
 export enum userGlobalLobbyResponse {
     globalLobbyChatMessage = "globalLobbyChatMessage",
-    publicLobbySearch = "publicLobbySearch"
+    publicRoomSearch = "publicRoomSearch",
+    createNewPrivateRoom = "createNewPrivateRoom",
+    connectToPrivateRoom = "connectToPrivateRoom"
 }
 
 export type userInitialConnection = {
@@ -16,4 +18,13 @@ export type globalLobbyChatMessage = {
 
 export type publicLobbySearch = {
     messageType: string;
+}
+
+export type newPrivateRoom = {
+    messageType: string;
+}
+
+export type connectToPrivateRoom = {
+    messageType: string;
+    roomId: string;
 }

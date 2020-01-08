@@ -9,13 +9,13 @@ export default class DB_Rooms {
     public static async CreateNewRoom(room: {
         lobbyId: string,
         id?: string,
-        isPublic?: boolean,
+        isPublic: boolean,
         maxUsersInRoom: number
         creator?: userUniqueData
     }): Promise<roomData> {
         const res = await wrappedPrisma.createRoom({
             id: room.id,
-            isPublic: room.isPublic || false,
+            isPublic: room.isPublic,
             creator: {
                 connect: room.creator
             },
@@ -25,7 +25,7 @@ export default class DB_Rooms {
                 }
             },
             usersInRoom: {
-                connect: room.creator || []
+                connect: room.creator ?? []
             }
         });
 
@@ -76,6 +76,19 @@ export default class DB_Rooms {
                 id: roomId
             }
         });
+    }
+
+    public static async ResetUserCreator(roomId: string, user: userUniqueData): Promise<void> {
+        await wrappedPrisma.updateRoom({
+            data: {
+                creator: {
+                    connect: user
+                }
+            },
+            where: {
+                id: roomId
+            }
+        })
     }
 
     public static async GetUserRoomId(user: userUniqueData): Promise<string | undefined> {

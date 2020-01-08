@@ -53,6 +53,19 @@ const connectToLobby = (uId = id, uToken = token) => {
    socket.onclose = (err) => console.error(" | connection close", err.reason);
 };
 
+const createNewPrivateRoom = () => {
+   socket.send(JSON.stringify({
+      "messageType": "createNewPrivateRoom"
+   }));
+};
+
+const connectToPrivateRoom = (roomId) => {
+   socket.send(JSON.stringify({
+      "messageType": "connectToPrivateRoom",
+      "roomId": roomId
+   }));
+};
+
 const sendLobbyChatMessage = (message) => {
    socket.send(JSON.stringify({
       "messageType": "globalLobbyChatMessage",
@@ -60,9 +73,16 @@ const sendLobbyChatMessage = (message) => {
    }));
 };
 
+const removeUserFromRoom = (userId) => {
+   socket.send(JSON.stringify({
+      "messageType": "removeUserFromRoom",
+      "userId": userId
+   }));
+};
+
 const searchForRoom = () => {
    socket.send(JSON.stringify({
-      "messageType": "publicLobbySearch",
+      "messageType": "publicRoomSearch",
    }));
 };
 

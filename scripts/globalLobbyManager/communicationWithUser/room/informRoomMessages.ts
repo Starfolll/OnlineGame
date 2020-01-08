@@ -1,6 +1,13 @@
 import {chatMessageInfo} from "../../../utils/chat/chatMessage";
-import {gameStart, newRoomChatMessage, userConnectedToRoom, userRemovedFromRoom} from "./informRoomMessages.types";
+import {
+    gameStart,
+    newRoomChatMessage,
+    privateRoomCreated, newRoomCreator,
+    userConnectedToRoom,
+    userRemovedFromRoom
+} from "./informRoomMessages.types";
 import {userPublicData} from "../../../models/user/user";
+import {roomData} from "../../../models/room/room";
 
 export default class GetRoomMessage {
     public static RoomChatMessage(message: chatMessageInfo): newRoomChatMessage {
@@ -28,6 +35,20 @@ export default class GetRoomMessage {
         return {
             "messageType": "gameStart",
             "tableId": tableId
+        }
+    }
+
+    public static PrivateRoomCreated(roomData: roomData): privateRoomCreated {
+        return {
+            "messageType": "privateRoomCreated",
+            "roomData": roomData
+        }
+    }
+
+    public static NewRoomCreator(creatorId: string): newRoomCreator {
+        return {
+            "messageType": "newRoomCreator",
+            "creatorId": creatorId
         }
     }
 }

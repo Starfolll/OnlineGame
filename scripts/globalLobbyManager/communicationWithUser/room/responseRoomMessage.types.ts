@@ -1,6 +1,7 @@
 export enum userRoomResponse {
     chatMessage = "roomChatMessage",
-    leaveRoom = "leaveRoom"
+    leaveRoom = "leaveRoom",
+    removeUserFromRoom = "removeUserFromRoom"
 }
 
 export type roomChatMessage = {
@@ -10,4 +11,9 @@ export type roomChatMessage = {
 
 export type leaveRoom = {
     messageType: string;
+}
+
+export type removeUserFromRoom = {
+    messageType: string;
+    userId: string;
 }

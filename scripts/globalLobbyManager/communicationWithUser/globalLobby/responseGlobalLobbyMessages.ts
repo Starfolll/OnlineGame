@@ -1,4 +1,10 @@
-import {globalLobbyChatMessage, publicLobbySearch, userInitialConnection} from "./responseGlobalLobbyMessages.types";
+import {
+    connectToPrivateRoom,
+    globalLobbyChatMessage,
+    newPrivateRoom,
+    publicLobbySearch,
+    userInitialConnection
+} from "./responseGlobalLobbyMessages.types";
 
 export default class IsLobbyMessageValid {
     public static GetValidUserInitialConnection(message: any): userInitialConnection | undefined {
@@ -16,9 +22,22 @@ export default class IsLobbyMessageValid {
         return message as globalLobbyChatMessage;
     }
 
-    public static GetValidPublicLobbySearch(message: any): publicLobbySearch | undefined {
+    public static GetValidPublicRoomSearch(message: any): publicLobbySearch | undefined {
         if (typeof message !== "object") return undefined;
         if (!message["messageType"] && message["messageType"] !== "publicLobbySearch") return undefined;
         return message as publicLobbySearch;
+    }
+
+    public static GetValidCreateNewPrivateRoom(message: any): newPrivateRoom | undefined {
+        if (typeof message !== "object") return undefined;
+        if (!message["messageType"] && message["messageType"] !== "createNewPrivateRoom") return undefined;
+        return message as newPrivateRoom;
+    }
+
+    public static GetValidConnectToPrivateRoom(message: any): connectToPrivateRoom | undefined {
+        if (typeof message !== "object") return undefined;
+        if (!message["messageType"] && message["messageType"] !== "connectToPrivateRoom") return undefined;
+        if (!message["roomId"] && typeof message["roomId"] !== "string") return undefined;
+        return message as connectToPrivateRoom;
     }
 }

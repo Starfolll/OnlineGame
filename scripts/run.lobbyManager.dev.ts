@@ -1,5 +1,4 @@
 import logInfo from "./utils/consoleLogs/logInfo";
-import logLink from "./utils/consoleLogs/logLink";
 import {StartLoggingSystemStatsTimeout} from "./utils/consoleLogs/logSystemInfo";
 import GlobalLobbyManager from "./globalLobbyManager/globalLobbyManager";
 import WebSocket from "ws";

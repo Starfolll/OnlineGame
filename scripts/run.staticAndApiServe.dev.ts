@@ -50,6 +50,7 @@ export default class StaticAndApiServeServerDev extends StaticApi {
 
             this.publicApp.listen(this.webPort);
             logInfo(`Web listening at port ${this.webPort}`);
+            logLink(`http://localhost:${this.webPort}/`, "Web");
         })();
     }
 }
