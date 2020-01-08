@@ -197,7 +197,7 @@ export default class Room {
             validMessage.userId !== this.creator.id &&
             this.usersIdInRoom.some(uId => uId === validMessage.userId)
         ) {
-            this.RemoveUserFromRoom(userId).then(r => r);
+            this.RemoveUserFromRoom(validMessage.userId).then(r => r);
         }
     }
 
