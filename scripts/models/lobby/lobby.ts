@@ -137,7 +137,9 @@ export default class Lobby {
     }
 
     private async CreateNewPublicRoom(): Promise<string> {
-        const room = new Room(await DB_Rooms.CreateNewRoom({
+        const room = new Room(
+            this.id,
+            await DB_Rooms.CreateNewRoom({
                 isPublic: true,
                 lobbyId: this.id,
                 maxUsersInRoom: this.maxUsersInPublicRoom,
@@ -159,7 +161,9 @@ export default class Lobby {
     protected async CreateNewPrivateRoom(userCreator: LobbyUser): Promise<Room | undefined> {
         if (await this.IsUserAlreadyInRoom(userCreator)) return undefined;
 
-        const room = new Room(await DB_Rooms.CreateNewRoom({
+        const room = new Room(
+            this.id,
+            await DB_Rooms.CreateNewRoom({
                 lobbyId: this.id,
                 creator: {id: userCreator.id} as userUniqueData,
                 isPublic: false,

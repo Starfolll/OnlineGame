@@ -1,4 +1,5 @@
 endpoint: http://localhost:4466
+secret: ${env:PRISMA_SECRET}
 
 datamodel:
   - /scripts/models/user/datamodel.user.graphql

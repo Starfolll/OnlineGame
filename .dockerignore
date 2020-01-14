@@ -10,3 +10,5 @@ README.md
 example.env
 LICENSE
 .vscode
+public/web/node_modules
+public/web/package-lock.json

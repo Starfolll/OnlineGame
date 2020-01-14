@@ -80,6 +80,12 @@ const removeUserFromRoom = (userId) => {
    }));
 };
 
+const startGame = () => {
+   socket.send(JSON.stringify({
+      "messageType": "startGame"
+   }));
+};
+
 const searchForRoom = () => {
    socket.send(JSON.stringify({
       "messageType": "publicRoomSearch",

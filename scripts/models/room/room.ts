@@ -8,6 +8,7 @@ import LobbyUser from "../../globalLobbyManager/lobbyUser";
 import {userRoomResponse} from "../../globalLobbyManager/communicationWithUser/room/responseRoomMessage.types";
 import IsRoomMessageValid from "../../globalLobbyManager/communicationWithUser/room/responseRoomMessage";
 import GamesManagerApiRequests from "../../api/gamesManager/gamesManager.api.requests";
+import DB_Lobbies from "../lobby/db_lobbies";
 
 export type extendedRoomData = {
     roomData: roomData;
@@ -25,6 +26,7 @@ export default class Room {
     public readonly id: string;
     public readonly isPublic: boolean;
     public readonly maxUsersInRoom: number;
+    public readonly lobbyId: string;
     public creator?: LobbyUser;
 
     private readonly usersInRoom: { [userId: string]: LobbyUser } = {};
@@ -34,6 +36,7 @@ export default class Room {
 
 
     constructor(
+        lobbyId: string,
         roomData: roomData,
         onRoomDeleteHandler: (isRoomPublic: boolean, roomId: string) => void,
         creator?: LobbyUser
@@ -41,6 +44,7 @@ export default class Room {
         this.id = roomData.id;
         this.isPublic = roomData.isPublic;
         this.maxUsersInRoom = roomData.maxUsersInRoom;
+        this.lobbyId = lobbyId;
         this.usersInRoom = {};
 
         this.creator = creator;
@@ -97,7 +101,7 @@ export default class Room {
         user.InformAboutConnectedToRoom(this.GetExtendedRoomData());
         this.InformUsersAboutUserConnected(user.GetUserPublicData());
 
-        if (this.IsRoomFull() && this.isPublic) this.StartPublicGame();
+        if (this.IsRoomFull() && this.isPublic) this.StartGame();
     }
 
     private async RemoveUserFromRoom(userId: string): Promise<void> {
@@ -122,19 +126,21 @@ export default class Room {
 
 
     // start game
-    private async StartPublicGame(): Promise<void> {
+    private async StartGame(): Promise<void> {
         const tableData = (await GamesManagerApiRequests.CreateNewTable(this.usersIdInRoom));
 
         this.InformUsersAboutGameStart(tableData.id);
-        this.RemoveUsersEventHandlers();
+        await this.CloseUsersConnection();
         this.onRoomDeleteHandler(this.isPublic, this.id);
     }
 
-    private RemoveUsersEventHandlers(): void {
-        this.usersIdInRoom.forEach(uId => {
-            this.usersInRoom[uId].ConnectionRemoveAllListeners();
-            this.usersInRoom[uId].CloseConnection(1000, "redirect to game server");
-        });
+    private async CloseUsersConnection(): Promise<void> {
+        const usersId = this.usersInRoom;
+        for (const userId in usersId) {
+            await DB_Lobbies.DisconnectUserFromLobby(this.lobbyId, {id: userId});
+            this.usersInRoom[userId].ConnectionRemoveAllListeners();
+            this.usersInRoom[userId].CloseConnection(1000, "redirect to game server");
+        }
     }
 
     // event listeners
@@ -165,6 +171,10 @@ export default class Room {
 
                 case userRoomResponse.removeUserFromRoom:
                     this.UserResponseRemoveUser(userId, messageBody);
+                    break;
+
+                case userRoomResponse.startGame:
+                    this.UserResponseStartGame(userId, messageBody);
                     break;
 
                 case userRoomResponse.leaveRoom:
@@ -199,6 +209,14 @@ export default class Room {
         ) {
             this.RemoveUserFromRoom(validMessage.userId).then(r => r);
         }
+    }
+
+    protected UserResponseStartGame(userId: string, messageBody: any): void {
+        const validMessage = IsRoomMessageValid.GetValidStartGameMessage(messageBody);
+        if (!validMessage) return;
+
+        if (!this.isPublic && !!this.creator && userId === this.creator.id && this.IsRoomFull())
+            this.StartGame().then(r => r);
     }
 
     protected UserResponseLeaveRoom(userId: string, messageBody: any): void {
