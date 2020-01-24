@@ -16,7 +16,6 @@ export default class GlobalLobbyManagerServerDev {
         (async () => {
             logInfo("Mode: LOBBY MANAGER");
             logInfo(`Server version: ${process.env.npm_package_version}`);
-            StartLoggingSystemStatsTimeout(120000 * 3);
 
             await wrappedPrisma.deleteManyRooms();
             await wrappedPrisma.deleteManyLobbies();

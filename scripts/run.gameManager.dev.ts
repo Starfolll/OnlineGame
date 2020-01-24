@@ -19,16 +19,8 @@ export default class GameManagerServerDev extends GamesManagerApi {
     constructor() {
         super();
         (async () => {
-            // console.clear();
-            // logLetters("hi!");
-            // logLetters("dev +_+");
-            // console.log();
-
-            // console.log();
             logInfo("Mode: GAME MANAGER");
             logInfo(`Server version: ${process.env.npm_package_version}`);
-            StartLoggingSystemStatsTimeout(120000 * 3);
-            // console.log();
 
             await wrappedPrisma.deleteManyTables();
 
