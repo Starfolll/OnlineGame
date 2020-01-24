@@ -235,6 +235,8 @@ export type UserOrderByInput =
   | "password_DESC"
   | "publicName_ASC"
   | "publicName_DESC"
+  | "avatarUrlHash_ASC"
+  | "avatarUrlHash_DESC"
   | "lvl_ASC"
   | "lvl_DESC"
   | "xp_ASC"
@@ -395,6 +397,20 @@ export interface UserWhereInput {
   publicName_not_starts_with?: Maybe<String>;
   publicName_ends_with?: Maybe<String>;
   publicName_not_ends_with?: Maybe<String>;
+  avatarUrlHash?: Maybe<String>;
+  avatarUrlHash_not?: Maybe<String>;
+  avatarUrlHash_in?: Maybe<String[] | String>;
+  avatarUrlHash_not_in?: Maybe<String[] | String>;
+  avatarUrlHash_lt?: Maybe<String>;
+  avatarUrlHash_lte?: Maybe<String>;
+  avatarUrlHash_gt?: Maybe<String>;
+  avatarUrlHash_gte?: Maybe<String>;
+  avatarUrlHash_contains?: Maybe<String>;
+  avatarUrlHash_not_contains?: Maybe<String>;
+  avatarUrlHash_starts_with?: Maybe<String>;
+  avatarUrlHash_not_starts_with?: Maybe<String>;
+  avatarUrlHash_ends_with?: Maybe<String>;
+  avatarUrlHash_not_ends_with?: Maybe<String>;
   friends_every?: Maybe<UserWhereInput>;
   friends_some?: Maybe<UserWhereInput>;
   friends_none?: Maybe<UserWhereInput>;
@@ -604,6 +620,7 @@ export interface UserCreateWithoutLobbyInput {
   email: String;
   password: String;
   publicName: String;
+  avatarUrlHash?: Maybe<String>;
   friends?: Maybe<UserCreateManyWithoutFriendsInput>;
   friendInvites?: Maybe<UserCreateManyWithoutFriendInvitesInput>;
   lvl: Int;
@@ -638,6 +655,7 @@ export interface UserCreateWithoutFriendsInput {
   email: String;
   password: String;
   publicName: String;
+  avatarUrlHash?: Maybe<String>;
   friendInvites?: Maybe<UserCreateManyWithoutFriendInvitesInput>;
   lvl: Int;
   xp: Float;
@@ -683,6 +701,7 @@ export interface UserCreateInput {
   email: String;
   password: String;
   publicName: String;
+  avatarUrlHash?: Maybe<String>;
   friends?: Maybe<UserCreateManyWithoutFriendsInput>;
   friendInvites?: Maybe<UserCreateManyWithoutFriendInvitesInput>;
   lvl: Int;
@@ -708,6 +727,7 @@ export interface UserCreateWithoutFriendInvitesInput {
   email: String;
   password: String;
   publicName: String;
+  avatarUrlHash?: Maybe<String>;
   friends?: Maybe<UserCreateManyWithoutFriendsInput>;
   lvl: Int;
   xp: Float;
@@ -759,6 +779,7 @@ export interface UserUpdateWithoutLobbyDataInput {
   email?: Maybe<String>;
   password?: Maybe<String>;
   publicName?: Maybe<String>;
+  avatarUrlHash?: Maybe<String>;
   friends?: Maybe<UserUpdateManyWithoutFriendsInput>;
   friendInvites?: Maybe<UserUpdateManyWithoutFriendInvitesInput>;
   lvl?: Maybe<Int>;
@@ -810,6 +831,7 @@ export interface UserUpdateWithoutFriendsDataInput {
   email?: Maybe<String>;
   password?: Maybe<String>;
   publicName?: Maybe<String>;
+  avatarUrlHash?: Maybe<String>;
   friendInvites?: Maybe<UserUpdateManyWithoutFriendInvitesInput>;
   lvl?: Maybe<Int>;
   xp?: Maybe<Float>;
@@ -880,6 +902,7 @@ export interface UserUpdateDataInput {
   email?: Maybe<String>;
   password?: Maybe<String>;
   publicName?: Maybe<String>;
+  avatarUrlHash?: Maybe<String>;
   friends?: Maybe<UserUpdateManyWithoutFriendsInput>;
   friendInvites?: Maybe<UserUpdateManyWithoutFriendInvitesInput>;
   lvl?: Maybe<Int>;
@@ -924,6 +947,7 @@ export interface UserUpdateWithoutFriendInvitesDataInput {
   email?: Maybe<String>;
   password?: Maybe<String>;
   publicName?: Maybe<String>;
+  avatarUrlHash?: Maybe<String>;
   friends?: Maybe<UserUpdateManyWithoutFriendsInput>;
   lvl?: Maybe<Int>;
   xp?: Maybe<Float>;
@@ -1053,6 +1077,20 @@ export interface UserScalarWhereInput {
   publicName_not_starts_with?: Maybe<String>;
   publicName_ends_with?: Maybe<String>;
   publicName_not_ends_with?: Maybe<String>;
+  avatarUrlHash?: Maybe<String>;
+  avatarUrlHash_not?: Maybe<String>;
+  avatarUrlHash_in?: Maybe<String[] | String>;
+  avatarUrlHash_not_in?: Maybe<String[] | String>;
+  avatarUrlHash_lt?: Maybe<String>;
+  avatarUrlHash_lte?: Maybe<String>;
+  avatarUrlHash_gt?: Maybe<String>;
+  avatarUrlHash_gte?: Maybe<String>;
+  avatarUrlHash_contains?: Maybe<String>;
+  avatarUrlHash_not_contains?: Maybe<String>;
+  avatarUrlHash_starts_with?: Maybe<String>;
+  avatarUrlHash_not_starts_with?: Maybe<String>;
+  avatarUrlHash_ends_with?: Maybe<String>;
+  avatarUrlHash_not_ends_with?: Maybe<String>;
   lvl?: Maybe<Int>;
   lvl_not?: Maybe<Int>;
   lvl_in?: Maybe<Int[] | Int>;
@@ -1095,6 +1133,7 @@ export interface UserUpdateManyDataInput {
   email?: Maybe<String>;
   password?: Maybe<String>;
   publicName?: Maybe<String>;
+  avatarUrlHash?: Maybe<String>;
   lvl?: Maybe<Int>;
   xp?: Maybe<Float>;
   gold?: Maybe<Float>;
@@ -1277,6 +1316,7 @@ export interface UserCreateWithoutTableInput {
   email: String;
   password: String;
   publicName: String;
+  avatarUrlHash?: Maybe<String>;
   friends?: Maybe<UserCreateManyWithoutFriendsInput>;
   friendInvites?: Maybe<UserCreateManyWithoutFriendInvitesInput>;
   lvl: Int;
@@ -1322,6 +1362,7 @@ export interface UserUpdateWithoutTableDataInput {
   email?: Maybe<String>;
   password?: Maybe<String>;
   publicName?: Maybe<String>;
+  avatarUrlHash?: Maybe<String>;
   friends?: Maybe<UserUpdateManyWithoutFriendsInput>;
   friendInvites?: Maybe<UserUpdateManyWithoutFriendInvitesInput>;
   lvl?: Maybe<Int>;
@@ -1345,6 +1386,7 @@ export interface UserUpdateInput {
   email?: Maybe<String>;
   password?: Maybe<String>;
   publicName?: Maybe<String>;
+  avatarUrlHash?: Maybe<String>;
   friends?: Maybe<UserUpdateManyWithoutFriendsInput>;
   friendInvites?: Maybe<UserUpdateManyWithoutFriendInvitesInput>;
   lvl?: Maybe<Int>;
@@ -1360,6 +1402,7 @@ export interface UserUpdateManyMutationInput {
   email?: Maybe<String>;
   password?: Maybe<String>;
   publicName?: Maybe<String>;
+  avatarUrlHash?: Maybe<String>;
   lvl?: Maybe<Int>;
   xp?: Maybe<Float>;
   gold?: Maybe<Float>;
@@ -1510,6 +1553,7 @@ export interface User {
   email: String;
   password: String;
   publicName: String;
+  avatarUrlHash?: String;
   lvl: Int;
   xp: Float;
   gold: Float;
@@ -1528,6 +1572,7 @@ export interface UserPromise extends Promise<User>, Fragmentable {
   email: () => Promise<String>;
   password: () => Promise<String>;
   publicName: () => Promise<String>;
+  avatarUrlHash: () => Promise<String>;
   friends: <T = FragmentableArray<User>>(args?: {
     where?: UserWhereInput;
     orderBy?: UserOrderByInput;
@@ -1566,6 +1611,7 @@ export interface UserSubscription
   email: () => Promise<AsyncIterator<String>>;
   password: () => Promise<AsyncIterator<String>>;
   publicName: () => Promise<AsyncIterator<String>>;
+  avatarUrlHash: () => Promise<AsyncIterator<String>>;
   friends: <T = Promise<AsyncIterator<UserSubscription>>>(args?: {
     where?: UserWhereInput;
     orderBy?: UserOrderByInput;
@@ -1604,6 +1650,7 @@ export interface UserNullablePromise
   email: () => Promise<String>;
   password: () => Promise<String>;
   publicName: () => Promise<String>;
+  avatarUrlHash: () => Promise<String>;
   friends: <T = FragmentableArray<User>>(args?: {
     where?: UserWhereInput;
     orderBy?: UserOrderByInput;
@@ -2185,6 +2232,7 @@ export interface UserPreviousValues {
   email: String;
   password: String;
   publicName: String;
+  avatarUrlHash?: String;
   lvl: Int;
   xp: Float;
   gold: Float;
@@ -2203,6 +2251,7 @@ export interface UserPreviousValuesPromise
   email: () => Promise<String>;
   password: () => Promise<String>;
   publicName: () => Promise<String>;
+  avatarUrlHash: () => Promise<String>;
   lvl: () => Promise<Int>;
   xp: () => Promise<Float>;
   gold: () => Promise<Float>;
@@ -2221,6 +2270,7 @@ export interface UserPreviousValuesSubscription
   email: () => Promise<AsyncIterator<String>>;
   password: () => Promise<AsyncIterator<String>>;
   publicName: () => Promise<AsyncIterator<String>>;
+  avatarUrlHash: () => Promise<AsyncIterator<String>>;
   lvl: () => Promise<AsyncIterator<Int>>;
   xp: () => Promise<AsyncIterator<Float>>;
   gold: () => Promise<AsyncIterator<Float>>;
@@ -2307,6 +2357,6 @@ export const Prisma = makePrismaClientClass<ClientConstructor<Prisma>>({
   typeDefs,
   models,
   endpoint: `http://localhost:4466`,
-  secret: `my-secret-404`
+  secret: `${process.env["PRISMA_SECRET"]}`
 });
 export const prisma = new Prisma();

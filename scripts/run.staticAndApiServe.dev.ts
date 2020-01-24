@@ -4,51 +4,56 @@ import serverWebPage, {sendWebPage} from "./router/static/webPage.route";
 import usersAvatar from "./router/static/usersAvatar";
 import logInfo from "./utils/consoleLogs/logInfo";
 import logLink from "./utils/consoleLogs/logLink";
-import {StartLoggingSystemStatsTimeout} from "./utils/consoleLogs/logSystemInfo";
 import StaticApi from "./api/static/static.api";
 import * as core from "express-serve-static-core";
+import dirPath from "./router/dirPaths";
+import fileUpload from "express-fileupload";
 
 
 export default class StaticAndApiServeServerDev extends StaticApi {
-   private webPort: number | undefined;
-   private publicApp: core.Express | undefined;
-
+   private readonly webPort: number | undefined;
+   private readonly publicApp: core.Express | undefined;
 
    constructor() {
-      super();
-      (async () => {
-         logInfo("Mode: STATIC AND API SERVE");
-         logInfo(`Server version: ${process.env.npm_package_version}`);
+      super({
+         avatarStoragePass: dirPath.userAvatarsFolder
+      });
 
-         logLink(`http://localhost:4466`, "Prisma playground");
-         logLink(`http://localhost:4466/_admin`, "Prisma admin panel");
+      logInfo("Mode: STATIC AND API SERVE");
+      logInfo(`Server version: ${process.env.npm_package_version}`);
 
-         this.webPort = +process.env.PUBLIC_WEB_AND_API_PORT!;
+      logLink(`http://localhost:4466`, "Prisma playground");
+      logLink(`http://localhost:4466/_admin`, "Prisma admin panel");
 
-         this.publicApp = express();
-         this.publicApp.use(express.json());
+      this.webPort = +process.env.PUBLIC_WEB_AND_API_PORT!;
 
-         this.AppBindPostLoginUser("/api/users/actions/login", this.publicApp);
-         this.AppBindPostSignUpUser("/api/users/actions/signUp", this.publicApp);
-         this.AppBindPostSendFriendInvite("/api/users/actions/sendFriendInvite", this.publicApp);
-         this.AppBindPostChangeUserPublicName("/api/users/actions/changePublicName", this.publicApp);
-         this.AppBindPostAcceptUserFriendInvite("/api/users/actions/acceptInvite", this.publicApp);
-         this.AppBindPostRejectUserFriendInvite("/api/users/actions/rejectInvite", this.publicApp);
-         this.AppBindPostDeleteUserFromFriendsList("/api/users/actions/deleteFriend", this.publicApp);
+      this.publicApp = express();
+      this.publicApp.use(express.json());
+      this.publicApp.use(express.urlencoded());
+      this.publicApp.use(fileUpload({
+         abortOnLimit: true,
+         limits: {fileSize: 50 * 1024 * 1024},
+      }));
 
-         
+      this.AppBindPostLoginUser("/api/users/actions/login", this.publicApp);
+      this.AppBindPostSignUpUser("/api/users/actions/signUp", this.publicApp);
+      this.AppBindPostSendFriendInvite("/api/users/actions/sendFriendInvite", this.publicApp);
+      this.AppBindPostChangeUserPublicName("/api/users/actions/changePublicName", this.publicApp);
+      this.AppBindPostAcceptUserFriendInvite("/api/users/actions/acceptInvite", this.publicApp);
+      this.AppBindPostRejectUserFriendInvite("/api/users/actions/rejectInvite", this.publicApp);
+      this.AppBindPostDeleteUserFromFriendsList("/api/users/actions/deleteFriend", this.publicApp);
+      this.AppBindPostUploadAvatar("/api/users/actions/uploadAvatar", "avatar", this.publicApp);
 
-         this.AppBindGetVerifyUser("/api/users/actions/verify/:name/:verificationLink/", this.publicApp, ("name"), ("verificationLink"));
+      this.AppBindGetVerifyUser("/api/users/actions/verify/:name/:verificationLink/", this.publicApp, ("name"), ("verificationLink"));
 
-         this.publicApp.use("/api/users/avatars/", usersAvatar);
-         this.publicApp.use("/", serverWebPage);
+      this.publicApp.use("/api/users/avatars/", usersAvatar);
+      this.publicApp.use("/", serverWebPage);
 
-         sendWebPage("/*", this.publicApp);
+      sendWebPage("/*", this.publicApp);
 
-         this.publicApp.listen(this.webPort);
+      this.publicApp.listen(this.webPort);
 
-         logInfo(`Web listening at port ${this.webPort}`);
-         logLink(`http://localhost:${this.webPort}/`, "Web");
-      })();
+      logInfo(`Web listening at port ${this.webPort}`);
+      logLink(`http://localhost:${this.webPort}/`, "Web");
    }
 }

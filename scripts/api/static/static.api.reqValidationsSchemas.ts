@@ -6,13 +6,17 @@ const validationRegexPatterns = {
     }
 };
 
+const joiIdSchema = {
+    id: Joi.string().required(),
+};
+
 const joiEmailCredentialsSchema = {
     email: Joi.string().min(6).max(255).email().required(),
     password: Joi.string().min(8).max(255).required(),
 };
 
 const joiTokenCredentialsSchema = {
-    id: Joi.string().required(),
+    ...joiIdSchema,
     token: Joi.string().required(),
 };
 
@@ -39,18 +43,21 @@ export const staticApiRequestValidationSchemas = {
     },
     userAcceptFriendsInviteSchema: {
         ...joiTokenCredentialsSchema,
-        friendId: Joi.string().required()
+        "friendId": joiIdSchema.id
     },
     userRejectFriendInviteSchema: {
         ...joiTokenCredentialsSchema,
-        inviteUserId: Joi.string().required()
+        "inviteUserId": joiIdSchema.id
     },
     userDeleteFriendSchema: {
         ...joiTokenCredentialsSchema,
-        friendId: Joi.string().required()
+        "friendId": joiIdSchema.id
     },
     userChangePublicNameSchema: {
         ...joiTokenCredentialsSchema,
         ...joiPublicNameSchema
+    },
+    userUploadAvatarSchema: {
+        ...joiTokenCredentialsSchema
     }
 };

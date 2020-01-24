@@ -1,35 +1,31 @@
 import * as core from "express-serve-static-core";
 import Joi from "joi";
-
 import DB_Users from "../../models/user/db_users";
-
 import {staticApiRequestValidationSchemas} from "./static.api.reqValidationsSchemas";
 import emailTransporter from "../../mailer/transporter.account";
 import transporterEmails from "../../mailer/transporter.emails";
 import cryptoRandomString from "crypto-random-string";
 import User from "../../models/user/user";
 import dotenv from "dotenv";
-import multer from "multer";
-import dirPath from "../../router/dirPaths";
-
-
-const avatarStorage = multer.diskStorage({
-   destination: (req, file, cb) => {
-      cb(null, dirPath.userAvatarsFolder);
-   },
-   filename: (req, file, cb) => {
-      cb(null, file.fieldname + '-' + Date.now());
-   }
-});
-
-const uploadAvatar = multer({storage: avatarStorage});
+import {UploadedFile} from "express-fileupload";
+import uniqid from "uniqid"
+import fs from "fs";
 
 
 dotenv.config();
 export default class StaticApi {
-   protected usersInvitesLimit: number = +process.env.PUBLIC_WEB_AND_API_USERS_INVITES_LIMIT!;
-   protected usersFriendsLimit: number = +process.env.PUBLIC_WEB_AND_API_USERS_FRIENDS_LIMIT!;
-   protected automaticValidateUsers: boolean = process.env.AUTOMATIC_VALIDATE_USERS! === "true";
+   protected readonly usersInvitesLimit: number = +process.env.PUBLIC_WEB_AND_API_USERS_INVITES_LIMIT!;
+   protected readonly usersFriendsLimit: number = +process.env.PUBLIC_WEB_AND_API_USERS_FRIENDS_LIMIT!;
+   protected readonly automaticValidateUsers: boolean = process.env.AUTOMATIC_VALIDATE_USERS! === "true";
+
+   // private readonly avatarStorage: multer.Instance;
+   private readonly avatarStoragePath: string;
+
+   constructor(apiConfigs: {
+      avatarStoragePass: string
+   }) {
+      this.avatarStoragePath = apiConfigs.avatarStoragePass;
+   }
 
 
    //post
@@ -296,9 +292,46 @@ export default class StaticApi {
    }
 
    // upload avatar
-   protected AppBindPostUploadAvatar(route: string, app: core.Express): void {
-      app.post(route, uploadAvatar.single("avatar"), async (req, res) => {
+   protected AppBindPostUploadAvatar(route: string, avatarFieldName: string, app: core.Express): void {
+      app.post(route, async (req, res) => {
+         const file: UploadedFile | UploadedFile[] | undefined = !!req.files ? req.files[avatarFieldName] : undefined;
+         const body: {
+            id: string,
+            token: string
+         } = req.body;
 
+         const {error} = Joi.validate(body, staticApiRequestValidationSchemas.userUploadAvatarSchema);
+         if (!!error) return res.status(400).json({
+            "uploaded": false,
+            "error": error,
+         });
+
+         if (!file || !("size" in file) || !("mimetype" in file) ||
+            !["image/png", "image/jpg", "image/jpeg"].includes(file.mimetype) ||
+            file.size > 20000000
+         )
+            return res.status(400).json({
+               "uploaded": false,
+               "error": "something went wrong...",
+            });
+
+         const userData = await DB_Users.GetUserDataByIdAndToken(body.id, body.token);
+         if (!userData || !userData.isVerified) return res.status(400).json({
+            "uploaded": false,
+            "error": "wrong credentials or user unverified",
+         });
+
+         const user = new User(userData);
+         const hash = uniqid(`${Math.random() * 1000000000 | 0}`);
+
+         await user.SetUserAvatarUrlHash(hash);
+         if (!!user.avatarUrlHash) fs.unlinkSync(`${this.avatarStoragePath}/${user.avatarUrlHash}.png`);
+         await file.mv(`${this.avatarStoragePath}/${hash}.png`);
+
+         res.status(200).json({
+            "uploaded": true,
+            "hash": hash
+         });
       });
    }
 
