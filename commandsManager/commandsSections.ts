@@ -40,16 +40,14 @@ export default class CommandsSections {
             ...commandsSections.commands[command],
             deep: this.deep + 1
          }));
-
-      if (this.deep === 1 && !!this.header) logLetters(this.header);
    }
 
    public ShowTitle(): void {
-      console.log(` ${"|-".repeat(this.deep)} >${chalk.underline.blueBright(this.name)}<`);
+      console.log(` ${"|-".repeat(this.deep)} > ${chalk.underline.blueBright(this.name)} <`);
    }
 
    public ShowSectionTitle(): void {
-      console.log(` ${"|-".repeat(this.deep)} ${chalk.underline.blueBright(this.name)}`);
+      console.log(` ${"|-".repeat(this.deep)} ${chalk.blueBright(this.name)}`);
    }
 
    public Show(): void {
@@ -71,27 +69,36 @@ export default class CommandsSections {
       else command.Execute();
    }
 
-   public EnterSection(sectionName: string): void {
+   public EnterSection(sectionName: string, onSectionQuit: any): void {
       const section = this.sections[sectionName];
       if (!section) return console.error(" | No such section");
-      else section.Enter();
+      else section.Enter(onSectionQuit);
    }
 
-   public Enter(): void {
-      while (true) {
+   public Enter(onSectionQuit: any): void {
+      const quitSection = () =>{
+         console.clear();
+         if (!!this.header) logLetters(this.header);
          this.Show();
+      };
 
-         const input = readlineSync.question("> ");
+      quitSection();
+      while (true) {
+         const input = readlineSync.question(chalk.magentaBright(
+            ` ${"|-".repeat(this.deep + 1)}> `
+         ));
          if (!input) continue;
-         if (input === "q") break;
+         if (input === "q") {
+            onSectionQuit();
+            break;
+         }
          if (input === "c") {
-            console.clear();
-            if (!!this.header) logLetters(this.header);
+            quitSection();
             continue;
          }
 
          if (input[0] === "-") this.SpawnCommand(input);
-         else this.EnterSection(input);
+         else this.EnterSection(input, quitSection);
       }
    }
 }

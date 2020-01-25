@@ -2,7 +2,7 @@ import CommandsSection from "./commandsManager/commandsSections";
 
 
 const commandsSections = new CommandsSection({
-   name: "I",
+   name: "Online game",
    header: "DEV",
    commands: {
       "-build-all": {
@@ -155,4 +155,4 @@ const commandsSections = new CommandsSection({
    }
 });
 
-commandsSections.Enter();
+commandsSections.Enter(() => console.log(" bye "));
