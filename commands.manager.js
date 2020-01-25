@@ -25,7 +25,7 @@ class Command {
       let params = [...this.cmdParams];
 
       for (const confName of this.confParams) {
-         const replacer = (readlineSync.question(`> Input ${chalk.blueBright(confName)} > `)).replace(" ", "_");
+         const replacer = (readlineSync.question(`> Input ${chalk.blueBright(confName)} > `)).split(" ").join("_");
 
          params = params.map(i => confName === i ? replacer : i);
       }
