@@ -1,6 +1,7 @@
 import Command, {command} from "./command";
 import chalk from "chalk";
 import readlineSync from "readline-sync";
+import logLetters from "../scripts/utils/consoleLogs/logLetters";
 
 
 export type commandsSections = {
@@ -8,6 +9,7 @@ export type commandsSections = {
    sections?: { [name: string]: commandsSections };
    commands?: { [name: string]: command };
    deep?: number;
+   header?: string;
 }
 
 export default class CommandsSections {
@@ -17,18 +19,29 @@ export default class CommandsSections {
    private readonly sections: { [name: string]: CommandsSections };
    private readonly commands: { [name: string]: Command };
 
+   private readonly header?: string;
 
    constructor(commandsSections: commandsSections) {
       this.name = commandsSections.name;
       this.deep = commandsSections.deep ?? 1;
+      this.header = commandsSections.header ?? "";
 
       this.sections = {};
       if (!!commandsSections.sections) for (const section in commandsSections.sections)
-         this.sections[section] = new CommandsSections(({...commandsSections.sections[section], deep: this.deep + 1}));
+         this.sections[section] = new CommandsSections(({
+            ...commandsSections.sections[section],
+            header: this.header,
+            deep: this.deep + 1
+         }));
 
       this.commands = {};
       if (!!commandsSections.commands) for (const command in commandsSections.commands)
-         this.commands[command] = new Command(({...commandsSections.commands[command], deep: this.deep + 1}));
+         this.commands[command] = new Command(({
+            ...commandsSections.commands[command],
+            deep: this.deep + 1
+         }));
+
+      if (this.deep === 1 && !!this.header) logLetters(this.header);
    }
 
    public ShowTitle(): void {
@@ -73,6 +86,7 @@ export default class CommandsSections {
          if (input === "q") break;
          if (input === "c") {
             console.clear();
+            if (!!this.header) logLetters(this.header);
             continue;
          }
 

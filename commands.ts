@@ -3,30 +3,43 @@ import CommandsSection from "./commandsManager/commandsSections";
 
 const commandsSections = new CommandsSection({
    name: "I",
+   header: "DEV",
+   commands: {
+      "-build-all": {
+         name: "build-all",
+         actionDescription: "tsc && prisma deploy",
+         cmd: [
+            {cmd: "tsc"},
+            {cmd: "prisma", cmdParams: ["deploy"]},
+            {cmd: "sudo", cmdParams: "docker-compose down".split(" ")},
+            {cmd: "sudo", ignoreLogs: true, cmdParams: "docker-compose up".split(" ")}
+         ]
+      }
+   },
    sections: {
       "git": {
-        name: "git",
-        commands: {
-           "-acp": {
-              name: "acp",
-              actionDescription: "git add . && git commit COMMIT_NAME && git push",
-              cmd:[
-                 {
-                    cmd: "git",
-                    cmdParams: "add .".split(" "),
-                 },
-                 {
-                    cmd: "git",
-                    cmdParams: "commit -m COMMIT_NAME".split(" "),
-                    cmdConfigurableValues: "COMMIT_NAME".split(" ")
-                 },
-                 {
-                    cmd: "git",
-                    cmdParams: "push".split(" "),
-                 }
-              ]
-           }
-        }
+         name: "git",
+         commands: {
+            "-acp": {
+               name: "acp",
+               actionDescription: "git add . && git commit COMMIT_NAME && git push",
+               cmd: [
+                  {
+                     cmd: "git",
+                     cmdParams: "add .".split(" "),
+                  },
+                  {
+                     cmd: "git",
+                     cmdParams: "commit -m COMMIT_NAME".split(" "),
+                     cmdConfigurableValues: "COMMIT_NAME".split(" ")
+                  },
+                  {
+                     cmd: "git",
+                     cmdParams: "push".split(" "),
+                  }
+               ]
+            }
+         }
       },
       "tsc": {
          name: "tsc",
@@ -107,16 +120,16 @@ const commandsSections = new CommandsSection({
          }
       },
       "prisma": {
-        name: "prisma",
-        commands: {
-           "-deploy": {
-              name: "deploy",
-              cmd: [{
-                 cmd: "prisma",
-                 cmdParams: ["deploy"]
-              }]
-           }
-        }
+         name: "prisma",
+         commands: {
+            "-deploy": {
+               name: "deploy",
+               cmd: [{
+                  cmd: "prisma",
+                  cmdParams: ["deploy"]
+               }]
+            }
+         }
       },
       "docker-compose": {
          name: "docker-compose",
