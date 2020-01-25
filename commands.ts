@@ -32,7 +32,7 @@ const commandsSections = new CommandsSection({
          name: "tsc",
          commands: {
             "-build": {
-               name: "-build",
+               name: "build",
                actionDescription: "build .ts files",
                cmd: [{
                   cmd: "tsc"
@@ -44,7 +44,7 @@ const commandsSections = new CommandsSection({
          name: "pm2",
          commands: {
             "-list": {
-               name: "-list",
+               name: "list",
                actionDescription: "pm2 list",
                cmd: [{
                   cmd: "pm2",
@@ -52,7 +52,7 @@ const commandsSections = new CommandsSection({
                }]
             },
             "-monitor": {
-               name: "-monitor",
+               name: "monitor",
                actionDescription: "pm2 monit",
                cmd: [{
                   cmd: "pm2",
@@ -60,7 +60,7 @@ const commandsSections = new CommandsSection({
                }]
             },
             "-start": {
-               name: "-start",
+               name: "start",
                actionDescription: "pm2 start app_name",
                cmd: [{
                   cmd: "pm2",
@@ -69,7 +69,7 @@ const commandsSections = new CommandsSection({
                }],
             },
             "-restart": {
-               name: "-restart",
+               name: "restart",
                actionDescription: "pm2 restart app_name",
                cmd: [{
                   cmd: "pm2",
@@ -78,7 +78,7 @@ const commandsSections = new CommandsSection({
                }],
             },
             "stop-": {
-               name: "-stop",
+               name: "stop",
                actionDescription: "pm2 stop app_name",
                cmd: [{
                   cmd: "pm2",
@@ -87,7 +87,7 @@ const commandsSections = new CommandsSection({
                }],
             },
             "-delete": {
-               name: "-delete",
+               name: "delete",
                actionDescription: "pm2 delete app_name",
                cmd: [{
                   cmd: "pm2",
@@ -96,7 +96,7 @@ const commandsSections = new CommandsSection({
                }],
             },
             "-reload": {
-               name: "-reload",
+               name: "reload",
                actionDescription: "pm2 reload APP_NAME",
                cmd: [{
                   cmd: "pm2",
@@ -110,7 +110,7 @@ const commandsSections = new CommandsSection({
         name: "prisma",
         commands: {
            "-deploy": {
-              name: "-deploy",
+              name: "deploy",
               cmd: [{
                  cmd: "prisma",
                  cmdParams: ["deploy"]
@@ -122,7 +122,7 @@ const commandsSections = new CommandsSection({
          name: "docker-compose",
          commands: {
             "-up": {
-               name: "-up",
+               name: "up",
                actionDescription: "docker-compose up",
                cmd: [{
                   cmd: "sudo",
@@ -130,7 +130,7 @@ const commandsSections = new CommandsSection({
                }]
             },
             "-down": {
-               name: "-down",
+               name: "down",
                actionDescription: "docker-compose down",
                cmd: [{
                   cmd: "sudo",

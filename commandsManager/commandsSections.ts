@@ -70,10 +70,7 @@ export default class CommandsSections {
 
          const input = readlineSync.question("> ");
          if (!input) continue;
-         if (input === "q") {
-            console.clear();
-            break;
-         }
+         if (input === "q") break;
          if (input === "c") {
             console.clear();
             continue;
