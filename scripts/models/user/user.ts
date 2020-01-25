@@ -98,8 +98,9 @@ export default class User {
    public GetUserPublicData(): userPublicData {
       return {
          "id": this.id,
+         "lvl": this.lvl,
          "publicName": this.publicName,
-         "lvl": this.lvl
+         "avatarUrlHash": this.avatarUrlHash
       }
    }
 

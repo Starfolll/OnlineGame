@@ -36,7 +36,7 @@ function App(props: any) {
                            padding={"0px"} gap={"10px"}
                         >
                            <Typography variant={"h6"}>{account.publicName}</Typography>
-                           <UserAccountIcon userName={account.publicName}/>
+                           <UserAccountIcon userName={account.publicName} avatarUrlHash={account.avatarUrlHash}/>
                         </GapContainer> : "")
                   }
                </ElementTransition>

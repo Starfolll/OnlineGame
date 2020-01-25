@@ -1,0 +1,11 @@
+/home/starfolll/Proects/OnlineGame/bin/Debug/netcoreapp2.2/OnlineGame.deps.json
+/home/starfolll/Proects/OnlineGame/bin/Debug/netcoreapp2.2/OnlineGame.runtimeconfig.json
+/home/starfolll/Proects/OnlineGame/bin/Debug/netcoreapp2.2/OnlineGame.runtimeconfig.dev.json
+/home/starfolll/Proects/OnlineGame/bin/Debug/netcoreapp2.2/OnlineGame.dll
+/home/starfolll/Proects/OnlineGame/bin/Debug/netcoreapp2.2/OnlineGame.pdb
+/home/starfolll/Proects/OnlineGame/obj/Debug/netcoreapp2.2/OnlineGame.csprojAssemblyReference.cache
+/home/starfolll/Proects/OnlineGame/obj/Debug/netcoreapp2.2/OnlineGame.csproj.CoreCompileInputs.cache
+/home/starfolll/Proects/OnlineGame/obj/Debug/netcoreapp2.2/OnlineGame.AssemblyInfoInputs.cache
+/home/starfolll/Proects/OnlineGame/obj/Debug/netcoreapp2.2/OnlineGame.AssemblyInfo.cs
+/home/starfolll/Proects/OnlineGame/obj/Debug/netcoreapp2.2/OnlineGame.dll
+/home/starfolll/Proects/OnlineGame/obj/Debug/netcoreapp2.2/OnlineGame.pdb

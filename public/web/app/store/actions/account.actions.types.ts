@@ -16,10 +16,12 @@ export type userAccountData = {
    friends?: Array<userPublicData>;
    invites?: Array<userPublicData>;
    tableId?: string;
+   avatarUrlHash?: string;
 }
 
 export const DECLARE_ACCOUNT = "DECLARE_ACCOUNT";
 export const SIGN_OUT_ACCOUNT = "SIGN_OUT_ACCOUNT";
+export const CHANGE_USER_ACCOUNT_AVATAR_HASH = "CHANGE_USER_ACCOUNT_AVATAR_HASH";
 export const CHANGE_USER_ACCOUNT_PUBLIC_NAME = "CHANGE_USER_ACCOUNT_PUBLIC_NAME";
 
 interface DeclareAccount {
@@ -36,4 +38,13 @@ interface ChangeUserAccountPublicName {
    newName: string;
 }
 
-export type accountActionsTypes = DeclareAccount | SignOutAccount | ChangeUserAccountPublicName;
+interface ChangeUserAccountAvatarHash {
+   type: typeof CHANGE_USER_ACCOUNT_AVATAR_HASH;
+   newHash: string;
+}
+
+export type accountActionsTypes =
+   DeclareAccount |
+   SignOutAccount |
+   ChangeUserAccountAvatarHash |
+   ChangeUserAccountPublicName;

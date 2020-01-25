@@ -29,7 +29,7 @@ export default class StaticAndApiServeServerDev extends StaticApi {
 
       this.publicApp = express();
       this.publicApp.use(express.json());
-      this.publicApp.use(express.urlencoded());
+      this.publicApp.use(express.urlencoded({ extended: true }));
       this.publicApp.use(fileUpload({
          abortOnLimit: true,
          limits: {fileSize: 50 * 1024 * 1024},

@@ -14,6 +14,9 @@ export default function accountReducer(
       case "CHANGE_USER_ACCOUNT_PUBLIC_NAME":
          return {...state, publicName: action.newName} as userAccountData;
 
+      case "CHANGE_USER_ACCOUNT_AVATAR_HASH":
+         return {...state, avatarUrlHash: action.newHash} as userAccountData;
+
       default:
          return state;
    }

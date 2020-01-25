@@ -11,7 +11,10 @@ import {userAccountData} from "../../../store/actions/account.actions.types";
 import SectionTitle from "../sectionTitle/SectionTitle";
 import ArrowedPopover from "../arrowedPopover/ArrowedPopover";
 import {useDispatch} from "react-redux";
-import {accountActionChangeUserPublicName} from "../../../store/actions/account.actions";
+import {
+   accountActionChangeUserAccountAvatarHash,
+   accountActionChangeUserPublicName
+} from "../../../store/actions/account.actions";
 import Joi from "@hapi/joi";
 
 
@@ -66,13 +69,34 @@ export default function AccountProfileSection(props: {
    const dispatch = useDispatch();
 
    const [isLoading, setIsLoading] = React.useState(false);
-   const [avatarUrl, setAvatarUrl] = React.useState(`http://localhost:8000/api/users/avatars/server.png`);
+   const avatarUrl = !props.account.avatarUrlHash ? `http://localhost:8000/api/users/avatars/server.png`
+      : `http://localhost:8000/api/users/avatars/${props.account.avatarUrlHash}.png`;
    const [userPublicName, setUserPublicName] = React.useState(props.account.publicName);
    const [userPublicNameError, setUserPublicNameError] = React.useState("");
 
-   const onFilePicked = (file: any) => {
-      setAvatarUrl(window.URL.createObjectURL(file));
-      console.log("publish avatar");
+   const onFilePicked = async (file: any) => {
+      if (isLoading) return;
+
+      const data = new FormData();
+      data.append("avatar", file);
+      data.append("id", props.account.id);
+      data.append("token", props.account.token);
+
+      await fetch("http://localhost:8000/api/users/actions/uploadAvatar", {
+         method: "POST",
+         body: data
+      })
+         .then(res => res.json())
+         .then((data: { uploaded: boolean, hash?: string }) => {
+            setIsLoading(false);
+            if (!data.uploaded || !data.hash) throw new Error();
+            else dispatch(accountActionChangeUserAccountAvatarHash(data.hash));
+         })
+         .catch(err => {
+            console.log(err);
+            setIsLoading(false);
+            props.enqueueSnackbar("Something went wrong...", {variant: "error"});
+         });
    };
 
    const onFilePickError = (message: string) => props.enqueueSnackbar(message, {variant: "error"});
