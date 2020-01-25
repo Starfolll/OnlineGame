@@ -7,7 +7,6 @@
       <e p=".dockerignore" t="Include" />
       <e p=".env" t="Include" />
       <e p=".gitignore" t="Include" />
-      <e p="OnlineGame.csproj" t="IncludeRecursive" />
       <e p="Program.cs" t="Include" />
       <e p="README.md" t="Include" />
       <e p="bin" t="ExcludeRecursive" />
@@ -17106,13 +17105,14 @@
       <e p="obj" t="ExcludeRecursive">
         <e p="Debug" t="Include">
           <e p="netcoreapp2.2" t="Include">
-            <e p="OnlineGame.AssemblyInfo.cs" t="Include" />
+            <e p="pm2.manager.AssemblyInfo.cs" t="Include" />
           </e>
         </e>
       </e>
       <e p="package-lock.json" t="Include" />
       <e p="package.json" t="Include" />
       <e p="packages" t="ExcludeRecursive" />
+      <e p="pm2.manager.csproj" t="IncludeRecursive" />
       <e p="prisma.yml" t="Include" />
       <e p="public" t="Include">
         <e p="userAvatars" t="Include">
