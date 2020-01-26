@@ -1,5 +1,4 @@
 import dotenv from "dotenv";
-import {runUpdate} from "./scripts/run.update";
 
 import logError from "./scripts/utils/consoleLogs/logError";
 import GameManagerServerDev from "./scripts/run.gameManager.dev";
@@ -10,12 +9,6 @@ import StaticAndApiServeServerDev from "./scripts/run.staticAndApiServe.dev";
     dotenv.config();
 
     const isDev: boolean = process.env.BUILD_MODE === "dev";
-    const update: boolean = process.argv.some(arg => arg === "--update");
-
-    if (update) {
-        await runUpdate();
-        return;
-    }
 
     let serverMode: string | undefined = "";
     for (const arg of process.argv) {

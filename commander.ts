@@ -1,4 +1,4 @@
-import CommandsSection from "./commandsManager/commandsSections";
+import CommandsSection from "./commander/commandsSections";
 
 
 const commandsSections = new CommandsSection({
@@ -74,25 +74,25 @@ const commandsSections = new CommandsSection({
             },
             "-start": {
                name: "start",
-               actionDescription: "pm2 start app_name",
+               actionDescription: "pm2 start {FILE_PATH} --name {APP_NAME} -- {ARGS}",
                cmd: [{
                   cmd: "pm2",
-                  cmdParams: "start APP_NAME".split(" "),
-                  cmdConfigurableValues: ["APP_NAME"]
+                  cmdParams: "start FILE_PATH --name APP_NAME -- ARGS".split(" "),
+                  cmdConfigurableValues: ["FILE_PATH", "APP_NAME", "ARGS"]
                }],
             },
             "-restart": {
                name: "restart",
-               actionDescription: "pm2 restart app_name",
+               actionDescription: "pm2 restart {APP_NAME}",
                cmd: [{
                   cmd: "pm2",
                   cmdParams: "restart APP_NAME".split(" "),
                   cmdConfigurableValues: ["APP_NAME"]
                }],
             },
-            "stop-": {
+            "-stop": {
                name: "stop",
-               actionDescription: "pm2 stop app_name",
+               actionDescription: "pm2 stop {APP_NAME}",
                cmd: [{
                   cmd: "pm2",
                   cmdParams: "stop APP_NAME".split(" "),
@@ -101,7 +101,7 @@ const commandsSections = new CommandsSection({
             },
             "-delete": {
                name: "delete",
-               actionDescription: "pm2 delete app_name",
+               actionDescription: "pm2 delete {APP_NAME}",
                cmd: [{
                   cmd: "pm2",
                   cmdParams: "delete APP_NAME".split(" "),
@@ -110,7 +110,7 @@ const commandsSections = new CommandsSection({
             },
             "-reload": {
                name: "reload",
-               actionDescription: "pm2 reload APP_NAME",
+               actionDescription: "pm2 reload {APP_NAME}",
                cmd: [{
                   cmd: "pm2",
                   cmdParams: "reload APP_NAME".split(" "),
@@ -151,8 +151,11 @@ const commandsSections = new CommandsSection({
                }]
             }
          }
-      }
+      },
    }
 });
 
-commandsSections.Enter(() => console.log(" bye "));
+commandsSections.Enter(() => {
+   console.clear();
+   console.log(" bye ");
+});
