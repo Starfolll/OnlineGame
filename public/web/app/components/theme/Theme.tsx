@@ -1,7 +1,7 @@
 import React from "react";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 import {MuiThemeProvider} from "@material-ui/core";
-import {lightGreen, purple, red} from "@material-ui/core/colors";
+import {amber, blue, red} from "@material-ui/core/colors";
 
 
 import "./css/Body.css";
@@ -11,10 +11,14 @@ import "./css/Links.css";
 
 const theme = createMuiTheme({
    palette: {
-      primary: lightGreen,
-      secondary: purple,
+      primary: {
+         main: blue["400"]
+      },
+      secondary: {
+         main: amber["900"]
+      },
       error: {
-         main: red["400"]
+         main: red.A400
       }
    },
    typography: {

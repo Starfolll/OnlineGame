@@ -7,16 +7,19 @@ const command_1 = __importDefault(require("./command"));
 const chalk_1 = __importDefault(require("chalk"));
 const readline_sync_1 = __importDefault(require("readline-sync"));
 const logLetters_1 = __importDefault(require("../scripts/utils/consoleLogs/logLetters"));
+const child_process_1 = require("child_process");
 class CommandsSections {
     constructor(commandsSections) {
         var _a, _b;
+        this.line = "line";
         this.name = commandsSections.name;
-        this.deep = (_a = commandsSections.deep, (_a !== null && _a !== void 0 ? _a : 1));
-        this.header = (_b = commandsSections.header, (_b !== null && _b !== void 0 ? _b : ""));
+        this.deep = (_a = commandsSections.deep) !== null && _a !== void 0 ? _a : 1;
+        this.header = (_b = commandsSections.header) !== null && _b !== void 0 ? _b : "";
+        this.currentDirPath = commandsSections.currentDirPath || "";
         this.sections = {};
         if (!!commandsSections.sections)
             for (const section in commandsSections.sections)
-                this.sections[section] = new CommandsSections((Object.assign(Object.assign({}, commandsSections.sections[section]), { header: this.header, deep: this.deep + 1 })));
+                this.sections[section] = new CommandsSections((Object.assign(Object.assign({}, commandsSections.sections[section]), { currentDirPath: this.currentDirPath, header: this.header, deep: this.deep + 1 })));
         this.commands = {};
         if (!!commandsSections.commands)
             for (const command in commandsSections.commands)
@@ -53,24 +56,43 @@ class CommandsSections {
         else
             section.Enter(onSectionQuit);
     }
+    ExecCustomCommand() {
+        try {
+            const input = readline_sync_1.default.question(chalk_1.default.magentaBright(` |c${"|-".repeat(this.deep)}> `));
+            console.log(`> ${input}`);
+            console.log();
+            child_process_1.execSync(input, { stdio: "inherit" });
+            console.log();
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
     Enter(onSectionQuit) {
         const quitSection = () => {
             console.clear();
             if (!!this.header)
                 logLetters_1.default(this.header);
+            if (!!this.currentDirPath)
+                console.log(` dir : ${this.currentDirPath}`);
             this.Show();
         };
         quitSection();
         while (true) {
-            const input = readline_sync_1.default.question(chalk_1.default.magentaBright(` ${"|-".repeat(this.deep + 1)}> `));
+            const input = readline_sync_1.default.question(chalk_1.default.magenta(` ${"|-".repeat(this.deep + 1)}> `));
             if (!input)
                 continue;
             if (input === "q") {
                 onSectionQuit();
                 break;
             }
-            if (input === "c") {
+            else if (input === "c") {
                 quitSection();
+                continue;
+            }
+            else if (input === "--") {
+                console.log();
+                this.ExecCustomCommand();
                 continue;
             }
             if (input[0] === "-")

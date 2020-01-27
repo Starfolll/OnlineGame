@@ -16,7 +16,7 @@
 }
 
 .donut__circle {
-    stroke: #000;
+    /*stroke: #000;*/
     stroke-linecap: round;
 }
 

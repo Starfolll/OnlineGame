@@ -11,7 +11,7 @@
   "scripts": {
     "start": "node commander.js",
     "games-manager": "node server.js --server-mode-games-manager",
-    "lobby-manager": "ts-node server.js --server-mode-lobby-manager",
+    "lobby-manager": "node server.js --server-mode-lobby-manager",
     "static-and-api": "node server.js --server-mode-static-and-api-serve"
   },
   "engines": {

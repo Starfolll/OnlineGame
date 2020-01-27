@@ -5,12 +5,20 @@ import {Box, makeStyles} from "@material-ui/core";
 import "./Donut.css";
 
 
+const useStyles = makeStyles(theme => ({
+   donutTopCircleStroke: {
+      stroke: theme.palette.secondary.main
+   }
+}));
+
 export default function Donut(props: {
    progress?: number,
    children?: any,
    radius: string,
    stroke?: string
 }) {
+   const classes = useStyles();
+
    const progress = props.progress ?? 0;
    const prefix = 'donut';
    const size = 34;
@@ -56,7 +64,7 @@ export default function Donut(props: {
             />
 
             <circle
-               className={getClassName(prefix, '__circle')}
+               className={[classes.donutTopCircleStroke, getClassName(prefix, '__circle')].join(" ")}
                strokeDasharray={`${Math.abs(progress)} 100`}
                {...circleProps}
             />

@@ -85,8 +85,7 @@ class GlobalLobby extends lobby_1.default {
             return;
         this.CreateNewPrivateRoom(user)
             .then((room) => {
-            var _a;
-            console.log((_a = room) === null || _a === void 0 ? void 0 : _a.GetRoomData());
+            console.log(room === null || room === void 0 ? void 0 : room.GetRoomData());
             if (!!room)
                 user.InformAboutPrivateRoomCreated(room.GetRoomData());
         })

@@ -1,5 +1,6 @@
 import DB_Tables from "../table/db_tables";
 import DB_Users from "./db_users";
+import lvlFormulas from "../../utils/formulas/lvlFormulas";
 
 export type userUniqueData = {
    id?: string;
@@ -41,6 +42,7 @@ export type userOnLoginData = {
    lvl: number;
    xp: number;
    gold: number;
+   xpToNextLvl: number;
    friends?: Array<userPublicData>;
    invites?: Array<userPublicData>;
    tableId?: string;
@@ -89,6 +91,7 @@ export default class User {
          "name": this.name,
          "xp": this.xp,
          "gold": this.gold,
+         "xpToNextLvl": lvlFormulas.xpToNextLvl(this.lvl),
          "friends": (await this.GetUserFriends()).map(u => new User(u).GetUserPublicData()),
          "invites": (await this.GetUserInvites()).map(u => new User(u).GetUserPublicData()),
          "tableId": await this.GetUserTableId()

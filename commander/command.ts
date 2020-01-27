@@ -7,6 +7,7 @@ export type command = {
    readonly actionDescription?: string;
    readonly cmd: Array<cmd>;
    readonly deep?: number;
+   readonly printGap?: boolean;
 }
 
 export default class Command {
@@ -16,6 +17,7 @@ export default class Command {
    private readonly cmd: Array<Cmd>;
 
    private readonly deep: number;
+   private readonly printGap: boolean;
 
 
    constructor(command: command) {
@@ -25,10 +27,12 @@ export default class Command {
       this.cmd = command.cmd.map(c => new Cmd(c));
 
       this.deep = command.deep ?? 1;
+      this.printGap = command.printGap ?? false;
    }
 
    public Show(): void {
-      console.log(` ${"|-".repeat(this.deep)} ${(chalk.greenBright(this.name)).padEnd(60 - this.deep * 2)} ${!!this.actionDescription ? " | " : ""} ${chalk(this.actionDescription)}`);
+      console.log(` ${"|-".repeat(this.deep - 1)} ${(chalk.greenBright(this.name)).padEnd(60 - this.deep * 2)} ${!!this.actionDescription ? " | " : ""} ${chalk(this.actionDescription)}`);
+      if (this.printGap) console.log();
    }
 
    public Execute(): void {

@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_tables_1 = __importDefault(require("../table/db_tables"));
 const db_users_1 = __importDefault(require("./db_users"));
+const lvlFormulas_1 = __importDefault(require("../../utils/formulas/lvlFormulas"));
 class User {
     constructor(data) {
         this.id = data.id;
@@ -30,7 +31,7 @@ class User {
     }
     GetUserOnLoginData() {
         return __awaiter(this, void 0, void 0, function* () {
-            return Object.assign(Object.assign({}, this.GetUserPublicData()), { "token": this.token, "name": this.name, "xp": this.xp, "gold": this.gold, "friends": (yield this.GetUserFriends()).map(u => new User(u).GetUserPublicData()), "invites": (yield this.GetUserInvites()).map(u => new User(u).GetUserPublicData()), "tableId": yield this.GetUserTableId() });
+            return Object.assign(Object.assign({}, this.GetUserPublicData()), { "token": this.token, "name": this.name, "xp": this.xp, "gold": this.gold, "xpToNextLvl": lvlFormulas_1.default.xpToNextLvl(this.lvl), "friends": (yield this.GetUserFriends()).map(u => new User(u).GetUserPublicData()), "invites": (yield this.GetUserInvites()).map(u => new User(u).GetUserPublicData()), "tableId": yield this.GetUserTableId() });
         });
     }
     GetUserPublicData() {

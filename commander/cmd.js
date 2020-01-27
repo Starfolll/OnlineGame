@@ -10,8 +10,8 @@ class Cmd {
     constructor(cmd) {
         var _a, _b;
         this.cmd = cmd.cmd;
-        this.cmdParams = (_a = cmd.cmdParams, (_a !== null && _a !== void 0 ? _a : []));
-        this.cmdConfigurableValues = (_b = cmd.cmdConfigurableValues, (_b !== null && _b !== void 0 ? _b : []));
+        this.cmdParams = (_a = cmd.cmdParams) !== null && _a !== void 0 ? _a : [];
+        this.cmdConfigurableValues = (_b = cmd.cmdConfigurableValues) !== null && _b !== void 0 ? _b : [];
         this.ignoreLogs = !!cmd.ignoreLogs;
     }
     Spawn() {

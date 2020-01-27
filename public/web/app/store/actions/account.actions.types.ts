@@ -2,6 +2,7 @@ export type userPublicData = {
    id: string;
    publicName: string;
    lvl: number;
+   avatarUrlHash?: string;
 }
 
 export type userAccountData = {
@@ -13,8 +14,9 @@ export type userAccountData = {
    lvl: number;
    xp: number;
    gold: number;
-   friends?: Array<userPublicData>;
-   invites?: Array<userPublicData>;
+   xpToNextLvl: number;
+   friends: Array<userPublicData>;
+   invites: Array<userPublicData>;
    tableId?: string;
    avatarUrlHash?: string;
 }

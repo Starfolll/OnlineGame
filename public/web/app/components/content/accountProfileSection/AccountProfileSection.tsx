@@ -16,6 +16,9 @@ import {
    accountActionChangeUserPublicName
 } from "../../../store/actions/account.actions";
 import Joi from "@hapi/joi";
+import {urlsPath} from "../../../env/env";
+import MediumAccountProfileSection from "../mediumAccountProfileSection/MediumAccountProfileSection";
+import ElementTransition from "../elementTransition/ElementTransition";
 
 
 const userChangePublicNameValidationSchema = Joi.object().keys({
@@ -25,12 +28,9 @@ const userChangePublicNameValidationSchema = Joi.object().keys({
 });
 
 const useStyles = makeStyles(theme => ({
-   donutStroke: {
-      stroke: theme.palette.primary.main
-   },
    userPublicNameInput: {
       fontSize: theme.typography.h6.fontSize,
-      color: theme.palette.primary.main,
+      color: theme.palette.secondary.main,
       marginRight: theme.spacing(2)
    },
    avatarUploadContainer: {
@@ -68,9 +68,11 @@ export default function AccountProfileSection(props: {
    const classes = useStyles();
    const dispatch = useDispatch();
 
+   const xpInPercent = (props.account.xp * 100) / props.account.xpToNextLvl;
+
    const [isLoading, setIsLoading] = React.useState(false);
-   const avatarUrl = !props.account.avatarUrlHash ? `http://localhost:8000/api/users/avatars/server.png`
-      : `http://localhost:8000/api/users/avatars/${props.account.avatarUrlHash}.png`;
+   const avatarUrl = !props.account.avatarUrlHash ?
+      urlsPath.getDefaultAvatar() : urlsPath.getUserAvatar(props.account.avatarUrlHash);
    const [userPublicName, setUserPublicName] = React.useState(props.account.publicName);
    const [userPublicNameError, setUserPublicNameError] = React.useState("");
 
@@ -154,12 +156,13 @@ export default function AccountProfileSection(props: {
             <SectionTitle>
                ACCOUNT
             </SectionTitle>
+
             <SectionCover>
                <GapContainer padding={"5px"}>
                   <Grid container>
                      <Grid item>
                         <GapContainer padding={"10px"}>
-                           <Donut radius={"140px"} progress={50}>
+                           <Donut radius={"140px"} progress={xpInPercent}>
                               <FilePicker
                                  extensions={['jpg', 'jpeg', 'png']}
                                  onChange={(file: any) => onFilePicked(file)}
@@ -169,7 +172,7 @@ export default function AccountProfileSection(props: {
                                     <Box className={classes.avatarUploadItem}>
                                        <PublishIcon
                                           style={{marginLeft: "auto", marginRight: "auto"}}
-                                          fontSize={"large"} color={"primary"}
+                                          fontSize={"large"} color={"secondary"}
                                        />
                                     </Box>
                                     <Avatar
@@ -211,7 +214,7 @@ export default function AccountProfileSection(props: {
                                  Gold : {props.account.gold}
                               </Typography>
                               <Typography style={{color: "black", display: "flex"}} variant={"body1"}>
-                                 LVL : {props.account.lvl}
+                                 Lvl : {props.account.lvl}
                               </Typography>
                            </Box>
                            <Divider/>
@@ -223,6 +226,22 @@ export default function AccountProfileSection(props: {
                   </Box>
                </GapContainer>
             </SectionCover>
+
+            {props.account.friends.length > 0 ? (
+               <SectionTitle>
+                  FRIENDS
+               </SectionTitle>) : ""
+            }
+
+            {props.account.friends.length > 0 ? (props.account.friends.map(f =>
+               <ElementTransition key={f.avatarUrlHash} delay={1}>
+                  <MediumAccountProfileSection
+                     avatarUrlHash={f.avatarUrlHash}
+                     lvl={f.lvl}
+                     publicName={f.publicName}
+                  />
+               </ElementTransition>)) : ""
+            }
          </GapContainer>
       </Box>
    );

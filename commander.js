@@ -7,6 +7,7 @@ const commandsSections_1 = __importDefault(require("./commander/commandsSections
 const commandsSections = new commandsSections_1.default({
     name: "Online game",
     header: "DEV",
+    currentDirPath: __dirname,
     commands: {
         "-build-all": {
             name: "build-all",
@@ -73,7 +74,25 @@ const commandsSections = new commandsSections_1.default({
                     cmd: [{
                             cmd: "pm2",
                             cmdParams: ["monit"],
-                        }]
+                        }],
+                    printGap: true
+                },
+                "-startup": {
+                    name: "startup",
+                    actionDescription: "pm2 startup",
+                    cmd: [{
+                            cmd: "pm2",
+                            cmdParams: ["startup"],
+                        }],
+                },
+                "-save-startup": {
+                    name: "save-startup",
+                    actionDescription: "pm2 save",
+                    cmd: [{
+                            cmd: "pm2",
+                            cmdParams: ["save"],
+                        }],
+                    printGap: true
                 },
                 "-start": {
                     name: "start",
@@ -118,6 +137,16 @@ const commandsSections = new commandsSections_1.default({
                             cmd: "pm2",
                             cmdParams: "reload APP_NAME".split(" "),
                             cmdConfigurableValues: ["APP_NAME"]
+                        }],
+                    printGap: true
+                },
+                "-ecosystem": {
+                    name: "ecosystem",
+                    actionDescription: "pm2 ACTION[start|restart|stop|delete] ecosystem.config.js",
+                    cmd: [{
+                            cmd: "pm2",
+                            cmdParams: "ACTION ecosystem.config.js".split(" "),
+                            cmdConfigurableValues: ["ACTION"]
                         }],
                 }
             }
