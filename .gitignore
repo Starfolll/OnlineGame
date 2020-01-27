@@ -1,8 +1,7 @@
 /node_modules
 /scripts/build
-/generated
-.env
 generated
 build
 public/web/node_modules
 public/web/package-lock.json
+public/userAvatars/*

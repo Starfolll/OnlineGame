@@ -65,12 +65,21 @@ const commandsSections = new CommandsSection({
                   cmdParams: ["list"],
                }]
             },
-            "-monitor": {
-               name: "monitor",
+            "-monit": {
+               name: "monit",
                actionDescription: "pm2 monit",
                cmd: [{
                   cmd: "pm2",
                   cmdParams: ["monit"],
+               }],
+               printGap: true
+            },
+            "-monitor": {
+               name: "monitor",
+               actionDescription: "pm2 monitor",
+               cmd: [{
+                  cmd: "pm2",
+                  cmdParams: ["monitor"],
                }],
                printGap: true
             },
