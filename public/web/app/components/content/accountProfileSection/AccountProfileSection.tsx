@@ -189,6 +189,7 @@ export default function AccountProfileSection(props: {
                            <Box>
                               <Box style={{display: "flex", alignItems: "center"}}>
                                  <Input
+                                    disabled={isLoading}
                                     error={true}
                                     className={classes.userPublicNameInput}
                                     value={userPublicName}
@@ -197,7 +198,12 @@ export default function AccountProfileSection(props: {
                                  />
                                  {props.account.publicName !== userPublicName && !isLoading ?
                                     <ArrowedPopover title={userPublicNameError}>
-                                       <Button onClick={changeUserPublicName} variant={"outlined"} size={"small"}>
+                                       <Button
+                                          disabled={isLoading}
+                                          onClick={changeUserPublicName}
+                                          variant={"outlined"}
+                                          size={"small"}
+                                       >
                                           <Typography variant={"subtitle2"}>
                                              SAVE
                                           </Typography>

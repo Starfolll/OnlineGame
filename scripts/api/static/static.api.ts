@@ -291,6 +291,13 @@ export default class StaticApi {
       });
    }
 
+   //change password
+   protected AppBindPostChangePasswordRequest(route: string, app: core.Express): void{
+      app.post(route, async (req, res) => {
+
+      });
+   }
+
    // upload avatar
    protected AppBindPostUploadAvatar(route: string, avatarFieldName: string, app: core.Express): void {
       app.post(route, async (req, res) => {
