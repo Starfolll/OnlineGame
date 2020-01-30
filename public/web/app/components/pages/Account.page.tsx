@@ -2,7 +2,7 @@ import React from "react";
 import ElementTransition from "../content/elementTransition/ElementTransition";
 import ContentAndActionsContainer from "../content/contentAndActionsContainer/ContentAndActionsContainer";
 import GapContainer from "../content/gapContainer/GapConteiner";
-import {Button, Typography} from "@material-ui/core";
+import {Button, LinearProgress, Typography} from "@material-ui/core";
 import SectionCover from "../content/sectionCover/SectionCover";
 import {useHistory} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
@@ -83,6 +83,7 @@ function AccountPage(props: {
                               SIGN OUT
                            </Typography>
                         </Button>
+                        <LinearProgress style={{display: }}/>
                      </GapContainer>
                   </SectionCover>
                </GapContainer>
