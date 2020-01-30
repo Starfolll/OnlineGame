@@ -4,7 +4,6 @@ import dotenv from "dotenv";
 
 //https://ethereal.email/messages
 dotenv.config();
-const transporterName = process.env.NODE_MAILER_TRANSPORTER_NAME!;
 const transporterEmail = process.env.NODE_MAILER_TRANSPORTER_EMAIL!;
 const transporterPassword = process.env.NODE_MAILER_TRANSPORTER_PASSWORD!;
 const isUsingGmail = process.env.NODE_MAILER_TRANSPORTER_IS_SERVICE_GMAIL! === "true";

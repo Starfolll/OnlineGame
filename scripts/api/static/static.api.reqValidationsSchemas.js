@@ -9,13 +9,16 @@ const validationRegexPatterns = {
         name: /^[-_.~A-Za-z0-9]+$/,
     }
 };
+const joiPasswordSchema = {
+    password: joi_1.default.string().min(8).max(255).required(),
+};
+const joiEmailSchema = {
+    email: joi_1.default.string().min(6).max(255).email().required(),
+};
 const joiIdSchema = {
     id: joi_1.default.string().required(),
 };
-const joiEmailCredentialsSchema = {
-    email: joi_1.default.string().min(6).max(255).email().required(),
-    password: joi_1.default.string().min(8).max(255).required(),
-};
+const joiEmailCredentialsSchema = Object.assign(Object.assign({}, joiEmailSchema), joiPasswordSchema);
 const joiTokenCredentialsSchema = Object.assign(Object.assign({}, joiIdSchema), { token: joi_1.default.string().required() });
 const joiPublicNameSchema = {
     publicName: joi_1.default.string().min(2).max(20).required(),
@@ -31,5 +34,7 @@ exports.staticApiRequestValidationSchemas = {
     userRejectFriendInviteSchema: Object.assign(Object.assign({}, joiTokenCredentialsSchema), { "inviteUserId": joiIdSchema.id }),
     userDeleteFriendSchema: Object.assign(Object.assign({}, joiTokenCredentialsSchema), { "friendId": joiIdSchema.id }),
     userChangePublicNameSchema: Object.assign(Object.assign({}, joiTokenCredentialsSchema), joiPublicNameSchema),
-    userUploadAvatarSchema: Object.assign({}, joiTokenCredentialsSchema)
+    userUploadAvatarSchema: Object.assign({}, joiTokenCredentialsSchema),
+    userChangePasswordRequest: Object.assign({}, joiEmailSchema),
+    userChangePassword: Object.assign({ "hash": joi_1.default.string().required() }, joiPasswordSchema)
 };

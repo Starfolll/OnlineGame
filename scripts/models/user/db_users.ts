@@ -49,6 +49,17 @@ export default class DB_Users {
       if (!res.id) logError(res);
    }
 
+   public static async ChangeUserPassword(user: userUniqueData, password: string): Promise<void> {
+      const res = await wrappedPrisma.updateUser({
+         where: user,
+         data: {
+            password:  await bcrypt.hash(password, 11),
+            changPasswordHash: null
+         }
+      });
+      if (!res.id) logError(res);
+   }
+
    public static async DeleteUser(user: userUniqueData): Promise<void> {
       const res = await wrappedPrisma.deleteUser(user);
       if (!res.id) logError(res);
@@ -67,6 +78,16 @@ export default class DB_Users {
 
    public static async GetUserData(user: userUniqueData): Promise<userData | null> {
       return (await wrappedPrisma.user(user));
+   }
+
+   public static async SetChangePasswordHash(user: userUniqueData, hash: string): Promise<void> {
+      const res = await wrappedPrisma.updateUser({
+         where: user,
+         data: {
+            changPasswordHash: hash
+         }
+      });
+      if (!res.id) logError(res);
    }
 
    public static async VerifyUser(user: userUniqueData): Promise<void> {

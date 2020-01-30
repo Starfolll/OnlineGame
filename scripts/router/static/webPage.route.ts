@@ -6,8 +6,6 @@ export default express.static(`${dirPath.webFolder}/dist/`);
 
 export function sendWebPage(route: string, app: core.Express): void {
    app.get(route, async (req, res) => {
-      res.sendFile("index.html", {
-         root: `${dirPath.webFolder}/dist/`
-      });
+      res.sendFile(`${dirPath.webFolder}/index.html`);
    });
 }

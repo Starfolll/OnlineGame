@@ -31,7 +31,7 @@ export default class Command {
    }
 
    public Show(): void {
-      console.log(` ${"|-".repeat(this.deep - 1)} ${(chalk.greenBright(this.name)).padEnd(60 - this.deep * 2)} ${!!this.actionDescription ? " | " : ""} ${chalk(this.actionDescription)}`);
+      console.log(` ${"I".repeat(this.deep - 1)} ${(chalk.greenBright(this.name)).padEnd(60 - this.deep * 2)} ${!!this.actionDescription ? " | " : ""} ${chalk(this.actionDescription)}`);
       if (this.printGap) console.log();
    }
 

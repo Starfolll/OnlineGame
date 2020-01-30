@@ -29,7 +29,7 @@ export default class StaticAndApiServeServerDev extends StaticApi {
 
       this.publicApp = express();
       this.publicApp.use(express.json());
-      this.publicApp.use(express.urlencoded({ extended: true }));
+      this.publicApp.use(express.urlencoded({extended: true}));
       this.publicApp.use(fileUpload({
          abortOnLimit: true,
          limits: {fileSize: 50 * 1024 * 1024},
@@ -42,14 +42,18 @@ export default class StaticAndApiServeServerDev extends StaticApi {
       this.AppBindPostAcceptUserFriendInvite("/api/users/actions/acceptInvite", this.publicApp);
       this.AppBindPostRejectUserFriendInvite("/api/users/actions/rejectInvite", this.publicApp);
       this.AppBindPostDeleteUserFromFriendsList("/api/users/actions/deleteFriend", this.publicApp);
+
       this.AppBindPostUploadAvatar("/api/users/actions/uploadAvatar", "avatar", this.publicApp);
+
+      this.AppBindPostChangePasswordRequest("/api/users/actions/changePasswordRequest", this.publicApp);
+      this.AppBindPostChangePassword("/api/users/actions/changePassword", this.publicApp);
 
       this.AppBindGetVerifyUser("/api/users/actions/verify/:name/:verificationLink/", this.publicApp, ("name"), ("verificationLink"));
 
       this.publicApp.use("/api/users/avatars/", usersAvatar);
       this.publicApp.use("/", serverWebPage);
 
-      sendWebPage("/*", this.publicApp);
+      sendWebPage("*", this.publicApp);
 
       this.publicApp.listen(this.webPort);
 

@@ -237,6 +237,8 @@ export type UserOrderByInput =
   | "publicName_DESC"
   | "avatarUrlHash_ASC"
   | "avatarUrlHash_DESC"
+  | "changPasswordHash_ASC"
+  | "changPasswordHash_DESC"
   | "lvl_ASC"
   | "lvl_DESC"
   | "xp_ASC"
@@ -411,6 +413,20 @@ export interface UserWhereInput {
   avatarUrlHash_not_starts_with?: Maybe<String>;
   avatarUrlHash_ends_with?: Maybe<String>;
   avatarUrlHash_not_ends_with?: Maybe<String>;
+  changPasswordHash?: Maybe<String>;
+  changPasswordHash_not?: Maybe<String>;
+  changPasswordHash_in?: Maybe<String[] | String>;
+  changPasswordHash_not_in?: Maybe<String[] | String>;
+  changPasswordHash_lt?: Maybe<String>;
+  changPasswordHash_lte?: Maybe<String>;
+  changPasswordHash_gt?: Maybe<String>;
+  changPasswordHash_gte?: Maybe<String>;
+  changPasswordHash_contains?: Maybe<String>;
+  changPasswordHash_not_contains?: Maybe<String>;
+  changPasswordHash_starts_with?: Maybe<String>;
+  changPasswordHash_not_starts_with?: Maybe<String>;
+  changPasswordHash_ends_with?: Maybe<String>;
+  changPasswordHash_not_ends_with?: Maybe<String>;
   friends_every?: Maybe<UserWhereInput>;
   friends_some?: Maybe<UserWhereInput>;
   friends_none?: Maybe<UserWhereInput>;
@@ -621,6 +637,7 @@ export interface UserCreateWithoutLobbyInput {
   password: String;
   publicName: String;
   avatarUrlHash?: Maybe<String>;
+  changPasswordHash?: Maybe<String>;
   friends?: Maybe<UserCreateManyWithoutFriendsInput>;
   friendInvites?: Maybe<UserCreateManyWithoutFriendInvitesInput>;
   lvl: Int;
@@ -656,6 +673,7 @@ export interface UserCreateWithoutFriendsInput {
   password: String;
   publicName: String;
   avatarUrlHash?: Maybe<String>;
+  changPasswordHash?: Maybe<String>;
   friendInvites?: Maybe<UserCreateManyWithoutFriendInvitesInput>;
   lvl: Int;
   xp: Float;
@@ -702,6 +720,7 @@ export interface UserCreateInput {
   password: String;
   publicName: String;
   avatarUrlHash?: Maybe<String>;
+  changPasswordHash?: Maybe<String>;
   friends?: Maybe<UserCreateManyWithoutFriendsInput>;
   friendInvites?: Maybe<UserCreateManyWithoutFriendInvitesInput>;
   lvl: Int;
@@ -728,6 +747,7 @@ export interface UserCreateWithoutFriendInvitesInput {
   password: String;
   publicName: String;
   avatarUrlHash?: Maybe<String>;
+  changPasswordHash?: Maybe<String>;
   friends?: Maybe<UserCreateManyWithoutFriendsInput>;
   lvl: Int;
   xp: Float;
@@ -780,6 +800,7 @@ export interface UserUpdateWithoutLobbyDataInput {
   password?: Maybe<String>;
   publicName?: Maybe<String>;
   avatarUrlHash?: Maybe<String>;
+  changPasswordHash?: Maybe<String>;
   friends?: Maybe<UserUpdateManyWithoutFriendsInput>;
   friendInvites?: Maybe<UserUpdateManyWithoutFriendInvitesInput>;
   lvl?: Maybe<Int>;
@@ -832,6 +853,7 @@ export interface UserUpdateWithoutFriendsDataInput {
   password?: Maybe<String>;
   publicName?: Maybe<String>;
   avatarUrlHash?: Maybe<String>;
+  changPasswordHash?: Maybe<String>;
   friendInvites?: Maybe<UserUpdateManyWithoutFriendInvitesInput>;
   lvl?: Maybe<Int>;
   xp?: Maybe<Float>;
@@ -903,6 +925,7 @@ export interface UserUpdateDataInput {
   password?: Maybe<String>;
   publicName?: Maybe<String>;
   avatarUrlHash?: Maybe<String>;
+  changPasswordHash?: Maybe<String>;
   friends?: Maybe<UserUpdateManyWithoutFriendsInput>;
   friendInvites?: Maybe<UserUpdateManyWithoutFriendInvitesInput>;
   lvl?: Maybe<Int>;
@@ -948,6 +971,7 @@ export interface UserUpdateWithoutFriendInvitesDataInput {
   password?: Maybe<String>;
   publicName?: Maybe<String>;
   avatarUrlHash?: Maybe<String>;
+  changPasswordHash?: Maybe<String>;
   friends?: Maybe<UserUpdateManyWithoutFriendsInput>;
   lvl?: Maybe<Int>;
   xp?: Maybe<Float>;
@@ -1091,6 +1115,20 @@ export interface UserScalarWhereInput {
   avatarUrlHash_not_starts_with?: Maybe<String>;
   avatarUrlHash_ends_with?: Maybe<String>;
   avatarUrlHash_not_ends_with?: Maybe<String>;
+  changPasswordHash?: Maybe<String>;
+  changPasswordHash_not?: Maybe<String>;
+  changPasswordHash_in?: Maybe<String[] | String>;
+  changPasswordHash_not_in?: Maybe<String[] | String>;
+  changPasswordHash_lt?: Maybe<String>;
+  changPasswordHash_lte?: Maybe<String>;
+  changPasswordHash_gt?: Maybe<String>;
+  changPasswordHash_gte?: Maybe<String>;
+  changPasswordHash_contains?: Maybe<String>;
+  changPasswordHash_not_contains?: Maybe<String>;
+  changPasswordHash_starts_with?: Maybe<String>;
+  changPasswordHash_not_starts_with?: Maybe<String>;
+  changPasswordHash_ends_with?: Maybe<String>;
+  changPasswordHash_not_ends_with?: Maybe<String>;
   lvl?: Maybe<Int>;
   lvl_not?: Maybe<Int>;
   lvl_in?: Maybe<Int[] | Int>;
@@ -1134,6 +1172,7 @@ export interface UserUpdateManyDataInput {
   password?: Maybe<String>;
   publicName?: Maybe<String>;
   avatarUrlHash?: Maybe<String>;
+  changPasswordHash?: Maybe<String>;
   lvl?: Maybe<Int>;
   xp?: Maybe<Float>;
   gold?: Maybe<Float>;
@@ -1317,6 +1356,7 @@ export interface UserCreateWithoutTableInput {
   password: String;
   publicName: String;
   avatarUrlHash?: Maybe<String>;
+  changPasswordHash?: Maybe<String>;
   friends?: Maybe<UserCreateManyWithoutFriendsInput>;
   friendInvites?: Maybe<UserCreateManyWithoutFriendInvitesInput>;
   lvl: Int;
@@ -1363,6 +1403,7 @@ export interface UserUpdateWithoutTableDataInput {
   password?: Maybe<String>;
   publicName?: Maybe<String>;
   avatarUrlHash?: Maybe<String>;
+  changPasswordHash?: Maybe<String>;
   friends?: Maybe<UserUpdateManyWithoutFriendsInput>;
   friendInvites?: Maybe<UserUpdateManyWithoutFriendInvitesInput>;
   lvl?: Maybe<Int>;
@@ -1387,6 +1428,7 @@ export interface UserUpdateInput {
   password?: Maybe<String>;
   publicName?: Maybe<String>;
   avatarUrlHash?: Maybe<String>;
+  changPasswordHash?: Maybe<String>;
   friends?: Maybe<UserUpdateManyWithoutFriendsInput>;
   friendInvites?: Maybe<UserUpdateManyWithoutFriendInvitesInput>;
   lvl?: Maybe<Int>;
@@ -1403,6 +1445,7 @@ export interface UserUpdateManyMutationInput {
   password?: Maybe<String>;
   publicName?: Maybe<String>;
   avatarUrlHash?: Maybe<String>;
+  changPasswordHash?: Maybe<String>;
   lvl?: Maybe<Int>;
   xp?: Maybe<Float>;
   gold?: Maybe<Float>;
@@ -1554,6 +1597,7 @@ export interface User {
   password: String;
   publicName: String;
   avatarUrlHash?: String;
+  changPasswordHash?: String;
   lvl: Int;
   xp: Float;
   gold: Float;
@@ -1573,6 +1617,7 @@ export interface UserPromise extends Promise<User>, Fragmentable {
   password: () => Promise<String>;
   publicName: () => Promise<String>;
   avatarUrlHash: () => Promise<String>;
+  changPasswordHash: () => Promise<String>;
   friends: <T = FragmentableArray<User>>(args?: {
     where?: UserWhereInput;
     orderBy?: UserOrderByInput;
@@ -1612,6 +1657,7 @@ export interface UserSubscription
   password: () => Promise<AsyncIterator<String>>;
   publicName: () => Promise<AsyncIterator<String>>;
   avatarUrlHash: () => Promise<AsyncIterator<String>>;
+  changPasswordHash: () => Promise<AsyncIterator<String>>;
   friends: <T = Promise<AsyncIterator<UserSubscription>>>(args?: {
     where?: UserWhereInput;
     orderBy?: UserOrderByInput;
@@ -1651,6 +1697,7 @@ export interface UserNullablePromise
   password: () => Promise<String>;
   publicName: () => Promise<String>;
   avatarUrlHash: () => Promise<String>;
+  changPasswordHash: () => Promise<String>;
   friends: <T = FragmentableArray<User>>(args?: {
     where?: UserWhereInput;
     orderBy?: UserOrderByInput;
@@ -2233,6 +2280,7 @@ export interface UserPreviousValues {
   password: String;
   publicName: String;
   avatarUrlHash?: String;
+  changPasswordHash?: String;
   lvl: Int;
   xp: Float;
   gold: Float;
@@ -2252,6 +2300,7 @@ export interface UserPreviousValuesPromise
   password: () => Promise<String>;
   publicName: () => Promise<String>;
   avatarUrlHash: () => Promise<String>;
+  changPasswordHash: () => Promise<String>;
   lvl: () => Promise<Int>;
   xp: () => Promise<Float>;
   gold: () => Promise<Float>;
@@ -2271,6 +2320,7 @@ export interface UserPreviousValuesSubscription
   password: () => Promise<AsyncIterator<String>>;
   publicName: () => Promise<AsyncIterator<String>>;
   avatarUrlHash: () => Promise<AsyncIterator<String>>;
+  changPasswordHash: () => Promise<AsyncIterator<String>>;
   lvl: () => Promise<AsyncIterator<Int>>;
   xp: () => Promise<AsyncIterator<Float>>;
   gold: () => Promise<AsyncIterator<Float>>;

@@ -15,7 +15,7 @@ class Command {
         this.printGap = (_c = command.printGap) !== null && _c !== void 0 ? _c : false;
     }
     Show() {
-        console.log(` ${"|-".repeat(this.deep - 1)} ${(chalk_1.default.greenBright(this.name)).padEnd(60 - this.deep * 2)} ${!!this.actionDescription ? " | " : ""} ${chalk_1.default(this.actionDescription)}`);
+        console.log(` ${"I".repeat(this.deep - 1)} ${(chalk_1.default.greenBright(this.name)).padEnd(60 - this.deep * 2)} ${!!this.actionDescription ? " | " : ""} ${chalk_1.default(this.actionDescription)}`);
         if (this.printGap)
             console.log();
     }

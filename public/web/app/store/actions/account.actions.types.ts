@@ -11,6 +11,7 @@ export type userAccountData = {
    token: string;
    name: string;
    publicName: string;
+   email: string;
    lvl: number;
    xp: number;
    gold: number;

@@ -40,6 +40,19 @@ class DB_Users {
                 logError_1.default(res);
         });
     }
+    static ChangeUserPassword(user, password) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const res = yield wrappedPrisma_1.default.updateUser({
+                where: user,
+                data: {
+                    password: yield bcrypt_1.default.hash(password, 11),
+                    changPasswordHash: null
+                }
+            });
+            if (!res.id)
+                logError_1.default(res);
+        });
+    }
     static DeleteUser(user) {
         return __awaiter(this, void 0, void 0, function* () {
             const res = yield wrappedPrisma_1.default.deleteUser(user);
@@ -62,6 +75,18 @@ class DB_Users {
     static GetUserData(user) {
         return __awaiter(this, void 0, void 0, function* () {
             return (yield wrappedPrisma_1.default.user(user));
+        });
+    }
+    static SetChangePasswordHash(user, hash) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const res = yield wrappedPrisma_1.default.updateUser({
+                where: user,
+                data: {
+                    changPasswordHash: hash
+                }
+            });
+            if (!res.id)
+                logError_1.default(res);
         });
     }
     static VerifyUser(user) {

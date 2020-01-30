@@ -25,13 +25,14 @@ class User {
         this.password = data.password;
         this.publicName = data.publicName;
         this.avatarUrlHash = data.avatarUrlHash;
+        this.changPasswordHash = data.changPasswordHash;
         this.lvl = data.lvl;
         this.xp = data.xp;
         this.gold = data.gold;
     }
     GetUserOnLoginData() {
         return __awaiter(this, void 0, void 0, function* () {
-            return Object.assign(Object.assign({}, this.GetUserPublicData()), { "token": this.token, "name": this.name, "xp": this.xp, "gold": this.gold, "xpToNextLvl": lvlFormulas_1.default.xpToNextLvl(this.lvl), "friends": (yield this.GetUserFriends()).map(u => new User(u).GetUserPublicData()), "invites": (yield this.GetUserInvites()).map(u => new User(u).GetUserPublicData()), "tableId": yield this.GetUserTableId() });
+            return Object.assign(Object.assign({}, this.GetUserPublicData()), { "token": this.token, "name": this.name, "xp": this.xp, "gold": this.gold, "email": this.email, "xpToNextLvl": lvlFormulas_1.default.xpToNextLvl(this.lvl), "friends": (yield this.GetUserFriends()).map(u => new User(u).GetUserPublicData()), "invites": (yield this.GetUserInvites()).map(u => new User(u).GetUserPublicData()), "tableId": yield this.GetUserTableId() });
         });
     }
     GetUserPublicData() {

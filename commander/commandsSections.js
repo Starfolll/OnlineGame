@@ -16,20 +16,21 @@ class CommandsSections {
         this.deep = (_a = commandsSections.deep) !== null && _a !== void 0 ? _a : 1;
         this.header = (_b = commandsSections.header) !== null && _b !== void 0 ? _b : "";
         this.currentDirPath = commandsSections.currentDirPath || "";
+        this.startCommand = commandsSections.startCommand;
         this.sections = {};
         if (!!commandsSections.sections)
             for (const section in commandsSections.sections)
-                this.sections[section] = new CommandsSections((Object.assign(Object.assign({}, commandsSections.sections[section]), { currentDirPath: this.currentDirPath, header: this.header, deep: this.deep + 1 })));
+                this.sections[section] = new CommandsSections((Object.assign(Object.assign({}, commandsSections.sections[section]), { currentDirPath: this.currentDirPath, deep: this.deep + 1 })));
         this.commands = {};
         if (!!commandsSections.commands)
             for (const command in commandsSections.commands)
                 this.commands[command] = new command_1.default((Object.assign(Object.assign({}, commandsSections.commands[command]), { deep: this.deep + 1 })));
     }
     ShowTitle() {
-        console.log(` ${"|-".repeat(this.deep)} > ${chalk_1.default.underline.blueBright(this.name)} <`);
+        console.log(` ${"I".repeat(this.deep)} > ${chalk_1.default.underline.blueBright(this.name)} <`);
     }
     ShowSectionTitle() {
-        console.log(` ${"|-".repeat(this.deep)} ${chalk_1.default.blueBright(this.name)}`);
+        console.log(` ${"I".repeat(this.deep)} ${chalk_1.default.blueBright(this.name)}`);
     }
     Show() {
         console.log();
@@ -58,28 +59,37 @@ class CommandsSections {
     }
     ExecCustomCommand() {
         try {
-            const input = readline_sync_1.default.question(chalk_1.default.magentaBright(` |c${"|-".repeat(this.deep)}> `));
-            console.log(`> ${input}`);
-            console.log();
-            child_process_1.execSync(input, { stdio: "inherit" });
-            console.log();
+            const input = readline_sync_1.default.question(chalk_1.default.magentaBright(` Ic${"I".repeat(this.deep)}> `));
+            if (!!input) {
+                console.log(`> ${input}`);
+                console.log();
+                child_process_1.execSync(input, { stdio: "inherit" });
+                console.log();
+            }
         }
         catch (e) {
             console.log(e);
         }
     }
     Enter(onSectionQuit) {
-        const quitSection = () => {
+        const displaySection = () => {
             console.clear();
             if (!!this.header)
                 logLetters_1.default(this.header);
-            if (!!this.currentDirPath)
+            else
+                console.log();
+            if (!!this.currentDirPath) {
                 console.log(` dir : ${this.currentDirPath}`);
+                if (!!this.startCommand)
+                    console.log();
+            }
+            if (!!this.startCommand)
+                this.startCommand();
             this.Show();
         };
-        quitSection();
+        displaySection();
         while (true) {
-            const input = readline_sync_1.default.question(chalk_1.default.magenta(` ${"|-".repeat(this.deep + 1)}> `));
+            const input = readline_sync_1.default.question(chalk_1.default.magenta(` ${"I".repeat(this.deep + 1)}> `));
             if (!input)
                 continue;
             if (input === "q") {
@@ -87,18 +97,17 @@ class CommandsSections {
                 break;
             }
             else if (input === "c") {
-                quitSection();
+                displaySection();
                 continue;
             }
             else if (input === "--") {
-                console.log();
                 this.ExecCustomCommand();
                 continue;
             }
             if (input[0] === "-")
                 this.SpawnCommand(input);
             else
-                this.EnterSection(input, quitSection);
+                this.EnterSection(input, displaySection);
         }
     }
 }

@@ -17,9 +17,7 @@ const express_1 = __importDefault(require("express"));
 exports.default = express_1.default.static(`${dirPaths_1.default.webFolder}/dist/`);
 function sendWebPage(route, app) {
     app.get(route, (req, res) => __awaiter(this, void 0, void 0, function* () {
-        res.sendFile("index.html", {
-            root: `${dirPaths_1.default.webFolder}/dist/`
-        });
+        res.sendFile(`${dirPaths_1.default.webFolder}/index.html`);
     }));
 }
 exports.sendWebPage = sendWebPage;

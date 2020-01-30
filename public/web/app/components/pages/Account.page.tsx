@@ -11,6 +11,7 @@ import {OptionsObject, SnackbarMessage, withSnackbar} from "notistack";
 // @ts-ignore
 import {rootReducerTypes} from "../../store/reducers";
 import AccountProfileSection from "../content/accountProfileSection/AccountProfileSection";
+import {userAccountData} from "../../store/actions/account.actions.types";
 
 
 function AccountPage(props: {
@@ -19,11 +20,39 @@ function AccountPage(props: {
    const history = useHistory();
    const dispatch = useDispatch();
 
-   const account = useSelector((state: rootReducerTypes) => state.account);
+   const account: userAccountData = useSelector((state: rootReducerTypes) => state.account);
+
+
+   const [isLoadingChangePasswordButton, setIsLoadingChangePasswordButton] = React.useState(false);
+
 
    const sighOut = (): void => {
       dispatch(accountActionSingOutAccount());
       history.push("/");
+   };
+
+   const changePassword = (): void => {
+      if (isLoadingChangePasswordButton) return;
+
+      setIsLoadingChangePasswordButton(true);
+      fetch(`http://localhost:8000/api/users/actions/changePasswordRequest`,{
+         method: "POST",
+         headers: {"Content-Type": "application/json"},
+         body: JSON.stringify({email: account.email})
+      })
+         .then(res => res.json())
+         .then((data: { sent: boolean, email?: string }) => {
+            setIsLoadingChangePasswordButton(false);
+            console.log(data);
+            if (data.sent && !!data.email)
+               props.enqueueSnackbar(`Sent email to change password to ${account.email}`, {variant: "success"});
+            else throw new Error();
+         })
+         .catch(err => {
+            console.log(err);
+            setIsLoadingChangePasswordButton(false);
+            props.enqueueSnackbar("Something went wrong...", {variant: "error"});
+         });
    };
 
    return (
@@ -39,7 +68,12 @@ function AccountPage(props: {
                <GapContainer style={{width: "240px"}} padding={"40px"} gap={"30px"}>
                   <SectionCover>
                      <GapContainer padding={"5px"} gap={"5px"}>
-                        <Button size={"small"} fullWidth>
+                        <Button
+                           onClick={changePassword}
+                           disabled={isLoadingChangePasswordButton}
+                           size={"small"}
+                           fullWidth
+                        >
                            <Typography color={"error"} variant={"subtitle2"}>
                               CHANGE PASSWORD
                            </Typography>

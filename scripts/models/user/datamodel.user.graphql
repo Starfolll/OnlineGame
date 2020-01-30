@@ -17,6 +17,7 @@ type User {
 
     publicName: String!
     avatarUrlHash: String
+    changPasswordHash: String
 
     friends: [User!]! @relation(name: "UsersFriends")
     friendInvites: [User!]! @relation(name: "UsersFriendInvites")

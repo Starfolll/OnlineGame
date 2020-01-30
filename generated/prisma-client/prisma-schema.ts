@@ -627,6 +627,7 @@ type User {
   password: String!
   publicName: String!
   avatarUrlHash: String
+  changPasswordHash: String
   friends(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
   friendInvites(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
   lvl: Int!
@@ -652,6 +653,7 @@ input UserCreateInput {
   password: String!
   publicName: String!
   avatarUrlHash: String
+  changPasswordHash: String
   friends: UserCreateManyWithoutFriendsInput
   friendInvites: UserCreateManyWithoutFriendInvitesInput
   lvl: Int!
@@ -701,6 +703,7 @@ input UserCreateWithoutFriendInvitesInput {
   password: String!
   publicName: String!
   avatarUrlHash: String
+  changPasswordHash: String
   friends: UserCreateManyWithoutFriendsInput
   lvl: Int!
   xp: Float!
@@ -719,6 +722,7 @@ input UserCreateWithoutFriendsInput {
   password: String!
   publicName: String!
   avatarUrlHash: String
+  changPasswordHash: String
   friendInvites: UserCreateManyWithoutFriendInvitesInput
   lvl: Int!
   xp: Float!
@@ -736,6 +740,7 @@ input UserCreateWithoutLobbyInput {
   password: String!
   publicName: String!
   avatarUrlHash: String
+  changPasswordHash: String
   friends: UserCreateManyWithoutFriendsInput
   friendInvites: UserCreateManyWithoutFriendInvitesInput
   lvl: Int!
@@ -754,6 +759,7 @@ input UserCreateWithoutTableInput {
   password: String!
   publicName: String!
   avatarUrlHash: String
+  changPasswordHash: String
   friends: UserCreateManyWithoutFriendsInput
   friendInvites: UserCreateManyWithoutFriendInvitesInput
   lvl: Int!
@@ -789,6 +795,8 @@ enum UserOrderByInput {
   publicName_DESC
   avatarUrlHash_ASC
   avatarUrlHash_DESC
+  changPasswordHash_ASC
+  changPasswordHash_DESC
   lvl_ASC
   lvl_DESC
   xp_ASC
@@ -809,6 +817,7 @@ type UserPreviousValues {
   password: String!
   publicName: String!
   avatarUrlHash: String
+  changPasswordHash: String
   lvl: Int!
   xp: Float!
   gold: Float!
@@ -945,6 +954,20 @@ input UserScalarWhereInput {
   avatarUrlHash_not_starts_with: String
   avatarUrlHash_ends_with: String
   avatarUrlHash_not_ends_with: String
+  changPasswordHash: String
+  changPasswordHash_not: String
+  changPasswordHash_in: [String!]
+  changPasswordHash_not_in: [String!]
+  changPasswordHash_lt: String
+  changPasswordHash_lte: String
+  changPasswordHash_gt: String
+  changPasswordHash_gte: String
+  changPasswordHash_contains: String
+  changPasswordHash_not_contains: String
+  changPasswordHash_starts_with: String
+  changPasswordHash_not_starts_with: String
+  changPasswordHash_ends_with: String
+  changPasswordHash_not_ends_with: String
   lvl: Int
   lvl_not: Int
   lvl_in: [Int!]
@@ -1003,6 +1026,7 @@ input UserUpdateDataInput {
   password: String
   publicName: String
   avatarUrlHash: String
+  changPasswordHash: String
   friends: UserUpdateManyWithoutFriendsInput
   friendInvites: UserUpdateManyWithoutFriendInvitesInput
   lvl: Int
@@ -1021,6 +1045,7 @@ input UserUpdateInput {
   password: String
   publicName: String
   avatarUrlHash: String
+  changPasswordHash: String
   friends: UserUpdateManyWithoutFriendsInput
   friendInvites: UserUpdateManyWithoutFriendInvitesInput
   lvl: Int
@@ -1037,6 +1062,7 @@ input UserUpdateManyDataInput {
   password: String
   publicName: String
   avatarUrlHash: String
+  changPasswordHash: String
   lvl: Int
   xp: Float
   gold: Float
@@ -1063,6 +1089,7 @@ input UserUpdateManyMutationInput {
   password: String
   publicName: String
   avatarUrlHash: String
+  changPasswordHash: String
   lvl: Int
   xp: Float
   gold: Float
@@ -1141,6 +1168,7 @@ input UserUpdateWithoutFriendInvitesDataInput {
   password: String
   publicName: String
   avatarUrlHash: String
+  changPasswordHash: String
   friends: UserUpdateManyWithoutFriendsInput
   lvl: Int
   xp: Float
@@ -1158,6 +1186,7 @@ input UserUpdateWithoutFriendsDataInput {
   password: String
   publicName: String
   avatarUrlHash: String
+  changPasswordHash: String
   friendInvites: UserUpdateManyWithoutFriendInvitesInput
   lvl: Int
   xp: Float
@@ -1174,6 +1203,7 @@ input UserUpdateWithoutLobbyDataInput {
   password: String
   publicName: String
   avatarUrlHash: String
+  changPasswordHash: String
   friends: UserUpdateManyWithoutFriendsInput
   friendInvites: UserUpdateManyWithoutFriendInvitesInput
   lvl: Int
@@ -1191,6 +1221,7 @@ input UserUpdateWithoutTableDataInput {
   password: String
   publicName: String
   avatarUrlHash: String
+  changPasswordHash: String
   friends: UserUpdateManyWithoutFriendsInput
   friendInvites: UserUpdateManyWithoutFriendInvitesInput
   lvl: Int
@@ -1391,6 +1422,20 @@ input UserWhereInput {
   avatarUrlHash_not_starts_with: String
   avatarUrlHash_ends_with: String
   avatarUrlHash_not_ends_with: String
+  changPasswordHash: String
+  changPasswordHash_not: String
+  changPasswordHash_in: [String!]
+  changPasswordHash_not_in: [String!]
+  changPasswordHash_lt: String
+  changPasswordHash_lte: String
+  changPasswordHash_gt: String
+  changPasswordHash_gte: String
+  changPasswordHash_contains: String
+  changPasswordHash_not_contains: String
+  changPasswordHash_starts_with: String
+  changPasswordHash_not_starts_with: String
+  changPasswordHash_ends_with: String
+  changPasswordHash_not_ends_with: String
   friends_every: UserWhereInput
   friends_some: UserWhereInput
   friends_none: UserWhereInput

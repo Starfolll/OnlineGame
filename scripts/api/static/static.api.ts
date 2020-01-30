@@ -18,7 +18,6 @@ export default class StaticApi {
    protected readonly usersFriendsLimit: number = +process.env.PUBLIC_WEB_AND_API_USERS_FRIENDS_LIMIT!;
    protected readonly automaticValidateUsers: boolean = process.env.AUTOMATIC_VALIDATE_USERS! === "true";
 
-   // private readonly avatarStorage: multer.Instance;
    private readonly avatarStoragePath: string;
 
    constructor(apiConfigs: {
@@ -292,11 +291,72 @@ export default class StaticApi {
    }
 
    //change password
-   protected AppBindPostChangePasswordRequest(route: string, app: core.Express): void{
+   protected AppBindPostChangePasswordRequest(route: string, app: core.Express): void {
       app.post(route, async (req, res) => {
+         const body: {
+            email: string
+         } = req.body;
 
+         const {error} = Joi.validate(body, staticApiRequestValidationSchemas.userChangePasswordRequest);
+         if (!!error) return res.status(400).json({
+            "sent": false,
+            "error": error,
+         });
+
+         const userData = await DB_Users.GetUserData({email: body.email});
+         if (!userData || !userData.isVerified) return res.status(200).json({
+            "sent": true,
+            "email": body.email
+         });
+
+         const changePasswordHash = userData.changPasswordHash ??
+            `${userData.id}-${cryptoRandomString({
+               length: 60,
+               type: "url-safe"
+            })}-${uniqid()}-${cryptoRandomString({
+               length: 60,
+               type: "url-safe"
+            })}`;
+
+         await DB_Users.SetChangePasswordHash({id: userData.id}, changePasswordHash);
+         await emailTransporter.sendMail(transporterEmails.changeUserPasswordRequest(
+            body.email,
+            `http://localhost:8000/api/users/actions/change/${changePasswordHash}`
+         ));
+
+         res.status(200).json({
+            "sent": true,
+            "email": body.email
+         });
       });
    }
+
+   protected AppBindPostChangePassword(route: string, app: core.Express): void {
+      app.post(route, async (req, res) => {
+         const body: {
+            hash: string,
+            password: string
+         } = req.body;
+
+         const {error} = Joi.validate(body, staticApiRequestValidationSchemas.userChangePassword);
+         if (!!error) return res.status(400).json({
+            "changed": false,
+            "error": error,
+         });
+
+         const userData = await DB_Users.GetUserData({changPasswordHash: body.hash});
+         if (!userData || !userData.isVerified) return res.status(200).json({
+            "changed": false
+         });
+
+         await DB_Users.ChangeUserPassword({id: userData.id}, body.password);
+
+         return res.status(200).json({
+            "changed": true,
+         });
+      });
+   };
+
 
    // upload avatar
    protected AppBindPostUploadAvatar(route: string, avatarFieldName: string, app: core.Express): void {

@@ -12,6 +12,7 @@ export type commandsSections = {
    deep?: number;
    header?: string;
    currentDirPath?: string;
+   startCommand?: Function;
 }
 
 export default class CommandsSections {
@@ -26,18 +27,21 @@ export default class CommandsSections {
 
    protected line: string = "line";
 
+   public readonly startCommand?: Function;
+
    constructor(commandsSections: commandsSections) {
       this.name = commandsSections.name;
       this.deep = commandsSections.deep ?? 1;
       this.header = commandsSections.header ?? "";
       this.currentDirPath = commandsSections.currentDirPath || "";
 
+      this.startCommand = commandsSections.startCommand;
+
       this.sections = {};
       if (!!commandsSections.sections) for (const section in commandsSections.sections)
          this.sections[section] = new CommandsSections(({
             ...commandsSections.sections[section],
             currentDirPath: this.currentDirPath,
-            header: this.header,
             deep: this.deep + 1
          }));
 
@@ -50,11 +54,11 @@ export default class CommandsSections {
    }
 
    public ShowTitle(): void {
-      console.log(` ${"|-".repeat(this.deep)} > ${chalk.underline.blueBright(this.name)} <`);
+      console.log(` ${"I".repeat(this.deep)} > ${chalk.underline.blueBright(this.name)} <`);
    }
 
    public ShowSectionTitle(): void {
-      console.log(` ${"|-".repeat(this.deep)} ${chalk.blueBright(this.name)}`);
+      console.log(` ${"I".repeat(this.deep)} ${chalk.blueBright(this.name)}`);
    }
 
    public Show(): void {
@@ -85,30 +89,37 @@ export default class CommandsSections {
    private ExecCustomCommand(): void {
       try {
          const input = readlineSync.question(chalk.magentaBright(
-            ` |c${"|-".repeat(this.deep)}> `
+            ` Ic${"I".repeat(this.deep)}> `
          ));
 
-         console.log(`> ${input}`);
-         console.log();
-         execSync(input, {stdio: "inherit"});
-         console.log();
+         if (!!input) {
+            console.log(`> ${input}`);
+            console.log();
+            execSync(input, {stdio: "inherit"});
+            console.log();
+         }
       } catch (e) {
          console.log(e);
       }
    }
 
    public Enter(onSectionQuit: any): void {
-      const quitSection = () => {
+      const displaySection = () => {
          console.clear();
          if (!!this.header) logLetters(this.header);
-         if (!!this.currentDirPath) console.log(` dir : ${this.currentDirPath}`);
+         else console.log();
+         if (!!this.currentDirPath) {
+            console.log(` dir : ${this.currentDirPath}`);
+            if (!!this.startCommand) console.log();
+         }
+         if (!!this.startCommand) this.startCommand();
          this.Show();
       };
 
-      quitSection();
+      displaySection();
       while (true) {
          const input = readlineSync.question(chalk.magenta(
-            ` ${"|-".repeat(this.deep + 1)}> `
+            ` ${"I".repeat(this.deep + 1)}> `
          ));
          if (!input) continue;
 
@@ -116,16 +127,15 @@ export default class CommandsSections {
             onSectionQuit();
             break;
          } else if (input === "c") {
-            quitSection();
+            displaySection();
             continue;
          } else if (input === "--") {
-            console.log();
             this.ExecCustomCommand();
             continue;
          }
 
          if (input[0] === "-") this.SpawnCommand(input);
-         else this.EnterSection(input, quitSection);
+         else this.EnterSection(input, displaySection);
       }
    }
 }

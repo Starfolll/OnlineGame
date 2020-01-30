@@ -6,6 +6,7 @@ export type userUniqueData = {
    id?: string;
    name?: string;
    email?: string;
+   changPasswordHash?: string;
 }
 
 export type userData = {
@@ -16,13 +17,14 @@ export type userData = {
    email: string;
    password: string;
    publicName: string;
+   verificationLink?: string;
+   changPasswordHash?: string;
    avatarUrlHash?: string;
    createdAt: string;
    updatedAt: string;
    lvl: number;
    xp: number;
    gold: number;
-   verificationLink?: string;
    friends?: Array<userData>;
    invites?: Array<userData>;
 }
@@ -43,6 +45,7 @@ export type userOnLoginData = {
    xp: number;
    gold: number;
    xpToNextLvl: number;
+   email: string;
    friends?: Array<userPublicData>;
    invites?: Array<userPublicData>;
    tableId?: string;
@@ -60,6 +63,7 @@ export default class User {
 
    public readonly publicName: string;
    public readonly avatarUrlHash: string | undefined;
+   public readonly changPasswordHash: string | undefined;
 
    public readonly lvl: number;
    public readonly xp: number;
@@ -78,6 +82,7 @@ export default class User {
 
       this.publicName = data.publicName;
       this.avatarUrlHash = data.avatarUrlHash;
+      this.changPasswordHash = data.changPasswordHash;
 
       this.lvl = data.lvl;
       this.xp = data.xp;
@@ -91,6 +96,7 @@ export default class User {
          "name": this.name,
          "xp": this.xp,
          "gold": this.gold,
+         "email": this.email,
          "xpToNextLvl": lvlFormulas.xpToNextLvl(this.lvl),
          "friends": (await this.GetUserFriends()).map(u => new User(u).GetUserPublicData()),
          "invites": (await this.GetUserInvites()).map(u => new User(u).GetUserPublicData()),
@@ -109,7 +115,7 @@ export default class User {
 
 
    // database promises
-   public async SetUserAvatarUrlHash(hash: string): Promise<void>{
+   public async SetUserAvatarUrlHash(hash: string): Promise<void> {
       await DB_Users.SetUserAvatarUrlHashToUser({id: this.id}, hash);
    }
 

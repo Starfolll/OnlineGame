@@ -43,10 +43,12 @@ class StaticAndApiServeServerDev extends static_api_1.default {
         this.AppBindPostRejectUserFriendInvite("/api/users/actions/rejectInvite", this.publicApp);
         this.AppBindPostDeleteUserFromFriendsList("/api/users/actions/deleteFriend", this.publicApp);
         this.AppBindPostUploadAvatar("/api/users/actions/uploadAvatar", "avatar", this.publicApp);
+        this.AppBindPostChangePasswordRequest("/api/users/actions/changePasswordRequest", this.publicApp);
+        this.AppBindPostChangePassword("/api/users/actions/changePassword", this.publicApp);
         this.AppBindGetVerifyUser("/api/users/actions/verify/:name/:verificationLink/", this.publicApp, ("name"), ("verificationLink"));
         this.publicApp.use("/api/users/avatars/", usersAvatar_1.default);
         this.publicApp.use("/", webPage_route_1.default);
-        webPage_route_1.sendWebPage("/*", this.publicApp);
+        webPage_route_1.sendWebPage("*", this.publicApp);
         this.publicApp.listen(this.webPort);
         logInfo_1.default(`Web listening at port ${this.webPort}`);
         logLink_1.default(`http://localhost:${this.webPort}/`, "Web");
