@@ -53,7 +53,7 @@ export default class DB_Users {
       const res = await wrappedPrisma.updateUser({
          where: user,
          data: {
-            password:  await bcrypt.hash(password, 11),
+            password: await bcrypt.hash(password, 11),
             changPasswordHash: null
          }
       });
@@ -78,6 +78,14 @@ export default class DB_Users {
 
    public static async GetUserData(user: userUniqueData): Promise<userData | null> {
       return (await wrappedPrisma.user(user));
+   }
+
+   public static async GetUserDataByChangePasswordHash(hash: string): Promise<userData | null> {
+      return (await wrappedPrisma.users({
+         where: {
+            changPasswordHash: hash
+         }
+      }))[0];
    }
 
    public static async SetChangePasswordHash(user: userUniqueData, hash: string): Promise<void> {

@@ -5,7 +5,7 @@ import {Box, Button, LinearProgress, TextField, Typography} from "@material-ui/c
 import ArrowedPopover from "../../content/arrowedPopover/ArrowedPopover";
 import ElementTransition from "../../content/elementTransition/ElementTransition";
 import Joi from "@hapi/joi";
-import {withSnackbar} from "notistack";
+import {OptionsObject, SnackbarMessage, withSnackbar} from "notistack";
 import RedirectLink from "../../content/redirectLink/RedirectLink";
 import ContentAndActionsContainer from "../../content/contentAndActionsContainer/ContentAndActionsContainer";
 import SectionTitle from "../../content/sectionTitle/SectionTitle";
@@ -19,7 +19,7 @@ const validationSchema = Joi.object().keys({
 });
 
 function SignUpPage(props: {
-   enqueueSnackbar: any
+   enqueueSnackbar: (message: SnackbarMessage, options?: OptionsObject) => OptionsObject['key'] | null,
 }) {
    const [isLoading, setIsLoading] = React.useState(false);
 
@@ -43,12 +43,9 @@ function SignUpPage(props: {
       if (!!passwordError) setPasswordError("");
       if (!!confirmPasswordError) setConfirmPasswordError("");
 
-      const validation = validationSchema.validate({
-         name, publicName, email, password
-      });
+      const validation = validationSchema.validate({name, publicName, email, password});
 
       if (!!validation.error) {
-         console.log(validation);
          validation.error.details.forEach(detail => {
             switch (detail.context!.label) {
                case "name":
@@ -84,11 +81,11 @@ function SignUpPage(props: {
             info?: string,
             error?: { isEmailUsed: boolean, isNameUsed: boolean } | any
          }) => {
+            setIsLoading(false);
             if (!data.verified) {
                if (data.error.isEmailUsed) setEmailError("Email is already used");
                if (data.error.isNameUsed) setNameError("Name is already used");
             } else props.enqueueSnackbar(data.info, {variant: "success"});
-            setIsLoading(false);
          })
          .catch(err => {
             console.log(err);
@@ -165,7 +162,7 @@ function SignUpPage(props: {
                   <SectionCover>
                      <GapContainer padding={"5px"} gap={"5px"}>
                         <RedirectLink title={"LOGIN"} link={"/login"}/>
-                        <RedirectLink title={"FORGOT PASSWORD"} link={"/forgotPassword"}/>
+                        <RedirectLink title={"FORGOT PASSWORD"} link={"/changePassword"}/>
                      </GapContainer>
                   </SectionCover>
                </GapContainer>

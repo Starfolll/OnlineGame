@@ -45,7 +45,6 @@ export type userOnLoginData = {
    xp: number;
    gold: number;
    xpToNextLvl: number;
-   email: string;
    friends?: Array<userPublicData>;
    invites?: Array<userPublicData>;
    tableId?: string;
@@ -96,7 +95,6 @@ export default class User {
          "name": this.name,
          "xp": this.xp,
          "gold": this.gold,
-         "email": this.email,
          "xpToNextLvl": lvlFormulas.xpToNextLvl(this.lvl),
          "friends": (await this.GetUserFriends()).map(u => new User(u).GetUserPublicData()),
          "invites": (await this.GetUserInvites()).map(u => new User(u).GetUserPublicData()),

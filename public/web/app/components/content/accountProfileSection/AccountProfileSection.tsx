@@ -151,11 +151,7 @@ export default function AccountProfileSection(props: {
    };
 
    return (
-      <Box style={{width: "100%", maxWidth: "600px"}}>
-         <GapContainer padding={"40px"} gap={"30px"}>
-            <SectionTitle>
-               ACCOUNT
-            </SectionTitle>
+
 
             <SectionCover>
                <GapContainer padding={"5px"}>
@@ -232,23 +228,5 @@ export default function AccountProfileSection(props: {
                   </Box>
                </GapContainer>
             </SectionCover>
-
-            {props.account.friends.length > 0 ? (
-               <SectionTitle>
-                  FRIENDS
-               </SectionTitle>) : ""
-            }
-
-            {props.account.friends.length > 0 ? (props.account.friends.map(f =>
-               <ElementTransition key={f.avatarUrlHash} delay={1}>
-                  <MediumAccountProfileSection
-                     avatarUrlHash={f.avatarUrlHash}
-                     lvl={f.lvl}
-                     publicName={f.publicName}
-                  />
-               </ElementTransition>)) : ""
-            }
-         </GapContainer>
-      </Box>
    );
 }

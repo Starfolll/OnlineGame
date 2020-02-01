@@ -1,6 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+
 
 module.exports = {
    devServer: {
@@ -31,7 +31,6 @@ module.exports = {
       ]
    },
    plugins: [
-      new HtmlWebpackPlugin({template: "./app/index.html"}),
-      new webpack.HotModuleReplacementPlugin()
+      new webpack.HotModuleReplacementPlugin(),
    ]
 };

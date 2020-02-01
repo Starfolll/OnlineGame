@@ -309,7 +309,7 @@ export default class StaticApi {
             "email": body.email
          });
 
-         const changePasswordHash = userData.changPasswordHash ??
+         const changePasswordHash = !!userData.changPasswordHash ? userData.changPasswordHash :
             `${userData.id}-${cryptoRandomString({
                length: 60,
                type: "url-safe"
@@ -321,7 +321,7 @@ export default class StaticApi {
          await DB_Users.SetChangePasswordHash({id: userData.id}, changePasswordHash);
          await emailTransporter.sendMail(transporterEmails.changeUserPasswordRequest(
             body.email,
-            `http://localhost:8000/api/users/actions/change/${changePasswordHash}`
+            `http://localhost:8000/changePassword/${changePasswordHash}`
          ));
 
          res.status(200).json({
@@ -344,7 +344,7 @@ export default class StaticApi {
             "error": error,
          });
 
-         const userData = await DB_Users.GetUserData({changPasswordHash: body.hash});
+         const userData = await DB_Users.GetUserDataByChangePasswordHash(body.hash);
          if (!userData || !userData.isVerified) return res.status(200).json({
             "changed": false
          });

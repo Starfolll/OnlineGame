@@ -53,7 +53,7 @@ export default class StaticAndApiServeServerDev extends StaticApi {
       this.publicApp.use("/api/users/avatars/", usersAvatar);
       this.publicApp.use("/", serverWebPage);
 
-      sendWebPage("*", this.publicApp);
+      sendWebPage("/*", this.publicApp);
 
       this.publicApp.listen(this.webPort);
 

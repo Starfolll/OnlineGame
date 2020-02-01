@@ -244,7 +244,6 @@ class StaticApi {
     }
     AppBindPostChangePasswordRequest(route, app) {
         app.post(route, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            var _a;
             const body = req.body;
             const { error } = joi_1.default.validate(body, static_api_reqValidationsSchemas_1.staticApiRequestValidationSchemas.userChangePasswordRequest);
             if (!!error)
@@ -258,15 +257,16 @@ class StaticApi {
                     "sent": true,
                     "email": body.email
                 });
-            const changePasswordHash = (_a = userData.changPasswordHash) !== null && _a !== void 0 ? _a : `${userData.id}-${crypto_random_string_1.default({
-                length: 60,
-                type: "url-safe"
-            })}-${uniqid_1.default()}-${crypto_random_string_1.default({
-                length: 60,
-                type: "url-safe"
-            })}`;
+            const changePasswordHash = !!userData.changPasswordHash ? userData.changPasswordHash :
+                `${userData.id}-${crypto_random_string_1.default({
+                    length: 60,
+                    type: "url-safe"
+                })}-${uniqid_1.default()}-${crypto_random_string_1.default({
+                    length: 60,
+                    type: "url-safe"
+                })}`;
             yield db_users_1.default.SetChangePasswordHash({ id: userData.id }, changePasswordHash);
-            yield transporter_account_1.default.sendMail(transporter_emails_1.default.changeUserPasswordRequest(body.email, `http://localhost:8000/api/users/actions/change/${changePasswordHash}`));
+            yield transporter_account_1.default.sendMail(transporter_emails_1.default.changeUserPasswordRequest(body.email, `http://localhost:8000/changePassword/${changePasswordHash}`));
             res.status(200).json({
                 "sent": true,
                 "email": body.email
@@ -282,7 +282,7 @@ class StaticApi {
                     "changed": false,
                     "error": error,
                 });
-            const userData = yield db_users_1.default.GetUserData({ changPasswordHash: body.hash });
+            const userData = yield db_users_1.default.GetUserDataByChangePasswordHash(body.hash);
             if (!userData || !userData.isVerified)
                 return res.status(200).json({
                     "changed": false

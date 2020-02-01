@@ -77,6 +77,15 @@ class DB_Users {
             return (yield wrappedPrisma_1.default.user(user));
         });
     }
+    static GetUserDataByChangePasswordHash(hash) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return (yield wrappedPrisma_1.default.users({
+                where: {
+                    changPasswordHash: hash
+                }
+            }))[0];
+        });
+    }
     static SetChangePasswordHash(user, hash) {
         return __awaiter(this, void 0, void 0, function* () {
             const res = yield wrappedPrisma_1.default.updateUser({

@@ -76,7 +76,7 @@ function LoginPage(props: {
             if (data.verified && !!data.userData) {
                props.enqueueSnackbar(`Welcome ${data.userData.publicName}`, {variant: "success"});
                dispatch(accountActionDeclareAccount({...data.userData, verified: true}));
-               history.push("/");
+               history.push("/account");
             }
          })
          .catch(err => {
@@ -133,7 +133,7 @@ function LoginPage(props: {
                   <SectionCover>
                      <GapContainer padding={"5px"} gap={"5px"}>
                         <RedirectLink title={"SIGN UP"} link={"/signUp"}/>
-                        <RedirectLink title={"FORGOT PASSWORD"} link={"/forgotPassword"}/>
+                        <RedirectLink title={"FORGOT PASSWORD"} link={"/changePassword"}/>
                      </GapContainer>
                   </SectionCover>
                </GapContainer>

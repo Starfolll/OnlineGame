@@ -2,7 +2,7 @@ import React from "react";
 import ElementTransition from "../content/elementTransition/ElementTransition";
 import ContentAndActionsContainer from "../content/contentAndActionsContainer/ContentAndActionsContainer";
 import GapContainer from "../content/gapContainer/GapConteiner";
-import {Button, LinearProgress, Typography} from "@material-ui/core";
+import {Box, Button, LinearProgress, Typography} from "@material-ui/core";
 import SectionCover from "../content/sectionCover/SectionCover";
 import {useHistory} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
@@ -12,6 +12,9 @@ import {OptionsObject, SnackbarMessage, withSnackbar} from "notistack";
 import {rootReducerTypes} from "../../store/reducers";
 import AccountProfileSection from "../content/accountProfileSection/AccountProfileSection";
 import {userAccountData} from "../../store/actions/account.actions.types";
+import SectionTitle from "../content/sectionTitle/SectionTitle";
+import MediumAccountProfileSection from "../content/mediumAccountProfileSection/MediumAccountProfileSection";
+import RedirectLink from "../content/redirectLink/RedirectLink";
 
 
 function AccountPage(props: {
@@ -22,68 +25,57 @@ function AccountPage(props: {
 
    const account: userAccountData = useSelector((state: rootReducerTypes) => state.account);
 
-
    const [isLoadingChangePasswordButton, setIsLoadingChangePasswordButton] = React.useState(false);
-
 
    const sighOut = (): void => {
       dispatch(accountActionSingOutAccount());
       history.push("/");
    };
 
-   const changePassword = (): void => {
-      if (isLoadingChangePasswordButton) return;
-
-      setIsLoadingChangePasswordButton(true);
-      fetch(`http://localhost:8000/api/users/actions/changePasswordRequest`,{
-         method: "POST",
-         headers: {"Content-Type": "application/json"},
-         body: JSON.stringify({email: account.email})
-      })
-         .then(res => res.json())
-         .then((data: { sent: boolean, email?: string }) => {
-            setIsLoadingChangePasswordButton(false);
-            console.log(data);
-            if (data.sent && !!data.email)
-               props.enqueueSnackbar(`Sent email to change password to ${account.email}`, {variant: "success"});
-            else throw new Error();
-         })
-         .catch(err => {
-            console.log(err);
-            setIsLoadingChangePasswordButton(false);
-            props.enqueueSnackbar("Something went wrong...", {variant: "error"});
-         });
-   };
-
    return (
       <ElementTransition>
          <ContentAndActionsContainer
             content={
-               <AccountProfileSection
-                  account={account}
-                  enqueueSnackbar={props.enqueueSnackbar}
-               />
+               <Box style={{width: "100%", maxWidth: "600px"}}>
+                  <GapContainer padding={"40px"} gap={"30px"}>
+                     <SectionTitle>
+                        ACCOUNT
+                     </SectionTitle>
+
+                     <AccountProfileSection
+                        account={account}
+                        enqueueSnackbar={props.enqueueSnackbar}
+                     />
+
+                     {account.friends.length > 0 ? (
+                        <SectionTitle>
+                           FRIENDS
+                        </SectionTitle>) : ""
+                     }
+
+                     {account.friends.length > 0 ? (account.friends.map(f =>
+                        <MediumAccountProfileSection
+                           avatarUrlHash={f.avatarUrlHash}
+                           lvl={f.lvl}
+                           publicName={f.publicName}
+                        />)) : ""
+                     }
+                  </GapContainer>
+               </Box>
             }
             actions={
                <GapContainer style={{width: "240px"}} padding={"40px"} gap={"30px"}>
                   <SectionCover>
                      <GapContainer padding={"5px"} gap={"5px"}>
-                        <Button
-                           onClick={changePassword}
-                           disabled={isLoadingChangePasswordButton}
-                           size={"small"}
-                           fullWidth
-                        >
-                           <Typography color={"error"} variant={"subtitle2"}>
-                              CHANGE PASSWORD
-                           </Typography>
-                        </Button>
+                        <RedirectLink title={"CHANGE PASSWORD"} link={"/changePassword"}/>
                         <Button onClick={sighOut} size={"small"} fullWidth>
                            <Typography color={"error"} variant={"subtitle2"}>
                               SIGN OUT
                            </Typography>
                         </Button>
-                        <LinearProgress style={{display: }}/>
+                        <LinearProgress style={{
+                           display: isLoadingChangePasswordButton ? "block" : "none"
+                        }}/>
                      </GapContainer>
                   </SectionCover>
                </GapContainer>

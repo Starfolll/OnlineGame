@@ -14,10 +14,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const dirPaths_1 = __importDefault(require("../dirPaths"));
 const express_1 = __importDefault(require("express"));
+const fs_1 = __importDefault(require("fs"));
 exports.default = express_1.default.static(`${dirPaths_1.default.webFolder}/dist/`);
 function sendWebPage(route, app) {
     app.get(route, (req, res) => __awaiter(this, void 0, void 0, function* () {
-        res.sendFile(`${dirPaths_1.default.webFolder}/index.html`);
+        const index = fs_1.default.readFileSync(`${dirPaths_1.default.webFolder}/dist/index.html`);
+        res.header({ "Content-Type": "text/html; charset=utf-8" }).send(index.toString());
     }));
 }
 exports.sendWebPage = sendWebPage;

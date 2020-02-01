@@ -13,6 +13,7 @@ import AccountPage from "./pages/Account.page";
 import GapContainer from "./content/gapContainer/GapConteiner";
 import {Box, Typography} from "@material-ui/core";
 import ElementTransition from "./content/elementTransition/ElementTransition";
+import ChangePasswordPage from "./pages/signs/ChangePasswordPage/ChangePasswordPage";
 
 
 function App(props: any) {
@@ -55,6 +56,9 @@ function App(props: any) {
             </Route>
             <Route path="/account">
                {!!account ? <AccountPage/> : <Redirect to={"/"}/>}
+            </Route>
+            <Route path="/changePassword">
+               <ChangePasswordPage/>
             </Route>
             <Route path="*">
                <Page404/>
