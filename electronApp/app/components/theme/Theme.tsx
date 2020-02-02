@@ -23,9 +23,8 @@ const theme = createMuiTheme({
    },
    typography: {
       fontFamily: [
-         '"Questrial"',
-         // '"Quicksand"', '"Helvetica Neue"', 'Arial', 'sans-serif',
-         // '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Segoe UI Symbol"',
+         '"Questrial"', '"Helvetica Neue"', 'Arial', 'sans-serif',
+         '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Segoe UI Symbol"',
       ].join(',')
    }
 });

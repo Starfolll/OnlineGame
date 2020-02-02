@@ -5,3 +5,6 @@ build
 public/web/node_modules
 public/web/package-lock.json
 public/userAvatars/*
+electronApp/package-lock.json
+electronApp/node_modules
+electronApp/dist
