@@ -14,7 +14,7 @@ export default function GapContainer(props: {
    gap?: string,
    padding?: string,
    children?: any
-   flex?: boolean
+   flex?: boolean,
 }) {
    const classes = useStyles();
    const padding = !!props.padding ? props.padding : "10px";

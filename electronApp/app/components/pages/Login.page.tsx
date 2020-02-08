@@ -1,18 +1,18 @@
-import React from "react";
-import SectionCover from "../content/sectionCover/SectionCover";
-import GapContainer from "../content/gapContainer/GapConteiner";
-import ElementTransition from "../content/elementTransition/ElementTransition";
 import Joi from "@hapi/joi";
 import {Box, Button, LinearProgress, TextField, Typography} from "@material-ui/core";
-import ArrowedPopover from "../content/arrowedPopover/ArrowedPopover";
 import {OptionsObject, SnackbarMessage, withSnackbar} from "notistack";
+import React from "react";
 import {useDispatch} from "react-redux";
+import {useHistory} from "react-router-dom";
+import rendererWindowApi from "../../../scripts/rendererIPC.types";
+import {urlsPath} from "../../env/env";
 import {accountActionDeclareAccount} from "../../store/actions/account.actions";
 import {userAccountData} from "../../store/actions/account.actions.types";
-import {useHistory} from "react-router-dom";
+import ArrowedPopover from "../content/arrowedPopover/ArrowedPopover";
 import ContentAndActionsContainer from "../content/contentAndActionsContainer/ContentAndActionsContainer";
-import RedirectLink from "../content/redirectLink/RedirectLink";
-import SectionTitle from "../content/sectionTitle/SectionTitle";
+import ElementTransition from "../content/elementTransition/ElementTransition";
+import GapContainer from "../content/gapContainer/GapConteiner";
+import SectionCover from "../content/sectionCover/SectionCover";
 
 
 const validationSchema = Joi.object().keys({
@@ -35,9 +35,15 @@ function LoginPage(props: {
    const [passwordError, setPasswordError] = React.useState("");
 
    const submit = async () => {
-      if (isLoading) return;
-      if (!!emailError) setEmailError("");
-      if (!!passwordError) setPasswordError("");
+      if (isLoading) {
+         return;
+      }
+      if (!!emailError) {
+         setEmailError("");
+      }
+      if (!!passwordError) {
+         setPasswordError("");
+      }
 
       const validation = validationSchema.validate({
          email, password
@@ -72,11 +78,12 @@ function LoginPage(props: {
             userData?: userAccountData
          }) => {
             setIsLoading(false);
-            if (!data.verified && typeof data.error === "string") props.enqueueSnackbar(data.error, {variant: "error"});
+            if (!data.verified && typeof data.error === "string") {
+               props.enqueueSnackbar(data.error, {variant: "error"});
+            }
             if (data.verified && !!data.userData) {
-               props.enqueueSnackbar(`Welcome ${data.userData.publicName}`, {variant: "success"});
                dispatch(accountActionDeclareAccount({...data.userData, verified: true}));
-               history.push("/account");
+               rendererWindowApi.setFullscreen(true);
             }
          })
          .catch(err => {
@@ -92,10 +99,10 @@ function LoginPage(props: {
             content={
                <Box style={{width: "450px"}}>
                   <GapContainer padding={"40px"} gap={"30px"}>
-                     <SectionTitle>
-                        LOGIN
-                     </SectionTitle>
-                     <SectionCover>
+                     {/*<SectionTitle>*/}
+                     {/*   LOGIN*/}
+                     {/*</SectionTitle>*/}
+                     <SectionCover title={"LOGIN"}>
                         <GapContainer padding={"20px"} gap={"15px"}>
                            <ArrowedPopover title={emailError}>
                               <TextField
@@ -114,15 +121,26 @@ function LoginPage(props: {
                         </GapContainer>
                      </SectionCover>
                      <SectionCover>
-                        <GapContainer padding={"5px"}>
-                           <Button disabled={isLoading} onClick={submit} size={"small"} fullWidth>
-                              <Typography variant={"subtitle2"}>
+                        <GapContainer padding={"5px"} gap={"5px"}>
+                           <Button disabled={isLoading} onClick={submit} fullWidth>
+                              <Typography variant={"subtitle2"} color={"primary"}>
                                  SUBMIT
                               </Typography>
                            </Button>
                            <Box style={{display: isLoading ? "block" : "none"}}>
                               <LinearProgress/>
                            </Box>
+                        </GapContainer>
+                     </SectionCover>
+                     <SectionCover>
+                        <GapContainer padding={"5px"} gap={"5px"}>
+                           <Button fullWidth onClick={() => rendererWindowApi.openBrowserPage(urlsPath.signUpPage())}>
+                              SIGN UP
+                           </Button>
+                           <Button fullWidth
+                                   onClick={() => rendererWindowApi.openBrowserPage(urlsPath.changePassword())}>
+                              CHANGE PASSWORD
+                           </Button>
                         </GapContainer>
                      </SectionCover>
                   </GapContainer>

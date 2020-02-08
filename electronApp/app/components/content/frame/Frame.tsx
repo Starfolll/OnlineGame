@@ -12,6 +12,7 @@ const useStyles = makeStyles(theme => ({
       background: "black",
       borderRadius: "5px",
       padding: "3px",
+      boxShadow: theme.shadows["4"]
    },
    frameDraggablePart: {
       "-webkit-app-region": "drag",

@@ -26,6 +26,9 @@ export const DECLARE_ACCOUNT = "DECLARE_ACCOUNT";
 export const SIGN_OUT_ACCOUNT = "SIGN_OUT_ACCOUNT";
 export const CHANGE_USER_ACCOUNT_AVATAR_HASH = "CHANGE_USER_ACCOUNT_AVATAR_HASH";
 export const CHANGE_USER_ACCOUNT_PUBLIC_NAME = "CHANGE_USER_ACCOUNT_PUBLIC_NAME";
+export const ACCEPT_USER_FRIEND_INVITE = "ACCEPT_USER_FRIEND_INVITE";
+export const REJECT_USER_FRIEND_INVITE = "REJECT_USER_FRIEND_INVITE";
+
 
 interface DeclareAccount {
    type: typeof DECLARE_ACCOUNT;
@@ -46,8 +49,20 @@ interface ChangeUserAccountAvatarHash {
    newHash: string;
 }
 
+interface AcceptUserFriendInvite {
+   type: typeof ACCEPT_USER_FRIEND_INVITE;
+   userData: userPublicData;
+}
+
+interface RejectUserFriendInvite {
+   type: typeof REJECT_USER_FRIEND_INVITE;
+   userData: userPublicData;
+}
+
 export type accountActionsTypes =
    DeclareAccount |
    SignOutAccount |
    ChangeUserAccountAvatarHash |
-   ChangeUserAccountPublicName;
+   ChangeUserAccountPublicName |
+   AcceptUserFriendInvite |
+   RejectUserFriendInvite;

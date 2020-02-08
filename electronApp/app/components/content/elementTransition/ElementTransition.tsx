@@ -6,12 +6,12 @@ export default function ElementTransition(props: {
    delay?: number,
    children?: any
 }) {
-   const delay = props.delay ?? 0;
+   const delay = !!props.delay ? props.delay : 0;
 
    return (
       <Spring
-         from={{ opacity: 0 }}
-         to={{ opacity: 1 }}
+         from={{opacity: 0}}
+         to={{opacity: 1}}
          delay={delay}
       >
          {(springProps) => <div style={springProps}>

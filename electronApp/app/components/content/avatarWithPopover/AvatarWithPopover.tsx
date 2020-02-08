@@ -1,5 +1,5 @@
-import React from "react";
 import {Avatar, Box, makeStyles, Popover} from "@material-ui/core";
+import React from "react";
 
 
 const useStyles = makeStyles(theme => ({
@@ -31,10 +31,18 @@ export default function AvatarWithPopover(props: {
 
    return (
       <Box>
-         <Box onClick={handleClick}>
+         <Box
+            onClick={handleClick}
+            style={{
+               padding: "3px",
+               background: "rgba(0,0,0,0.3)",
+               transition: "border-radius 0.3s ease 0s",
+               borderRadius: isAvatarRounded ? "4px" : "50%"
+            }}
+         >
             <Avatar
                src={avatarSrc}
-               style={{transition: "border-radius 0.3s"}}
+               style={{transition: "border-radius 0.3s", width: "55px", height: "55px"}}
                variant={isAvatarRounded ? "rounded" : "circle"}
             />
          </Box>
@@ -46,11 +54,11 @@ export default function AvatarWithPopover(props: {
             onClose={handleClose}
             anchorOrigin={{
                vertical: 'bottom',
-               horizontal: 'right',
+               horizontal: 'center',
             }}
             transformOrigin={{
                vertical: 'top',
-               horizontal: 'right',
+               horizontal: 'center',
             }}
          >
             <Box onMouseLeave={handleClose}>

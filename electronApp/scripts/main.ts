@@ -1,4 +1,4 @@
-import {app, BrowserWindow, ipcMain} from "electron";
+import {app, BrowserWindow, ipcMain, shell} from "electron";
 import * as path from "path";
 
 
@@ -46,4 +46,13 @@ ipcMain.on("close-main-window", (e) => {
 
 ipcMain.on("minimize-main-window", (e) => {
    mainWindow?.minimize();
+});
+
+ipcMain.on("main-window-set-fullscreen", (e, state: boolean) => {
+   mainWindow?.setResizable(true);
+   mainWindow?.setFullScreen(state);
+});
+
+ipcMain.on("open-browser-page", (e, link: string) => {
+   shell.openExternal(link);
 });

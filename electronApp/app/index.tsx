@@ -16,8 +16,8 @@ ReactDOM.render(
    <Router>
       <Theme>
          <SnackbarProvider maxSnack={4} anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right',
+            vertical: "bottom",
+            horizontal: "right",
          }}>
             <Provider store={store}>
                <App/>

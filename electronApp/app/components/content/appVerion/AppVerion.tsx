@@ -20,7 +20,7 @@ export default function AppVersion() {
    return (
       <Box className={classes.container}>
          <Typography variant={"body1"} style={{color: "rgba(0,0,0,0.7)"}}>
-            {appVersion}
+            v : {appVersion}
          </Typography>
       </Box>
    );

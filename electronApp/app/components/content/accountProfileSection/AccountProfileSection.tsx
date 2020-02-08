@@ -213,7 +213,7 @@ export default function AccountProfileSection(props: {
                            Gold : {props.account.gold}
                         </Typography>
                         <Typography style={{color: "black", display: "flex"}} variant={"body1"}>
-                           Lvl : {props.account.lvl}
+                           lvl : {props.account.lvl}
                         </Typography>
                      </Box>
                      <Divider/>

@@ -1,4 +1,6 @@
 export const urlsPath = {
    getDefaultAvatar: () => `http://localhost:8000/api/users/avatars/server.png`,
-   getUserAvatar: (hash: string) => `http://localhost:8000/api/users/avatars/${hash}.png`
+   getUserAvatar: (hash: string) => `http://localhost:8000/api/users/avatars/${hash}.png`,
+   signUpPage: () => `http://localhost:8000/signUp`,
+   changePassword: () => `http://localhost:8000/changePassword`,
 };

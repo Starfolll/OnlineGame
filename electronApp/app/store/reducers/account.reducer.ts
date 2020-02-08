@@ -17,6 +17,21 @@ export default function accountReducer(
       case "CHANGE_USER_ACCOUNT_AVATAR_HASH":
          return {...state, avatarUrlHash: action.newHash} as userAccountData;
 
+      case "ACCEPT_USER_FRIEND_INVITE":
+         if (!!state) return {
+            ...state,
+            invites: state.invites.filter(f => action.userData.id !== f.id),
+            friends: [...state.friends, action.userData]
+         } as userAccountData;
+         else return null;
+
+      case "REJECT_USER_FRIEND_INVITE":
+         if (!!state) return {
+            ...state,
+            invites: state.invites.filter(f => action.userData.id !== f.id),
+         } as userAccountData;
+         else return null;
+
       default:
          return state;
    }

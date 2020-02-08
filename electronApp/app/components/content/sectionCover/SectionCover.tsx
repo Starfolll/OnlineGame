@@ -1,6 +1,8 @@
-import React from "react";
-import makeStyles from "@material-ui/core/styles/makeStyles";
 import {Box} from "@material-ui/core";
+import makeStyles from "@material-ui/core/styles/makeStyles";
+import React from "react";
+import GapContainer from "../gapContainer/GapConteiner";
+import SectionTitle from "../sectionTitle/SectionTitle";
 
 
 const useStyles = makeStyles(theme => ({
@@ -12,13 +14,25 @@ const useStyles = makeStyles(theme => ({
 
 export default function SectionCover(props: {
    style?: React.CSSProperties,
-   children?: any
+   title?: any,
+   children?: any,
+   inverted?: boolean
 }) {
    const classes = useStyles();
+   const inverted = props.inverted ?? false;
 
    return (
-      <Box style={props.style} className={classes.root}>
-         {props.children}
+      <Box>
+         <Box style={{background: inverted ? "black" : "inherit", ...props.style}} className={classes.root}>
+            {!!props.title ?
+               <GapContainer padding={"5px"}>
+                  <SectionTitle>
+                     {props.title}
+                  </SectionTitle>
+               </GapContainer> : ""
+            }
+            {props.children}
+         </Box>
       </Box>
-   )
+   );
 }
