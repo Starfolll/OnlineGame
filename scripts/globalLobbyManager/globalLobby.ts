@@ -9,110 +9,114 @@ import logError from "../utils/consoleLogs/logError";
 
 
 export default class GlobalLobby extends Lobby {
-    constructor(data: lobbyData, maxSavedMessages: number) {
-        super(data, maxSavedMessages);
-    }
+   constructor(data: lobbyData, maxSavedMessages: number) {
+      super(data, maxSavedMessages);
+   }
 
-    public async ConnectUser(user: userUniqueData, connection: WebSocket): Promise<void> {
-        const lobbyUser = await this.ConnectUserToLobby(user, connection);
-        if (!!lobbyUser) {
-            lobbyUser.InformAboutLobby(await this.GetLobbyInfo());
-            this.AttachUserOnMessageSend(lobbyUser);
-            this.AttachUserOnDisconnected(lobbyUser);
-        }
-    }
+   public async ConnectUser(user: userUniqueData, connection: WebSocket): Promise<void> {
+      const lobbyUser = await this.ConnectUserToLobby(user, connection);
+      if (!!lobbyUser) {
+         this.AttachUserOnMessageSend(lobbyUser);
+         this.AttachUserOnDisconnected(lobbyUser);
 
+         lobbyUser.InformAboutLobby(await this.GetLobbyInfo());
 
-    protected AttachUserOnMessageSend(user: LobbyUser): void {
-        user.ConnectionAddEventListener(
-            "lobby",
-            "onMessage",
-            "message",
-            (event: { data: any; type: string; target: WebSocket }): void => {
-                this.ReadUserResponse(user, event.data);
-            }
-        );
-    }
-
-    protected AttachUserOnDisconnected(user: LobbyUser): void {
-        user.ConnectionAddEventListener(
-            "lobby",
-            "onClose",
-            "close",
-            (event: { wasClean: boolean; code: number; reason: string; target: WebSocket }): void => {
-                this.DisconnectUserFromLobby(user.id).then(r => r);
-            }
-        );
-    }
+         this.InformUserFriendsAboutFriendConnected(lobbyUser);
+      }
+   }
 
 
-    private ReadUserResponse(user: LobbyUser, message: string): void {
-        try {
-            const messageBody = JSON.parse(message);
+   protected AttachUserOnMessageSend(user: LobbyUser): void {
+      user.ConnectionAddEventListener(
+         "lobby",
+         "onMessage",
+         "message",
+         (event: { data: any; type: string; target: WebSocket }): void => {
+            this.ReadUserResponse(user, event.data);
+         }
+      );
+   }
 
-            if (!messageBody["messageType"]) return;
-            const messageType = messageBody["messageType"];
+   protected AttachUserOnDisconnected(user: LobbyUser): void {
+      user.ConnectionAddEventListener(
+         "lobby",
+         "onClose",
+         "close",
+         (event: { wasClean: boolean; code: number; reason: string; target: WebSocket }): void => {
+            this.DisconnectUserFromLobby(user.id)
+               .then(r => this.InformUserFriendsAboutFriendDisconnected(user));
+         }
+      );
+   }
 
-            console.log(messageBody);
 
-            switch (messageType) {
-                case userGlobalLobbyResponse.globalLobbyChatMessage:
-                    this.UserResponseChatMessage(user, messageBody);
-                    break;
+   private ReadUserResponse(user: LobbyUser, message: string): void {
+      try {
+         const messageBody = JSON.parse(message);
 
-                case userGlobalLobbyResponse.publicRoomSearch:
-                    this.UserResponsePublicRoomSearch(user, messageBody);
-                    break;
+         if (!messageBody["messageType"]) return;
+         const messageType = messageBody["messageType"];
 
-                case userGlobalLobbyResponse.createNewPrivateRoom:
-                    this.UserResponseCreateNewPrivateRoom(user, messageBody);
-                    break;
+         console.log(messageBody);
 
-                case userGlobalLobbyResponse.connectToPrivateRoom:
-                    this.UserResponseConnectToPrivateRoom(user, messageBody);
-                    break;
-            }
+         switch (messageType) {
+            case userGlobalLobbyResponse.globalLobbyChatMessage:
+               this.UserResponseChatMessage(user, messageBody);
+               break;
 
-        } catch (e) {
-            logError(e);
-        }
-    }
+            case userGlobalLobbyResponse.publicRoomSearch:
+               this.UserResponsePublicRoomSearch(user, messageBody);
+               break;
 
-    private UserResponseChatMessage(user: LobbyUser, messageBody: any): void {
-        const validMessage = IsLobbyMessageValid.GetValidChatMessage(messageBody);
-        if (!validMessage) return;
+            case userGlobalLobbyResponse.createNewPrivateRoom:
+               this.UserResponseCreateNewPrivateRoom(user, messageBody);
+               break;
 
-        this.AddNewChatMessage(
-            validMessage.message,
-            user.GetUserPublicData()
-        );
-    }
+            case userGlobalLobbyResponse.connectToPrivateRoom:
+               this.UserResponseConnectToPrivateRoom(user, messageBody);
+               break;
+         }
 
-    private UserResponsePublicRoomSearch(user: LobbyUser, messageBody: any): void {
-        const validMessage = IsLobbyMessageValid.GetValidPublicRoomSearch(messageBody);
-        if (!validMessage) return;
+      } catch (e) {
+         logError(e);
+      }
+   }
 
-        this.ConnectUserToPublicRoom(user).then(r => r)
-            .catch(err => logError(err));
-    }
+   private UserResponseChatMessage(user: LobbyUser, messageBody: any): void {
+      const validMessage = IsLobbyMessageValid.GetValidChatMessage(messageBody);
+      if (!validMessage) return;
 
-    private UserResponseCreateNewPrivateRoom(user: LobbyUser, messageBody: any): void {
-        const validMessage = IsLobbyMessageValid.GetValidCreateNewPrivateRoom(messageBody);
-        if (!validMessage) return;
+      this.AddNewChatMessage(
+         validMessage.message,
+         user.GetUserPublicData()
+      );
+   }
 
-        this.CreateNewPrivateRoom(user)
-            .then((room: Room | undefined) => {
-                console.log(room?.GetRoomData());
-                if (!!room) user.InformAboutPrivateRoomCreated(room.GetRoomData());
-            })
-            .catch(err => logError(err));
-    }
+   private UserResponsePublicRoomSearch(user: LobbyUser, messageBody: any): void {
+      const validMessage = IsLobbyMessageValid.GetValidPublicRoomSearch(messageBody);
+      if (!validMessage) return;
 
-    private UserResponseConnectToPrivateRoom(user: LobbyUser, messageBody: any): void {
-        const validMessage = IsLobbyMessageValid.GetValidConnectToPrivateRoom(messageBody);
-        if (!validMessage) return;
+      this.ConnectUserToPublicRoom(user).then(r => r)
+         .catch(err => logError(err));
+   }
 
-        this.ConnectUserToPrivateRoom(user, validMessage.roomId)
-            .catch(err => logError(err));
-    }
+   private UserResponseCreateNewPrivateRoom(user: LobbyUser, messageBody: any): void {
+      const validMessage = IsLobbyMessageValid.GetValidCreateNewPrivateRoom(messageBody);
+      if (!validMessage) return;
+
+      this.CreateNewPrivateRoom(user)
+         .then((room: Room | undefined) => {
+            console.log(room?.GetRoomData());
+            if (!!room) user.InformAboutPrivateRoomCreated(room.GetExtendedRoomData());
+         })
+         .catch(err => logError(err));
+   }
+
+   private UserResponseConnectToPrivateRoom(user: LobbyUser, messageBody: any): void {
+      const validMessage = IsLobbyMessageValid.GetValidConnectToPrivateRoom(messageBody);
+      if (!validMessage) return;
+
+      this.ConnectUserToPrivateRoom(user, validMessage.roomId)
+         .catch(err => logError(err));
+   }
 }

@@ -42,13 +42,6 @@ export default class GlobalLobbyManager {
                         throw new Error();
                     }
 
-                    const roomId = await DB_Rooms.GetUserRoomId({id: userData.id});
-                    if (!!roomId) {
-                        connection.send(JSON.stringify(GetGlobalLobbyMessage.RedirectToRoom(
-                            this.globalLobby.GetRoomData(roomId, true)!
-                        )));
-                    }
-
                     connection.removeEventListener("message", onMessageHandler);
                     await this.globalLobby.ConnectUser({id: userData.id}, connection);
                 } catch (e) {
@@ -60,6 +53,7 @@ export default class GlobalLobbyManager {
 
             connection.addEventListener("message", onMessageHandler);
         });
+
         if (!!cb) cb();
     }
 }

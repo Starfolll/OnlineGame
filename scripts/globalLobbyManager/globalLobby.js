@@ -24,9 +24,10 @@ class GlobalLobby extends lobby_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             const lobbyUser = yield this.ConnectUserToLobby(user, connection);
             if (!!lobbyUser) {
-                lobbyUser.InformAboutLobby(yield this.GetLobbyInfo());
                 this.AttachUserOnMessageSend(lobbyUser);
                 this.AttachUserOnDisconnected(lobbyUser);
+                lobbyUser.InformAboutLobby(yield this.GetLobbyInfo());
+                this.InformUserFriendsAboutFriendConnected(lobbyUser);
             }
         });
     }
@@ -37,7 +38,8 @@ class GlobalLobby extends lobby_1.default {
     }
     AttachUserOnDisconnected(user) {
         user.ConnectionAddEventListener("lobby", "onClose", "close", (event) => {
-            this.DisconnectUserFromLobby(user.id).then(r => r);
+            this.DisconnectUserFromLobby(user.id)
+                .then(r => this.InformUserFriendsAboutFriendDisconnected(user));
         });
     }
     ReadUserResponse(user, message) {
@@ -87,7 +89,7 @@ class GlobalLobby extends lobby_1.default {
             .then((room) => {
             console.log(room === null || room === void 0 ? void 0 : room.GetRoomData());
             if (!!room)
-                user.InformAboutPrivateRoomCreated(room.GetRoomData());
+                user.InformAboutPrivateRoomCreated(room.GetExtendedRoomData());
         })
             .catch(err => logError_1.default(err));
     }

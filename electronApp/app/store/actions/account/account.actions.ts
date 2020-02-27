@@ -1,11 +1,4 @@
-import {
-   accountActionsTypes,
-   CHANGE_USER_ACCOUNT_AVATAR_HASH,
-   CHANGE_USER_ACCOUNT_PUBLIC_NAME,
-   SIGN_OUT_ACCOUNT,
-   userAccountData,
-   userPublicData
-} from "./account.actions.types";
+import {accountActionsTypes, userAccountData, userPublicData} from "./account.actions.types";
 
 export const accountActionDeclareAccount = (account: userAccountData): accountActionsTypes => {
    return {
@@ -29,7 +22,7 @@ export const accountActionChangeUserAccountAvatarHash = (newHash: string): accou
 
 export const accountActionChangeUserPublicName = (newName: string): accountActionsTypes => {
    return {
-      type: CHANGE_USER_ACCOUNT_PUBLIC_NAME,
+      type: "CHANGE_USER_ACCOUNT_PUBLIC_NAME",
       newName
    };
 };
@@ -45,5 +38,30 @@ export const accountActionRejectUserFriendInvite = (userData: userPublicData): a
    return {
       type: "REJECT_USER_FRIEND_INVITE",
       userData
+   };
+};
+
+export const accountActionDeleteUserFromFriends = (friendId: string): accountActionsTypes => {
+   return {
+      type: "DELETE_USER_FROM_FRIENDS",
+      friendId
+   };
+};
+
+export const accountActionSetConnectedFriends = (friendsId: Array<string>): accountActionsTypes => {
+   return {
+      type: "SET_CONNECTED_FRIENDS", friendsId
+   };
+};
+
+export const accountActionSetConnectedFriend = (friendId: string): accountActionsTypes => {
+   return {
+      type: "SET_CONNECTED_FRIEND", friendId
+   };
+};
+
+export const accountActionSetDisconnectedFriends = (friendId: string): accountActionsTypes => {
+   return {
+      type: "SET_DISCONNECTED_FRIEND", friendId
    };
 };

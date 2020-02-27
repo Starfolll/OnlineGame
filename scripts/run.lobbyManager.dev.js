@@ -20,16 +20,17 @@ const db_lobbies_1 = __importDefault(require("./models/lobby/db_lobbies"));
 const wrappedPrisma_1 = __importDefault(require("./models/wrappedPrisma"));
 class GlobalLobbyManagerServerDev {
     constructor() {
-        (() => __awaiter(this, void 0, void 0, function* () {
+        this.lobbyManagerWSPort = +process.env.PUBLIC_GLOBAL_LOBBY_WS_PORT;
+        const mp = () => __awaiter(this, void 0, void 0, function* () {
             logInfo_1.default("Mode: LOBBY MANAGER");
             logInfo_1.default(`Server version: ${process.env.npm_package_version}`);
             yield wrappedPrisma_1.default.deleteManyRooms();
             yield wrappedPrisma_1.default.deleteManyLobbies();
-            this.lobbyManagerWSPort = +process.env.PUBLIC_GLOBAL_LOBBY_WS_PORT;
             this.lobbyManager = new globalLobbyManager_1.default(new ws_1.default.Server({
                 port: this.lobbyManagerWSPort
-            }), new globalLobby_1.default(yield db_lobbies_1.default.CreateNewLobby({ name: "global 1" }), 30));
-        }))();
+            }), new globalLobby_1.default(yield db_lobbies_1.default.CreateNewLobby({ name: "global 1" }), 10));
+        });
+        mp();
     }
 }
 exports.default = GlobalLobbyManagerServerDev;

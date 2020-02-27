@@ -7,13 +7,13 @@ import PublishIcon from "@material-ui/icons/Publish";
 import {OptionsObject, SnackbarMessage} from "notistack";
 // @ts-ignore
 import {FilePicker} from 'react-file-picker'
-import {userAccountData} from "../../../store/actions/account.actions.types";
+import {userAccountData} from "../../../store/actions/account/account.actions.types";
 import ArrowedPopover from "../arrowedPopover/ArrowedPopover";
 import {useDispatch} from "react-redux";
 import {
    accountActionChangeUserAccountAvatarHash,
    accountActionChangeUserPublicName
-} from "../../../store/actions/account.actions";
+} from "../../../store/actions/account/account.actions";
 import Joi from "@hapi/joi";
 import {urlsPath} from "../../../env/env";
 

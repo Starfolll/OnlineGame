@@ -3,21 +3,36 @@ import {chatMessageInfo} from "../../../utils/chat/chatMessage";
 import {extendedRoomData} from "../../../models/room/room";
 
 export type redirectToGameTable = {
-    messageType: string;
-    tableId: string;
+   messageType: string;
+   tableId: string;
 }
 
 export type redirectToRoom = {
-    messageType: string;
-    room: extendedRoomData;
+   messageType: string;
+   roomData: extendedRoomData;
 }
 
 export type globalLobbyInfo = {
-    messageType: string;
-    lobbyData: extendedLobbyData;
+   messageType: string;
+   lobbyData: extendedLobbyData;
 }
 
 export type newLobbyChatMessage = {
-    messageType: string;
-    message: chatMessageInfo;
+   messageType: string;
+   message: chatMessageInfo;
+}
+
+export type friendConnectedToLobby = {
+   messageType: string;
+   friendId: string;
+}
+
+export type friendDisconnectedFromLobby = {
+   messageType: string;
+   friendId: string;
+}
+
+export type friendsConnectedToGame = {
+   messageType: string;
+   friendsId: Array<string>;
 }

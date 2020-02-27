@@ -17,7 +17,7 @@ export default function ExitFab() {
          <Dialog onClose={() => setOpen(false)} open={open}>
             <GapContainer style={{background: "black", width: "400px"}} padding={"20px"} gap={"20px"}>
                <Typography align={"center"} variant={"h6"} style={{color: "white"}}>
-                  Really want to leave?
+                  Really want to exit?
                </Typography>
                <Grid container>
                   <Grid item xs>

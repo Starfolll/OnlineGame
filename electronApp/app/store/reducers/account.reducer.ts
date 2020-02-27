@@ -1,4 +1,4 @@
-import {accountActionsTypes, userAccountData} from "../actions/account.actions.types";
+import {accountActionsTypes, userAccountData} from "../actions/account/account.actions.types";
 
 export default function accountReducer(
    state: userAccountData | null = null,
@@ -23,14 +23,36 @@ export default function accountReducer(
             invites: state.invites.filter(f => action.userData.id !== f.id),
             friends: [...state.friends, action.userData]
          } as userAccountData;
-         else return null;
+         return null;
 
       case "REJECT_USER_FRIEND_INVITE":
          if (!!state) return {
             ...state,
             invites: state.invites.filter(f => action.userData.id !== f.id),
          } as userAccountData;
-         else return null;
+         return null;
+
+      case "DELETE_USER_FROM_FRIENDS":
+         if (!!state) state.friends = state.friends.filter(f => f.id !== action.friendId);
+         return Object.assign({}, state);
+
+      case "SET_CONNECTED_FRIENDS":
+         if (!!state) state.friends = state.friends.map(f => ({
+            ...f,
+            isConnected: action.friendsId.some(fId => f.id === fId)
+         }));
+         return Object.assign({}, state);
+
+      case "SET_CONNECTED_FRIEND":
+         if (!!state) state.friends = state.friends.map(f => f.id === action.friendId ? {...f, isConnected: true} : f);
+         return Object.assign({}, state);
+
+      case "SET_DISCONNECTED_FRIEND":
+         if (!!state) state.friends = state.friends.map(f => f.id === action.friendId ? {
+            ...f,
+            isConnected: undefined
+         } : f);
+         return Object.assign({}, state);
 
       default:
          return state;

@@ -34,7 +34,7 @@ class Room {
             this.AttachUserOnClose(this.creator);
         }
         this.onRoomDeleteHandler = onRoomDeleteHandler;
-        this.chat = new chat_1.default(30);
+        this.chat = new chat_1.default(10);
     }
     get usersIdInRoom() {
         return Object.keys(this.usersInRoom);

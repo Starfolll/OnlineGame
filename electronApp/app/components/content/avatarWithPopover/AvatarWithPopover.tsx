@@ -6,14 +6,25 @@ const useStyles = makeStyles(theme => ({
    popover: {
       background: "transparent",
       margin: theme.spacing(1),
-   }
+   },
+   avatarBorder: {
+      padding: "3px",
+      background: "rgba(0,0,0,0.3)",
+      transition: "border-radius 0.3s ease 0s, background 0.3s",
+      "&:hover": {
+         background: "rgba(0,0,0,0.7)",
+      }
+   },
+   nameOnAvatar: {}
 }));
 
 export default function AvatarWithPopover(props: {
    avatarSrc?: string,
-   children?: any
+   children?: any,
+   usePopover?: boolean
 }) {
    const avatarSrc = props.avatarSrc ?? "";
+   const usePopover = props.usePopover ?? true;
 
    const classes = useStyles();
    const [anchorEl, setAnchorEl] = React.useState(null);
@@ -21,10 +32,12 @@ export default function AvatarWithPopover(props: {
    const open = Boolean(anchorEl);
 
    const handleClick = (event: any) => {
+      if (!usePopover) return;
       setAnchorEl(event.currentTarget);
       setIsAvatarRounded(true);
    };
    const handleClose = () => {
+      if (!usePopover) return;
       setAnchorEl(null);
       setIsAvatarRounded(false);
    };
@@ -33,12 +46,8 @@ export default function AvatarWithPopover(props: {
       <Box>
          <Box
             onClick={handleClick}
-            style={{
-               padding: "3px",
-               background: "rgba(0,0,0,0.3)",
-               transition: "border-radius 0.3s ease 0s",
-               borderRadius: isAvatarRounded ? "4px" : "50%"
-            }}
+            style={{borderRadius: isAvatarRounded ? "4px" : "50%",}}
+            className={classes.avatarBorder}
          >
             <Avatar
                src={avatarSrc}

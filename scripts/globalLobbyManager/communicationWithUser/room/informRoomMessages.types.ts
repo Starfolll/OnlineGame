@@ -1,6 +1,6 @@
 import {chatMessageInfo} from "../../../utils/chat/chatMessage";
 import {userPublicData} from "../../../models/user/user";
-import {roomData} from "../../../models/room/room";
+import {extendedRoomData, roomData} from "../../../models/room/room";
 
 export type newRoomChatMessage = {
     messageType: string;
@@ -24,7 +24,7 @@ export type gameStart = {
 
 export type privateRoomCreated = {
     messageType: string;
-    roomData: roomData;
+    roomData: extendedRoomData;
 }
 
 export type newRoomCreator = {

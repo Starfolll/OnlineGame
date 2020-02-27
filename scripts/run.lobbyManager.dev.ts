@@ -9,17 +9,18 @@ import wrappedPrisma from "./models/wrappedPrisma";
 export default class GlobalLobbyManagerServerDev {
    private lobbyManager: GlobalLobbyManager | undefined;
 
-   private lobbyManagerWSPort: number | undefined;
+   private readonly lobbyManagerWSPort: number;
 
    constructor() {
-      (async () => {
+      this.lobbyManagerWSPort = +process.env.PUBLIC_GLOBAL_LOBBY_WS_PORT!;
+
+      const mp = async () => {
          logInfo("Mode: LOBBY MANAGER");
+
          logInfo(`Server version: ${process.env.npm_package_version}`);
-
          await wrappedPrisma.deleteManyRooms();
-         await wrappedPrisma.deleteManyLobbies();
 
-         this.lobbyManagerWSPort = +process.env.PUBLIC_GLOBAL_LOBBY_WS_PORT!;
+         await wrappedPrisma.deleteManyLobbies();
 
          this.lobbyManager = new GlobalLobbyManager(
             new WebSocket.Server({
@@ -27,9 +28,11 @@ export default class GlobalLobbyManagerServerDev {
             }),
             new GlobalLobby(
                await DB_Lobbies.CreateNewLobby({name: "global 1"}),
-               30
+               10
             )
          )
-      })();
+      };
+
+      mp();
    }
 }

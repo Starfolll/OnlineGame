@@ -14,7 +14,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_users_1 = __importDefault(require("../models/user/db_users"));
 const db_tables_1 = __importDefault(require("../models/table/db_tables"));
-const db_rooms_1 = __importDefault(require("../models/room/db_rooms"));
 const logError_1 = __importDefault(require("../utils/consoleLogs/logError"));
 const responseGlobalLobbyMessages_1 = __importDefault(require("./communicationWithUser/globalLobby/responseGlobalLobbyMessages"));
 const informGlobalLobbyMessages_1 = __importDefault(require("./communicationWithUser/globalLobby/informGlobalLobbyMessages"));
@@ -40,10 +39,6 @@ class GlobalLobbyManager {
                     if (!!tableId) {
                         connection.send(JSON.stringify(informGlobalLobbyMessages_1.default.RedirectToGameTable(tableId)));
                         throw new Error();
-                    }
-                    const roomId = yield db_rooms_1.default.GetUserRoomId({ id: userData.id });
-                    if (!!roomId) {
-                        connection.send(JSON.stringify(informGlobalLobbyMessages_1.default.RedirectToRoom(this.globalLobby.GetRoomData(roomId, true))));
                     }
                     connection.removeEventListener("message", onMessageHandler);
                     yield this.globalLobby.ConnectUser({ id: userData.id }, connection);

@@ -10,7 +10,11 @@ import App from "./components/App";
 import Theme from "./components/theme/Theme";
 import {rootReducer} from "./store/reducers";
 
-const store = createStore(rootReducer);
+
+const store = createStore(
+   rootReducer,
+);
+
 
 ReactDOM.render(
    <Router>

@@ -7,7 +7,7 @@ import {
     userRemovedFromRoom
 } from "./informRoomMessages.types";
 import {userPublicData} from "../../../models/user/user";
-import {roomData} from "../../../models/room/room";
+import {extendedRoomData, roomData} from "../../../models/room/room";
 
 export default class GetRoomMessage {
     public static RoomChatMessage(message: chatMessageInfo): newRoomChatMessage {
@@ -38,7 +38,7 @@ export default class GetRoomMessage {
         }
     }
 
-    public static PrivateRoomCreated(roomData: roomData): privateRoomCreated {
+    public static PrivateRoomCreated(roomData: extendedRoomData): privateRoomCreated {
         return {
             "messageType": "privateRoomCreated",
             "roomData": roomData

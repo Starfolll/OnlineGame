@@ -24,7 +24,7 @@ class IsLobbyMessageValid {
     static GetValidPublicRoomSearch(message) {
         if (typeof message !== "object")
             return undefined;
-        if (!message["messageType"] && message["messageType"] !== "publicLobbySearch")
+        if (!message["messageType"] && message["messageType"] !== "publicRoomSearch")
             return undefined;
         return message;
     }

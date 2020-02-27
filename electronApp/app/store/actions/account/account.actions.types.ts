@@ -3,6 +3,7 @@ export type userPublicData = {
    publicName: string;
    lvl: number;
    avatarUrlHash?: string;
+   isConnected?: boolean;
 }
 
 export type userAccountData = {
@@ -22,12 +23,16 @@ export type userAccountData = {
    avatarUrlHash?: string;
 }
 
-export const DECLARE_ACCOUNT = "DECLARE_ACCOUNT";
-export const SIGN_OUT_ACCOUNT = "SIGN_OUT_ACCOUNT";
-export const CHANGE_USER_ACCOUNT_AVATAR_HASH = "CHANGE_USER_ACCOUNT_AVATAR_HASH";
-export const CHANGE_USER_ACCOUNT_PUBLIC_NAME = "CHANGE_USER_ACCOUNT_PUBLIC_NAME";
-export const ACCEPT_USER_FRIEND_INVITE = "ACCEPT_USER_FRIEND_INVITE";
-export const REJECT_USER_FRIEND_INVITE = "REJECT_USER_FRIEND_INVITE";
+const DECLARE_ACCOUNT = "DECLARE_ACCOUNT";
+const SIGN_OUT_ACCOUNT = "SIGN_OUT_ACCOUNT";
+const CHANGE_USER_ACCOUNT_AVATAR_HASH = "CHANGE_USER_ACCOUNT_AVATAR_HASH";
+const CHANGE_USER_ACCOUNT_PUBLIC_NAME = "CHANGE_USER_ACCOUNT_PUBLIC_NAME";
+const ACCEPT_USER_FRIEND_INVITE = "ACCEPT_USER_FRIEND_INVITE";
+const REJECT_USER_FRIEND_INVITE = "REJECT_USER_FRIEND_INVITE";
+const DELETE_USER_FROM_FRIENDS = "DELETE_USER_FROM_FRIENDS";
+const SET_CONNECTED_FRIENDS = "SET_CONNECTED_FRIENDS";
+const SET_CONNECTED_FRIEND = "SET_CONNECTED_FRIEND";
+const SET_DISCONNECTED_FRIEND = "SET_DISCONNECTED_FRIEND";
 
 
 interface DeclareAccount {
@@ -59,10 +64,35 @@ interface RejectUserFriendInvite {
    userData: userPublicData;
 }
 
+interface DeleteUserFromFriends {
+   type: typeof DELETE_USER_FROM_FRIENDS;
+   friendId: string;
+}
+
+interface SetConnectedFriends {
+   type: typeof SET_CONNECTED_FRIENDS;
+   friendsId: Array<string>;
+}
+
+interface SetConnectedFriend {
+   type: typeof SET_CONNECTED_FRIEND;
+   friendId: string;
+}
+
+interface SetDisconnectedFriend {
+   type: typeof SET_DISCONNECTED_FRIEND;
+   friendId: string;
+}
+
+
 export type accountActionsTypes =
    DeclareAccount |
    SignOutAccount |
    ChangeUserAccountAvatarHash |
    ChangeUserAccountPublicName |
    AcceptUserFriendInvite |
-   RejectUserFriendInvite;
+   RejectUserFriendInvite |
+   DeleteUserFromFriends |
+   SetConnectedFriends |
+   SetConnectedFriend |
+   SetDisconnectedFriend;

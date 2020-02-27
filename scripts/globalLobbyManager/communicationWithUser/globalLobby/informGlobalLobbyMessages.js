@@ -3,26 +3,37 @@ Object.defineProperty(exports, "__esModule", { value: true });
 class GetGlobalLobbyMessage {
     static RedirectToGameTable(tableId) {
         return {
-            "messageType": "redirectToGameTable",
-            "tableId": tableId
+            "messageType": "redirectToGameTable", tableId
         };
     }
-    static RedirectToRoom(room) {
+    static RedirectToRoom(roomData) {
         return {
-            "messageType": "redirectToRoom",
-            "room": room
+            "messageType": "redirectToRoom", roomData
         };
     }
     static LobbyInfo(lobbyData) {
         return {
-            "messageType": "lobbyInfo",
-            "lobbyData": lobbyData,
+            "messageType": "lobbyInfo", lobbyData,
         };
     }
     static GlobalLobbyChatMessage(message) {
         return {
-            "messageType": "globalLobbyChatMessage",
-            "message": message
+            "messageType": "globalLobbyChatMessage", message
+        };
+    }
+    static FriendConnectedToLobby(friendId) {
+        return {
+            "messageType": "friendConnectedToLobby", friendId
+        };
+    }
+    static FriendDisconnectedFromLobby(friendId) {
+        return {
+            "messageType": "friendDisconnectedFromLobby", friendId
+        };
+    }
+    static FriendsConnectedToGame(friendsId) {
+        return {
+            "messageType": "friendsConnectedToGame", friendsId
         };
     }
 }

@@ -30,12 +30,9 @@ class Lobby {
         this.maxUsersInPrivateRoom = +process.env.PUBLIC_GLOBAL_LOBBY_MAX_USERS_IN_PRIVATE_ROOM;
         this.id = data.id;
         this.name = data.name;
-        this.chat = new chat_1.default(maxSavedMessages);
-        this.chat.AddMessage(new chatMessage_1.default({
-            id: "server",
-            publicName: "SERVER",
-            lvl: Infinity
-        }, `Global lobby [ ${data.name} ]`, true));
+        this.chat = new chat_1.default(maxSavedMessages, [
+            new chatMessage_1.default({ id: "server", publicName: "SERVER", lvl: Infinity }, `Global lobby [ ${data.name} ]`, true)
+        ]);
     }
     get lobbyData() {
         return {
@@ -74,6 +71,29 @@ class Lobby {
         return __awaiter(this, void 0, void 0, function* () {
             yield db_lobbies_1.default.DisconnectUserFromLobby(this.id, { id: userId });
             delete this.usersInLobby[userId];
+        });
+    }
+    InformUserFriendsAboutFriendConnected(lobbyUser) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const friendsInGame = [];
+            (yield lobbyUser.GetUserFriends()).forEach(f => {
+                const friend = this.usersInLobby[f.id];
+                if (!friend)
+                    return;
+                friendsInGame.push(f.id);
+                friend.InformAboutFriendConnectedToLobby(lobbyUser.id);
+            });
+            lobbyUser.InformAboutFriendsConnectedToGame(friendsInGame);
+        });
+    }
+    InformUserFriendsAboutFriendDisconnected(lobbyUser) {
+        return __awaiter(this, void 0, void 0, function* () {
+            (yield lobbyUser.GetUserFriends()).forEach(f => {
+                const friend = this.usersInLobby[f.id];
+                if (!friend)
+                    return;
+                friend.InformAboutFriendDisconnectedFormLobby(lobbyUser.id);
+            });
         });
     }
     GetRoomData(roomId, isRoomPublic) {
@@ -166,7 +186,10 @@ class Lobby {
         return __awaiter(this, void 0, void 0, function* () {
             return {
                 lobbyData: this.lobbyData,
-                chat: this.chat.GetMessages().map(m => m.GetMessageInfo()),
+                chat: [
+                    ...this.chat.GetStartMessages().map(m => m.GetMessageInfo()),
+                    ...this.chat.GetMessages().map(m => m.GetMessageInfo())
+                ]
             };
         });
     }

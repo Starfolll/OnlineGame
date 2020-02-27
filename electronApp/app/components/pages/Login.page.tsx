@@ -3,11 +3,11 @@ import {Box, Button, LinearProgress, TextField, Typography} from "@material-ui/c
 import {OptionsObject, SnackbarMessage, withSnackbar} from "notistack";
 import React from "react";
 import {useDispatch} from "react-redux";
-import {useHistory} from "react-router-dom";
 import rendererWindowApi from "../../../scripts/rendererIPC.types";
 import {urlsPath} from "../../env/env";
-import {accountActionDeclareAccount} from "../../store/actions/account.actions";
-import {userAccountData} from "../../store/actions/account.actions.types";
+import LobbyConnection from "../../scripts/lobbyWs/lobbyConnection";
+import {accountActionDeclareAccount} from "../../store/actions/account/account.actions";
+import {userAccountData} from "../../store/actions/account/account.actions.types";
 import ArrowedPopover from "../content/arrowedPopover/ArrowedPopover";
 import ContentAndActionsContainer from "../content/contentAndActionsContainer/ContentAndActionsContainer";
 import ElementTransition from "../content/elementTransition/ElementTransition";
@@ -24,7 +24,6 @@ function LoginPage(props: {
    enqueueSnackbar: (message: SnackbarMessage, options?: OptionsObject) => OptionsObject['key'] | null,
 }) {
    const dispatch = useDispatch();
-   const history = useHistory();
 
    const [isLoading, setIsLoading] = React.useState(false);
 
@@ -35,19 +34,11 @@ function LoginPage(props: {
    const [passwordError, setPasswordError] = React.useState("");
 
    const submit = async () => {
-      if (isLoading) {
-         return;
-      }
-      if (!!emailError) {
-         setEmailError("");
-      }
-      if (!!passwordError) {
-         setPasswordError("");
-      }
+      if (isLoading) return;
+      if (!!emailError) setEmailError("");
+      if (!!passwordError) setPasswordError("");
 
-      const validation = validationSchema.validate({
-         email, password
-      });
+      const validation = validationSchema.validate({email, password});
 
       if (!!validation.error) {
          console.log(validation);
@@ -83,6 +74,11 @@ function LoginPage(props: {
             }
             if (data.verified && !!data.userData) {
                dispatch(accountActionDeclareAccount({...data.userData, verified: true}));
+               new LobbyConnection({
+                  account: data.userData,
+                  wsUrl: `ws://localhost:8081`,
+                  dispatch
+               });
                rendererWindowApi.setFullscreen(true);
             }
          })
@@ -99,9 +95,6 @@ function LoginPage(props: {
             content={
                <Box style={{width: "450px"}}>
                   <GapContainer padding={"40px"} gap={"30px"}>
-                     {/*<SectionTitle>*/}
-                     {/*   LOGIN*/}
-                     {/*</SectionTitle>*/}
                      <SectionCover title={"LOGIN"}>
                         <GapContainer padding={"20px"} gap={"15px"}>
                            <ArrowedPopover title={emailError}>
@@ -134,11 +127,16 @@ function LoginPage(props: {
                      </SectionCover>
                      <SectionCover>
                         <GapContainer padding={"5px"} gap={"5px"}>
-                           <Button fullWidth onClick={() => rendererWindowApi.openBrowserPage(urlsPath.signUpPage())}>
+                           <Button
+                              fullWidth
+                              onClick={() => rendererWindowApi.openBrowserPage(urlsPath.signUpPage())}
+                           >
                               SIGN UP
                            </Button>
-                           <Button fullWidth
-                                   onClick={() => rendererWindowApi.openBrowserPage(urlsPath.changePassword())}>
+                           <Button
+                              fullWidth
+                              onClick={() => rendererWindowApi.openBrowserPage(urlsPath.changePassword())}
+                           >
                               CHANGE PASSWORD
                            </Button>
                         </GapContainer>
