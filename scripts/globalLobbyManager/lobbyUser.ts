@@ -7,6 +7,7 @@ import {chatMessageInfo} from "../utils/chat/chatMessage";
 import {extendedRoomData} from "../models/room/room";
 import GetRoomMessage from "./communicationWithUser/room/informRoomMessages";
 import GlobalLobbyManager from "./globalLobbyManager";
+import user from "../models/user/user";
 
 
 export default class LobbyUser extends User {
@@ -89,6 +90,10 @@ export default class LobbyUser extends User {
 
    public InformAboutFriendsConnectedToGame(friendsId: Array<string>): void {
       this.connection.send(JSON.stringify(GetGlobalLobbyMessage.FriendsConnectedToGame(friendsId)));
+   }
+
+   public InformAboutInviteToRoom(userId: string, roomId: string): void {
+      this.connection.send(JSON.stringify(GetGlobalLobbyMessage.InviteToRoom(userId, roomId)))
    }
 
 

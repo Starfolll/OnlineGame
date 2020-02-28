@@ -36,3 +36,9 @@ export type friendsConnectedToGame = {
    messageType: string;
    friendsId: Array<string>;
 }
+
+export type inviteToRoom = {
+   messageType: string;
+   userId: string;
+   roomId: string;
+}

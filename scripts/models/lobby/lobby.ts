@@ -206,6 +206,16 @@ export default class Lobby {
       }
    }
 
+   protected async SendUserLobbyInviteInfo(user: LobbyUser, userId: string, roomId: string): Promise<void> {
+      const userRoomId = await DB_Rooms.GetUserRoomId(user);
+      if (roomId !== userRoomId) return;
+
+      const userToInvite = this.usersInLobby[userId];
+      if (!userToInvite) return;
+
+      userToInvite.InformAboutInviteToRoom(user.id, roomId);
+   }
+
 
    // lobby info
    protected async GetLobbyInfo(): Promise<extendedLobbyData> {

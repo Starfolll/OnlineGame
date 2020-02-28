@@ -75,6 +75,9 @@ export default class GlobalLobby extends Lobby {
             case userGlobalLobbyResponse.connectToPrivateRoom:
                this.UserResponseConnectToPrivateRoom(user, messageBody);
                break;
+
+            case userGlobalLobbyResponse.sendInviteToRoom:
+               this.UserResponseSendInviteToRoom(user, messageBody);
          }
 
       } catch (e) {
@@ -118,5 +121,12 @@ export default class GlobalLobby extends Lobby {
 
       this.ConnectUserToPrivateRoom(user, validMessage.roomId)
          .catch(err => logError(err));
+   }
+
+   private UserResponseSendInviteToRoom(user: LobbyUser, messageBody: any): void {
+      const validMessage = IsLobbyMessageValid.GetValidSendInviteToRoom(messageBody);
+      if (!validMessage) return;
+
+      this.SendUserLobbyInviteInfo(user, validMessage.userId, validMessage.roomId);
    }
 }

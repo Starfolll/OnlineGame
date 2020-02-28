@@ -2,6 +2,7 @@ import {Grid} from "@material-ui/core";
 import {OptionsObject, SnackbarMessage, withSnackbar} from "notistack";
 import React from "react";
 import {useSelector} from "react-redux";
+import {userPublicData} from "../../store/actions/account/account.actions.types";
 import {rootReducerTypes} from "../../store/reducers";
 import AccountProfileSection from "../content/accountProfileSection/AccountProfileSection";
 import ChatSection from "../content/chat/ChatSection";
@@ -19,11 +20,6 @@ function HomePage(props: {
 }) {
    const account = useSelector((state: rootReducerTypes) => state.account);
 
-   let friends: any = account.friends;
-   for (let i = 0; i < friends.length; i++) {
-      friends[i] = {...friends[i], num: i + 1};
-   }
-
    return (
       <ElementTransition>
          <Grid container style={{height: "100%"}}>
@@ -35,15 +31,13 @@ function HomePage(props: {
                      {account.friends.length > 0 ?
                         <GapContainer>
                            <Grid container spacing={1}>
-                              {account.friends.map((f: any) =>
+                              {account.friends.map((f: userPublicData) =>
                                  <Grid item key={Math.random()}>
-                                    <ElementTransition delay={f.num * 50}>
-                                       <UserAccountAvatar
-                                          friend online={!!f.isConnected}
-                                          avatarUrlHash={f.avatarUrlHash}
-                                          publicName={f.publicName}
-                                       />
-                                    </ElementTransition>
+                                    <UserAccountAvatar
+                                       friend online={f.isConnected}
+                                       avatarUrlHash={f.avatarUrlHash}
+                                       publicName={f.publicName}
+                                    />
                                  </Grid>
                               )}
                            </Grid>

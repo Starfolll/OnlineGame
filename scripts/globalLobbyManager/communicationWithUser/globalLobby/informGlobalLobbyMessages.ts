@@ -3,6 +3,7 @@ import {
    friendDisconnectedFromLobby,
    friendsConnectedToGame,
    globalLobbyInfo,
+   inviteToRoom,
    newLobbyChatMessage,
    redirectToGameTable,
    redirectToRoom
@@ -51,6 +52,12 @@ export default class GetGlobalLobbyMessage {
    public static FriendsConnectedToGame(friendsId: Array<string>): friendsConnectedToGame {
       return {
          "messageType": "friendsConnectedToGame", friendsId
+      }
+   }
+
+   public static InviteToRoom(userId: string, roomId: string): inviteToRoom {
+      return {
+         "messageType": "inviteToRoom", userId, roomId
       }
    }
 }

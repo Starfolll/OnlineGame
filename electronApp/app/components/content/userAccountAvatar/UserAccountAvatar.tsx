@@ -29,7 +29,7 @@ export default function UserAccountAvatar(props: {
                      {props.publicName}
                   </Typography>
                   <Divider/>
-                  {!!roomData && !roomData.roomData.isPublic ?
+                  {!!roomData && !roomData.roomData.isPublic && props.online ?
                      <Button size={"small"} style={{justifyContent: "normal"}} startIcon={<AddIcon/>}>
                         Add to room
                      </Button> : ""

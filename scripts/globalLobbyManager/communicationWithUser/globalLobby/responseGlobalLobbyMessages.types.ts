@@ -1,30 +1,36 @@
 export enum userGlobalLobbyResponse {
-    globalLobbyChatMessage = "globalLobbyChatMessage",
-    publicRoomSearch = "publicRoomSearch",
-    createNewPrivateRoom = "createNewPrivateRoom",
-    connectToPrivateRoom = "connectToPrivateRoom"
+   globalLobbyChatMessage = "globalLobbyChatMessage",
+   publicRoomSearch = "publicRoomSearch",
+   createNewPrivateRoom = "createNewPrivateRoom",
+   connectToPrivateRoom = "connectToPrivateRoom",
+   sendInviteToRoom = "sendInviteToRoom"
 }
 
 export type userInitialConnection = {
-    messageType: string;
-    token: string;
-    id: string;
+   messageType: string;
+   token: string;
+   id: string;
 }
 
 export type globalLobbyChatMessage = {
-    messageType: string;
-    message: string;
+   messageType: string;
+   message: string;
 }
 
 export type publicLobbySearch = {
-    messageType: string;
+   messageType: string;
 }
 
 export type newPrivateRoom = {
-    messageType: string;
+   messageType: string;
 }
 
 export type connectToPrivateRoom = {
-    messageType: string;
-    roomId: string;
+   messageType: string;
+   roomId: string;
+}
+
+export type sendInviteToRoom = {
+   messageType: string;
+   userId: string;
 }
