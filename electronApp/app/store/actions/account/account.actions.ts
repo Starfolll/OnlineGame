@@ -65,3 +65,15 @@ export const accountActionSetDisconnectedFriends = (friendId: string): accountAc
       type: "SET_DISCONNECTED_FRIEND", friendId
    };
 };
+
+export const accountActionSetInviteToRoom = (roomId: string, userId: string): accountActionsTypes => {
+   return {
+      type: "SET_USER_ROOM_INVITE_ID", roomId, userId
+   };
+};
+
+export const accountActionRemoveFriendRoomInvite = (friendId: string): accountActionsTypes => {
+   return {
+      type: "REMOVE_FRIEND_ROOM_INVITE", friendId
+   };
+};

@@ -22,9 +22,9 @@ function HomePage(props: {
 
    return (
       <ElementTransition>
-         <Grid container style={{height: "100%"}}>
+         <Grid container style={{height: "calc(100% + 16px)"}} spacing={2}>
             <Grid item style={{width: "600px"}}>
-               <GapContainer padding={"40px"} gap={"20px"} style={{gridTemplateRows: "auto 1fr auto"}}>
+               <GapContainer padding={"5px"} gap={"5px"} style={{gridTemplateRows: "auto 1fr auto"}}>
                   <AccountProfileSection account={account} enqueueSnackbar={props.enqueueSnackbar}/>
 
                   <SectionCover title={<FriendsPopover/>}>
@@ -34,7 +34,8 @@ function HomePage(props: {
                               {account.friends.map((f: userPublicData) =>
                                  <Grid item key={Math.random()}>
                                     <UserAccountAvatar
-                                       friend online={f.isConnected}
+                                       friend id={f.id} roomInviteId={f.roomInviteId}
+                                       online={f.isConnected}
                                        avatarUrlHash={f.avatarUrlHash}
                                        publicName={f.publicName}
                                     />
@@ -48,16 +49,17 @@ function HomePage(props: {
             </Grid>
             <Grid xs item>
                <Grid container alignItems={"flex-end"} style={{height: "100%"}}>
-                  <Grid item style={{width: "100%", marginBottom: "40px"}}>
+                  <Grid item style={{width: "100%"}}>
                      <ChatSection/>
                   </Grid>
                </Grid>
             </Grid>
             <Grid item>
                <Grid
+                  spacing={1}
                   container
                   alignItems={"flex-end"}
-                  style={{height: "100%"}}
+                  style={{height: "100%", padding: "5px"}}
                   direction={"column-reverse"}
                >
                   <Grid item>

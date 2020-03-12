@@ -4,6 +4,7 @@ export type userPublicData = {
    lvl: number;
    avatarUrlHash?: string;
    isConnected?: boolean;
+   roomInviteId?: string;
 }
 
 export type userAccountData = {
@@ -33,6 +34,8 @@ const DELETE_USER_FROM_FRIENDS = "DELETE_USER_FROM_FRIENDS";
 const SET_CONNECTED_FRIENDS = "SET_CONNECTED_FRIENDS";
 const SET_CONNECTED_FRIEND = "SET_CONNECTED_FRIEND";
 const SET_DISCONNECTED_FRIEND = "SET_DISCONNECTED_FRIEND";
+const SET_USER_ROOM_INVITE_ID = "SET_USER_ROOM_INVITE_ID";
+const REMOVE_FRIEND_ROOM_INVITE = "REMOVE_FRIEND_ROOM_INVITE";
 
 
 interface DeclareAccount {
@@ -84,6 +87,17 @@ interface SetDisconnectedFriend {
    friendId: string;
 }
 
+interface SetUserRoomInviteId {
+   type: typeof SET_USER_ROOM_INVITE_ID;
+   roomId: string;
+   userId: string;
+}
+
+interface RemoveFriendRoomInvite {
+   type: typeof REMOVE_FRIEND_ROOM_INVITE;
+   friendId: string;
+}
+
 
 export type accountActionsTypes =
    DeclareAccount |
@@ -95,4 +109,6 @@ export type accountActionsTypes =
    DeleteUserFromFriends |
    SetConnectedFriends |
    SetConnectedFriend |
-   SetDisconnectedFriend;
+   SetDisconnectedFriend |
+   SetUserRoomInviteId |
+   RemoveFriendRoomInvite;

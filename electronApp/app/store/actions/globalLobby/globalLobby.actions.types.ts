@@ -12,51 +12,58 @@ const SERVER_MESSAGE_USER_CONNECTED_TO_ROOM = "userConnectedToRoom";
 const SERVER_MESSAGE_FRIEND_CONNECTED_TO_GAME = "friendsConnectedToGame";
 const SERVER_MESSAGE_FRIEND_CONNECTED_TO_LOBBY = "friendConnectedToLobby";
 const SERVER_MESSAGE_FRIEND_DISCONNECTED_FROM_LOBBY = "friendDisconnectedFromLobby";
+const SERVER_MESSAGE_INVITE_TO_ROOM = "inviteToRoom";
 
 
-interface ServerMessageLobbyInfo {
+export interface ServerMessageLobbyInfo {
    messageType: typeof SERVER_MESSAGE_LOBBY_INFO;
    lobbyData: extendedLobbyData;
 }
 
-interface ServerMessageGlobalLobbyChatMessage {
+export interface ServerMessageGlobalLobbyChatMessage {
    messageType: typeof SERVER_MESSAGE_GLOBAL_LOBBY_CHAT_MESSAGE;
    message: chatMessageInfo
 }
 
-interface ServerMessagePrivateRoomCreated {
+export interface ServerMessagePrivateRoomCreated {
    messageType: typeof SERVER_MESSAGE_PRIVATE_ROOM_CREATED;
    roomData: extendedRoomData;
 }
 
-interface ServerMessageRedirectToRoom {
+export interface ServerMessageRedirectToRoom {
    messageType: typeof SERVER_MESSAGE_REDIRECTED_TO_ROOM;
    roomData: extendedRoomData;
 }
 
-interface ServerMessageUserRemovedFromRoom {
+export interface ServerMessageUserRemovedFromRoom {
    messageType: typeof SERVER_MESSAGE_USER_REMOVED_FROM_ROOM;
    userId: string;
 }
 
-interface ServerMessageUserConnectedToRoom {
+export interface ServerMessageUserConnectedToRoom {
    messageType: typeof SERVER_MESSAGE_USER_CONNECTED_TO_ROOM;
    user: userPublicData;
 }
 
-interface ServerMessageFriendsConnectedToGame {
+export interface ServerMessageFriendsConnectedToGame {
    messageType: typeof SERVER_MESSAGE_FRIEND_CONNECTED_TO_GAME;
    friendsId: Array<string>;
 }
 
-interface ServerMessageFriendConnectedToLobby {
+export interface ServerMessageFriendConnectedToLobby {
    messageType: typeof SERVER_MESSAGE_FRIEND_CONNECTED_TO_LOBBY;
    friendId: string;
 }
 
-interface ServerMessageFriendDisconnectedFromLobby {
+export interface ServerMessageFriendDisconnectedFromLobby {
    messageType: typeof SERVER_MESSAGE_FRIEND_DISCONNECTED_FROM_LOBBY;
    friendId: string;
+}
+
+export interface ServerMessageInviteToRoom {
+   messageType: typeof SERVER_MESSAGE_INVITE_TO_ROOM;
+   roomId: string;
+   userId: string;
 }
 
 
@@ -69,7 +76,8 @@ export type globalLobbyMessagesResponse =
    ServerMessageUserConnectedToRoom |
    ServerMessageFriendsConnectedToGame |
    ServerMessageFriendConnectedToLobby |
-   ServerMessageFriendDisconnectedFromLobby;
+   ServerMessageFriendDisconnectedFromLobby |
+   ServerMessageInviteToRoom;
 
 
 export type chatMessageInfo = {

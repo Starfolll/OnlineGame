@@ -10,6 +10,7 @@ import DB_Rooms from "../room/db_rooms";
 import DB_Users from "../user/db_users";
 import dotenv from "dotenv";
 
+
 export type extendedLobbyData = {
    lobbyData: lobbyData,
    chat: Array<chatMessageInfo>
@@ -38,6 +39,9 @@ export default class Lobby {
    constructor(data: lobbyData, maxSavedMessages: number) {
       this.id = data.id;
       this.name = data.name;
+
+      console.log(this.maxUsersInPrivateRoom);
+      console.log(this.maxUsersInPublicRoom);
 
       this.chat = new Chat<ChatMessage>(maxSavedMessages, [
          new ChatMessage(
@@ -201,13 +205,14 @@ export default class Lobby {
    }
 
    protected async ConnectUserToPrivateRoom(user: LobbyUser, roomId: string): Promise<void> {
-      if (!!this.privateRooms[roomId] && !await this.IsUserAlreadyInRoom(user)) {
+      if (!!this.privateRooms[roomId] && !(await this.IsUserAlreadyInRoom(user))) {
+         console.log(roomId);
          this.privateRooms[roomId].ConnectUserToRoom(user);
       }
    }
 
    protected async SendUserLobbyInviteInfo(user: LobbyUser, userId: string, roomId: string): Promise<void> {
-      const userRoomId = await DB_Rooms.GetUserRoomId(user);
+      const userRoomId = await DB_Rooms.GetUserRoomId({id: user.id});
       if (roomId !== userRoomId) return;
 
       const userToInvite = this.usersInLobby[userId];

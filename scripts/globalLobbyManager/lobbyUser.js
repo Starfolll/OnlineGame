@@ -64,6 +64,9 @@ class LobbyUser extends user_1.default {
     InformAboutFriendsConnectedToGame(friendsId) {
         this.connection.send(JSON.stringify(informGlobalLobbyMessages_1.default.FriendsConnectedToGame(friendsId)));
     }
+    InformAboutInviteToRoom(userId, roomId) {
+        this.connection.send(JSON.stringify(informGlobalLobbyMessages_1.default.InviteToRoom(userId, roomId)));
+    }
     InformAboutRoomChatMessage(message) {
         this.connection.send(JSON.stringify(informRoomMessages_1.default.RoomChatMessage(message)));
     }

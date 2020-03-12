@@ -117,6 +117,7 @@ export default class GlobalLobby extends Lobby {
 
    private UserResponseConnectToPrivateRoom(user: LobbyUser, messageBody: any): void {
       const validMessage = IsLobbyMessageValid.GetValidConnectToPrivateRoom(messageBody);
+      console.log(validMessage);
       if (!validMessage) return;
 
       this.ConnectUserToPrivateRoom(user, validMessage.roomId)
@@ -127,6 +128,6 @@ export default class GlobalLobby extends Lobby {
       const validMessage = IsLobbyMessageValid.GetValidSendInviteToRoom(messageBody);
       if (!validMessage) return;
 
-      this.SendUserLobbyInviteInfo(user, validMessage.userId, validMessage.roomId);
+      this.SendUserLobbyInviteInfo(user, validMessage.userId, validMessage.roomId).then(r => r);
    }
 }

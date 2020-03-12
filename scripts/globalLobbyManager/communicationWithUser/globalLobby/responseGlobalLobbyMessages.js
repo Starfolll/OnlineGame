@@ -44,5 +44,16 @@ class IsLobbyMessageValid {
             return undefined;
         return message;
     }
+    static GetValidSendInviteToRoom(message) {
+        if (typeof message !== "object")
+            return undefined;
+        if (!message["messageType"] && message["messageType"] !== "sendInviteToRoom")
+            return undefined;
+        if (!message["userId"] && typeof message["userId"] !== "string")
+            return undefined;
+        if (!message["roomId"] && typeof message["roomId"] !== "string")
+            return undefined;
+        return message;
+    }
 }
 exports.default = IsLobbyMessageValid;

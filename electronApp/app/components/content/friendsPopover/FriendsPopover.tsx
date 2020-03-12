@@ -111,9 +111,8 @@ export default function FriendsPopover(props: {}) {
                   <GapContainer padding={"5px"} gap={"5px"}>
                      {account.friends.map((f: userPublicData) =>
                         <MediumAccountProfileSection
-                           friend
+                           friend id={f.id} online={f.isConnected}
                            key={Math.random()}
-                           id={f.id}
                            avatarUrlHash={f.avatarUrlHash}
                            publicName={f.publicName}
                            lvl={f.lvl}

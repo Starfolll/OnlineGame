@@ -34,7 +34,8 @@ export default function MediumAccountProfileSection(props: {
    publicName: string,
    lvl: number,
    friend?: boolean,
-   id: string
+   id: string,
+   online?: boolean
 }) {
    const classes = useStyles();
    const friend = props.friend ?? false;
@@ -129,7 +130,7 @@ export default function MediumAccountProfileSection(props: {
          <GapContainer padding={"5px"}>
             <Grid container>
                <Grid item>
-                  <UserAccountAvatar friend={friend} avatarUrlHash={props.avatarUrlHash} publicName={props.publicName}/>
+                  <UserAccountAvatar online={props.online} friend={friend} id={props.id} avatarUrlHash={props.avatarUrlHash} publicName={props.publicName}/>
                </Grid>
                <Grid item xs>
                   <GapContainer style={{marginLeft: "10px"}}>

@@ -1,4 +1,3 @@
-import {Action} from "redux";
 import {userAccountData} from "../../store/actions/account/account.actions.types";
 import {globalLobbyMessagesResponse,} from "../../store/actions/globalLobby/globalLobby.actions.types";
 import {roomActionsDeleteRoom} from "../../store/actions/room/room.actions";
@@ -7,14 +6,12 @@ import GlobalLobbyResponse from "./communicationWithLobby/globalLobby/reponseGlo
 import {lobbyActions} from "./communicationWithLobby/globalLobby/responeGlobalLobbyActions";
 
 
-export default class LobbyWSConnection implements Action {
-   public type: any;
+export default class LobbyWSConnection {
    public readonly wsUrl: string;
    public readonly account: userAccountData;
    public readonly socket: WebSocket;
 
    private readonly dispatch: Function;
-
    private readonly lobbyActions: lobbyActions;
 
    constructor(props: {
@@ -38,13 +35,21 @@ export default class LobbyWSConnection implements Action {
          searchForPublicRoom: () => this.socket.send(JSON.stringify({
             messageType: "publicRoomSearch"
          })),
+         inviteFriendToRoom: (userId: string, roomId: string) => this.socket.send(JSON.stringify({
+            messageType: "sendInviteToRoom", userId, roomId
+         })),
+         connectToPrivateRoom: (roomId: string) => this.socket.send(JSON.stringify({
+            messageType: "connectToPrivateRoom", roomId
+         })),
+         startGame: () => this.socket.send(JSON.stringify({
+            messageType: "startGame"
+         })),
          leaveRoom: () => {
             this.socket.send(JSON.stringify({
                messageType: "leaveRoom"
             }));
-
             this.dispatch(roomActionsDeleteRoom());
-         }
+         },
       };
 
       this.SendInitialConnectionData();
@@ -105,6 +110,10 @@ export default class LobbyWSConnection implements Action {
 
             case "friendDisconnectedFromLobby":
                GlobalLobbyResponse.FriendDisconnected(this.dispatch, data.friendId);
+               break;
+
+            case "inviteToRoom":
+               GlobalLobbyResponse.InviteToRoom(this.dispatch, data.roomId, data.userId);
                break;
          }
       };

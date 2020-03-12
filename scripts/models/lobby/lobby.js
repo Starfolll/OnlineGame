@@ -30,6 +30,8 @@ class Lobby {
         this.maxUsersInPrivateRoom = +process.env.PUBLIC_GLOBAL_LOBBY_MAX_USERS_IN_PRIVATE_ROOM;
         this.id = data.id;
         this.name = data.name;
+        console.log(this.maxUsersInPrivateRoom);
+        console.log(this.maxUsersInPublicRoom);
         this.chat = new chat_1.default(maxSavedMessages, [
             new chatMessage_1.default({ id: "server", publicName: "SERVER", lvl: Infinity }, `Global lobby [ ${data.name} ]`, true)
         ]);
@@ -178,8 +180,20 @@ class Lobby {
     ConnectUserToPrivateRoom(user, roomId) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!!this.privateRooms[roomId] && !(yield this.IsUserAlreadyInRoom(user))) {
+                console.log(roomId);
                 this.privateRooms[roomId].ConnectUserToRoom(user);
             }
+        });
+    }
+    SendUserLobbyInviteInfo(user, userId, roomId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const userRoomId = yield db_rooms_1.default.GetUserRoomId({ id: user.id });
+            if (roomId !== userRoomId)
+                return;
+            const userToInvite = this.usersInLobby[userId];
+            if (!userToInvite)
+                return;
+            userToInvite.InformAboutInviteToRoom(user.id, roomId);
         });
     }
     GetLobbyInfo() {

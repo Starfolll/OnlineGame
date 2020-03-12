@@ -16,10 +16,10 @@ export type extendedRoomData = {
 }
 
 export type roomData = {
-   id: string;
-   isPublic: boolean;
    maxUsersInRoom: number;
-   creator?: userPublicData;
+   creatorId?: string;
+   isPublic: boolean;
+   id: string;
 }
 
 export default class Room {
@@ -27,7 +27,7 @@ export default class Room {
    public readonly isPublic: boolean;
    public readonly maxUsersInRoom: number;
    public readonly lobbyId: string;
-   public creator?: LobbyUser;
+   public creatorId?: string;
 
    private readonly usersInRoom: { [userId: string]: LobbyUser } = {};
    private readonly chat: Chat<ChatMessage>;
@@ -47,11 +47,11 @@ export default class Room {
       this.lobbyId = lobbyId;
       this.usersInRoom = {};
 
-      this.creator = creator;
-      if (!!this.creator) {
-         this.usersInRoom[this.creator.id] = this.creator;
-         this.AttachUserOnMessageSend(this.creator);
-         this.AttachUserOnClose(this.creator);
+      this.creatorId = creator?.id;
+      if (!!creator && this.creatorId) {
+         this.usersInRoom[this.creatorId] = creator;
+         this.AttachUserOnMessageSend(creator);
+         this.AttachUserOnClose(creator);
       }
 
       this.onRoomDeleteHandler = onRoomDeleteHandler;
@@ -113,11 +113,11 @@ export default class Room {
       delete this.usersInRoom[userId];
       this.InformUsersAboutUserRemoved(userId);
 
-      if (!this.isPublic && !!this.creator && userId === this.creator.id) {
-         this.creator = this.usersInRoom[this.usersIdInRoom[0]];
-         if (!!this.creator) {
-            await DB_Rooms.ResetUserCreator(this.id, {id: this.creator.id} as userUniqueData);
-            this.InformUsersAboutNewCreator(this.creator.id);
+      if (!this.isPublic && !!this.creatorId && userId === this.creatorId) {
+         this.creatorId = this.usersInRoom[this.usersIdInRoom[0]].id;
+         if (!!this.creatorId) {
+            await DB_Rooms.ResetUserCreator(this.id, {id: this.creatorId} as userUniqueData);
+            this.InformUsersAboutNewCreator(this.creatorId);
          } else {
             this.onRoomDeleteHandler(this.isPublic, this.id);
          }
@@ -203,8 +203,8 @@ export default class Room {
       const validMessage = IsRoomMessageValid.GetValidRemoveUser(messageBody);
       if (!validMessage) return;
 
-      if (!this.isPublic && !!this.creator && userId === this.creator.id &&
-         validMessage.userId !== this.creator.id &&
+      if (!this.isPublic && !!this.creatorId && userId === this.creatorId &&
+         validMessage.userId !== this.creatorId &&
          this.usersIdInRoom.some(uId => uId === validMessage.userId)
       ) {
          this.RemoveUserFromRoom(validMessage.userId).then(r => r);
@@ -215,7 +215,7 @@ export default class Room {
       const validMessage = IsRoomMessageValid.GetValidStartGameMessage(messageBody);
       if (!validMessage) return;
 
-      if (!this.isPublic && !!this.creator && userId === this.creator.id && this.IsRoomFull())
+      if (!this.isPublic && !!this.creatorId && userId === this.creatorId && this.IsRoomFull())
          this.StartGame().then(r => r);
    }
 
@@ -240,8 +240,9 @@ export default class Room {
    public GetRoomData(): roomData {
       return {
          "maxUsersInRoom": this.maxUsersInRoom,
+         "creatorId": this.creatorId,
          "isPublic": this.isPublic,
-         "id": this.id
+         "id": this.id,
       }
    }
 

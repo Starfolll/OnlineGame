@@ -36,5 +36,10 @@ class GetGlobalLobbyMessage {
             "messageType": "friendsConnectedToGame", friendsId
         };
     }
+    static InviteToRoom(userId, roomId) {
+        return {
+            "messageType": "inviteToRoom", userId, roomId
+        };
+    }
 }
 exports.default = GetGlobalLobbyMessage;

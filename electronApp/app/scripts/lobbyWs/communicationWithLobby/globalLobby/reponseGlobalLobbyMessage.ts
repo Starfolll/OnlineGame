@@ -1,7 +1,8 @@
 import {
    accountActionSetConnectedFriend,
    accountActionSetConnectedFriends,
-   accountActionSetDisconnectedFriends
+   accountActionSetDisconnectedFriends,
+   accountActionSetInviteToRoom
 } from "../../../../store/actions/account/account.actions";
 import {userPublicData} from "../../../../store/actions/account/account.actions.types";
 import {
@@ -48,5 +49,10 @@ export default class GlobalLobbyResponse {
 
    public static FriendDisconnected(dispatch: Function, friendId: string): void {
       dispatch(accountActionSetDisconnectedFriends(friendId));
+   }
+
+   public static InviteToRoom(dispatch: Function, roomId: string, userId: string): void {
+      console.log("invite to room");
+      dispatch(accountActionSetInviteToRoom(roomId, userId));
    }
 }

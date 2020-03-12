@@ -27,11 +27,11 @@ class Room {
         this.maxUsersInRoom = roomData.maxUsersInRoom;
         this.lobbyId = lobbyId;
         this.usersInRoom = {};
-        this.creator = creator;
-        if (!!this.creator) {
-            this.usersInRoom[this.creator.id] = this.creator;
-            this.AttachUserOnMessageSend(this.creator);
-            this.AttachUserOnClose(this.creator);
+        this.creatorId = creator === null || creator === void 0 ? void 0 : creator.id;
+        if (!!creator && this.creatorId) {
+            this.usersInRoom[this.creatorId] = creator;
+            this.AttachUserOnMessageSend(creator);
+            this.AttachUserOnClose(creator);
         }
         this.onRoomDeleteHandler = onRoomDeleteHandler;
         this.chat = new chat_1.default(10);
@@ -67,11 +67,11 @@ class Room {
             user.ConnectionClearClassListeners("room");
             delete this.usersInRoom[userId];
             this.InformUsersAboutUserRemoved(userId);
-            if (!this.isPublic && !!this.creator && userId === this.creator.id) {
-                this.creator = this.usersInRoom[this.usersIdInRoom[0]];
-                if (!!this.creator) {
-                    yield db_rooms_1.default.ResetUserCreator(this.id, { id: this.creator.id });
-                    this.InformUsersAboutNewCreator(this.creator.id);
+            if (!this.isPublic && !!this.creatorId && userId === this.creatorId) {
+                this.creatorId = this.usersInRoom[this.usersIdInRoom[0]].id;
+                if (!!this.creatorId) {
+                    yield db_rooms_1.default.ResetUserCreator(this.id, { id: this.creatorId });
+                    this.InformUsersAboutNewCreator(this.creatorId);
                 }
                 else {
                     this.onRoomDeleteHandler(this.isPublic, this.id);
@@ -143,8 +143,8 @@ class Room {
         const validMessage = responseRoomMessage_1.default.GetValidRemoveUser(messageBody);
         if (!validMessage)
             return;
-        if (!this.isPublic && !!this.creator && userId === this.creator.id &&
-            validMessage.userId !== this.creator.id &&
+        if (!this.isPublic && !!this.creatorId && userId === this.creatorId &&
+            validMessage.userId !== this.creatorId &&
             this.usersIdInRoom.some(uId => uId === validMessage.userId)) {
             this.RemoveUserFromRoom(validMessage.userId).then(r => r);
         }
@@ -153,7 +153,7 @@ class Room {
         const validMessage = responseRoomMessage_1.default.GetValidStartGameMessage(messageBody);
         if (!validMessage)
             return;
-        if (!this.isPublic && !!this.creator && userId === this.creator.id && this.IsRoomFull())
+        if (!this.isPublic && !!this.creatorId && userId === this.creatorId && this.IsRoomFull())
             this.StartGame().then(r => r);
     }
     UserResponseLeaveRoom(userId, messageBody) {
@@ -173,8 +173,9 @@ class Room {
     GetRoomData() {
         return {
             "maxUsersInRoom": this.maxUsersInRoom,
+            "creatorId": this.creatorId,
             "isPublic": this.isPublic,
-            "id": this.id
+            "id": this.id,
         };
     }
     InformUsersAboutRoomChatMessage(message) {

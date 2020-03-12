@@ -14,11 +14,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const logError_1 = __importDefault(require("../../utils/consoleLogs/logError"));
 const logInfo_1 = __importDefault(require("../../utils/consoleLogs/logInfo"));
-const db_users_1 = __importDefault(require("../user/db_users"));
 const wrappedPrisma_1 = __importDefault(require("../wrappedPrisma"));
 class DB_Rooms {
     static CreateNewRoom(room) {
-        var _a;
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             const res = yield wrappedPrisma_1.default.createRoom({
                 id: room.id,
@@ -42,7 +41,7 @@ class DB_Rooms {
                 id: res.id,
                 isPublic: res.isPublic,
                 maxUsersInRoom: room.maxUsersInRoom,
-                creator: !!room.creator ? (yield db_users_1.default.GetUserData(room.creator)) : undefined
+                creatorId: (_b = room.creator) === null || _b === void 0 ? void 0 : _b.id
             };
         });
     }

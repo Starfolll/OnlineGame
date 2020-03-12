@@ -62,6 +62,8 @@ class GlobalLobby extends lobby_1.default {
                 case responseGlobalLobbyMessages_types_1.userGlobalLobbyResponse.connectToPrivateRoom:
                     this.UserResponseConnectToPrivateRoom(user, messageBody);
                     break;
+                case responseGlobalLobbyMessages_types_1.userGlobalLobbyResponse.sendInviteToRoom:
+                    this.UserResponseSendInviteToRoom(user, messageBody);
             }
         }
         catch (e) {
@@ -95,10 +97,17 @@ class GlobalLobby extends lobby_1.default {
     }
     UserResponseConnectToPrivateRoom(user, messageBody) {
         const validMessage = responseGlobalLobbyMessages_1.default.GetValidConnectToPrivateRoom(messageBody);
+        console.log(validMessage);
         if (!validMessage)
             return;
         this.ConnectUserToPrivateRoom(user, validMessage.roomId)
             .catch(err => logError_1.default(err));
+    }
+    UserResponseSendInviteToRoom(user, messageBody) {
+        const validMessage = responseGlobalLobbyMessages_1.default.GetValidSendInviteToRoom(messageBody);
+        if (!validMessage)
+            return;
+        this.SendUserLobbyInviteInfo(user, validMessage.userId, validMessage.roomId).then(r => r);
     }
 }
 exports.default = GlobalLobby;

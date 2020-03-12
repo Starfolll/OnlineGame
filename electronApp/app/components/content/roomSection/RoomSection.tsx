@@ -16,47 +16,41 @@ export default function RoomSection() {
 
    return (
       <ElementTransition>
-         <GapContainer
-            padding={"40px"}
-            gap={"5px"}
-            style={{width: "350px", paddingTop: "0", paddingBottom: "0"}}
-         >
-            <SectionCover title={!!roomData && !roomData.roomData.isPublic ? "ROOM" : ""}>
-               {!!roomData ?
-                  <ElementTransition>
-                     <GapContainer padding={"5px"}>
-                        <Grid container justify={"space-around"} alignContent={"center"}>
-                           {roomData.usersInRoom.map((u: userPublicData) =>
-                              <Grid key={Math.random()} item>
-                                 {account.id === u.id ?
-                                    <UserAccountAvatar
-                                       me avatarUrlHash={account.avatarUrlHash}
-                                       publicName={account.publicName}
-                                    />
-                                    :
-                                    <UserAccountAvatar
-                                       avatarUrlHash={u.avatarUrlHash}
-                                       publicName={u.publicName}
-                                    />
-                                 }
-                              </Grid>
-                           )}
-                        </Grid>
-                     </GapContainer>
-                  </ElementTransition>
-                  :
+         <SectionCover title={!!roomData && !roomData.roomData.isPublic ? "ROOM" : ""} style={{width: "350px"}}>
+            {!!roomData ?
+               <ElementTransition>
                   <GapContainer padding={"5px"}>
-                     <Button
-                        onClick={() => globalLobby.lobbyActions.createNewPrivateRoom()}
-                        color={"secondary"}
-                        size={"large"}
-                     >
-                        CREATE ROOM
-                     </Button>
+                     <Grid container justify={"space-around"} alignContent={"center"}>
+                        {roomData.usersInRoom.map((u: userPublicData) =>
+                           <Grid key={Math.random()} item>
+                              {account.id === u.id ?
+                                 <UserAccountAvatar
+                                    me avatarUrlHash={account.avatarUrlHash}
+                                    publicName={account.publicName}
+                                 />
+                                 :
+                                 <UserAccountAvatar
+                                    avatarUrlHash={u.avatarUrlHash}
+                                    publicName={u.publicName}
+                                 />
+                              }
+                           </Grid>
+                        )}
+                     </Grid>
                   </GapContainer>
-               }
-            </SectionCover>
-         </GapContainer>
+               </ElementTransition>
+               :
+               <GapContainer padding={"5px"}>
+                  <Button
+                     onClick={() => globalLobby.lobbyActions.createNewPrivateRoom()}
+                     color={"secondary"}
+                     size={"large"}
+                  >
+                     CREATE ROOM
+                  </Button>
+               </GapContainer>
+            }
+         </SectionCover>
       </ElementTransition>
    );
 }

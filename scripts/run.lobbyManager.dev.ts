@@ -14,12 +14,11 @@ export default class GlobalLobbyManagerServerDev {
    constructor() {
       this.lobbyManagerWSPort = +process.env.PUBLIC_GLOBAL_LOBBY_WS_PORT!;
 
-      const mp = async () => {
+      const r = async () => {
          logInfo("Mode: LOBBY MANAGER");
-
          logInfo(`Server version: ${process.env.npm_package_version}`);
-         await wrappedPrisma.deleteManyRooms();
 
+         await wrappedPrisma.deleteManyRooms();
          await wrappedPrisma.deleteManyLobbies();
 
          this.lobbyManager = new GlobalLobbyManager(
@@ -33,6 +32,6 @@ export default class GlobalLobbyManagerServerDev {
          )
       };
 
-      mp();
+      r().then(r => r);
    }
 }

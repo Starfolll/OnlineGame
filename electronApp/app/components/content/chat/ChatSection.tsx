@@ -20,6 +20,7 @@ export default function ChatSection(props: {
    const sendMessage = () => {
       if (!message) return;
       lobbyData.lobbyActions.sendMessage({message: message});
+      setMessage("");
    };
 
    const scrollToBottom = () => {
@@ -51,6 +52,9 @@ export default function ChatSection(props: {
                         <Input
                            value={message}
                            onChange={e => setMessage(e.target.value)}
+                           onKeyDown={e => {
+                              if (e.key == "Enter") sendMessage();
+                           }}
                            margin={"dense"}
                            color={"secondary"}
                            fullWidth

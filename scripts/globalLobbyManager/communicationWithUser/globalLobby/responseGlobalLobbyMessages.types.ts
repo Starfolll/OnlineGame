@@ -33,4 +33,5 @@ export type connectToPrivateRoom = {
 export type sendInviteToRoom = {
    messageType: string;
    userId: string;
+   roomId: string;
 }

@@ -6,4 +6,5 @@ var userGlobalLobbyResponse;
     userGlobalLobbyResponse["publicRoomSearch"] = "publicRoomSearch";
     userGlobalLobbyResponse["createNewPrivateRoom"] = "createNewPrivateRoom";
     userGlobalLobbyResponse["connectToPrivateRoom"] = "connectToPrivateRoom";
+    userGlobalLobbyResponse["sendInviteToRoom"] = "sendInviteToRoom";
 })(userGlobalLobbyResponse = exports.userGlobalLobbyResponse || (exports.userGlobalLobbyResponse = {}));

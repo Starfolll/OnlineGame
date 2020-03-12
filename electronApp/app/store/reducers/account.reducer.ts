@@ -1,4 +1,4 @@
-import {accountActionsTypes, userAccountData} from "../actions/account/account.actions.types";
+import {accountActionsTypes, userAccountData, userPublicData} from "../actions/account/account.actions.types";
 
 export default function accountReducer(
    state: userAccountData | null = null,
@@ -52,6 +52,21 @@ export default function accountReducer(
             ...f,
             isConnected: undefined
          } : f);
+         return Object.assign({}, state);
+
+      case "SET_USER_ROOM_INVITE_ID":
+         if (!!state) state.friends = state.friends.map(f => f.id === action.userId ? {
+            ...f,
+            roomInviteId: action.roomId
+         } as userPublicData : f);
+         console.log(state);
+         return Object.assign({}, state);
+
+      case "REMOVE_FRIEND_ROOM_INVITE":
+         if (!!state) state.friends = state.friends.map(f => f.id === action.friendId ? {
+            ...f,
+            roomInviteId: undefined
+         } as userPublicData : f);
          return Object.assign({}, state);
 
       default:
