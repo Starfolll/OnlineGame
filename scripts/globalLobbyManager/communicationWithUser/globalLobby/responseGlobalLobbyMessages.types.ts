@@ -17,7 +17,7 @@ export type globalLobbyChatMessage = {
    message: string;
 }
 
-export type publicLobbySearch = {
+export type publicRoomSearch = {
    messageType: string;
 }
 

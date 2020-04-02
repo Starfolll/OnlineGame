@@ -2,51 +2,65 @@ import {
    connectToPrivateRoom,
    globalLobbyChatMessage,
    newPrivateRoom,
-   publicLobbySearch,
+   publicRoomSearch,
    sendInviteToRoom,
    userInitialConnection
 } from "./responseGlobalLobbyMessages.types";
+import Joi from "joi";
+
 
 export default class IsLobbyMessageValid {
    public static GetValidUserInitialConnection(message: any): userInitialConnection | undefined {
-      if (typeof message !== "object") return undefined;
-      if (!message["messageType"] && message["messageType"] !== "userInitialConnection") return undefined;
-      if (!message["token"] && typeof message["token"] !== "string") return undefined;
-      if (!message["id"] && typeof message["id"] !== "string") return undefined;
-      return message as userInitialConnection;
+      const validateSchema = Joi.object({
+         messageType: "userInitialConnection",
+         token: Joi.string().required(),
+         id: Joi.string().required()
+      });
+
+      return !!validateSchema.validate(message)["error"] ? undefined : message as userInitialConnection;
    }
 
    public static GetValidChatMessage(message: any): globalLobbyChatMessage | undefined {
-      if (typeof message !== "object") return undefined;
-      if (!message["messageType"] && message["messageType"] !== "globalLobbyChatMessage") return undefined;
-      if (!message["message"] && typeof message["message"] !== "string") return undefined;
-      return message as globalLobbyChatMessage;
+      const validateSchema = Joi.object({
+         messageType: "globalLobbyChatMessage",
+         message: Joi.string().required(),
+      });
+
+      return !!validateSchema.validate(message)["error"] ? undefined : message as globalLobbyChatMessage;
    }
 
-   public static GetValidPublicRoomSearch(message: any): publicLobbySearch | undefined {
-      if (typeof message !== "object") return undefined;
-      if (!message["messageType"] && message["messageType"] !== "publicRoomSearch") return undefined;
-      return message as publicLobbySearch;
+   public static GetValidPublicRoomSearch(message: any): publicRoomSearch | undefined {
+      const validateSchema = Joi.object({
+         messageType: "publicRoomSearch",
+      });
+
+      return !!validateSchema.validate(message)["error"] ? undefined : message as publicRoomSearch;
    }
 
    public static GetValidCreateNewPrivateRoom(message: any): newPrivateRoom | undefined {
-      if (typeof message !== "object") return undefined;
-      if (!message["messageType"] && message["messageType"] !== "createNewPrivateRoom") return undefined;
-      return message as newPrivateRoom;
+      const validateSchema = Joi.object({
+         messageType: "createNewPrivateRoom",
+      });
+
+      return !!validateSchema.validate(message)["error"] ? undefined : message as newPrivateRoom;
    }
 
    public static GetValidConnectToPrivateRoom(message: any): connectToPrivateRoom | undefined {
-      if (typeof message !== "object") return undefined;
-      if (!message["messageType"] && message["messageType"] !== "connectToPrivateRoom") return undefined;
-      if (!message["roomId"] && typeof message["roomId"] !== "string") return undefined;
-      return message as connectToPrivateRoom;
+      const validateSchema = Joi.object({
+         messageType: "connectToPrivateRoom",
+         roomId: Joi.string().required()
+      });
+
+      return !!validateSchema.validate(message)["error"] ? undefined : message as connectToPrivateRoom;
    }
 
    public static GetValidSendInviteToRoom(message: any): sendInviteToRoom | undefined {
-      if (typeof message !== "object") return undefined;
-      if (!message["messageType"] && message["messageType"] !== "sendInviteToRoom") return undefined;
-      if (!message["userId"] && typeof message["userId"] !== "string") return undefined;
-      if (!message["roomId"] && typeof message["roomId"] !== "string") return undefined;
-      return message as sendInviteToRoom;
+      const validateSchema = Joi.object({
+         messageType: "sendInviteToRoom",
+         userId: Joi.string().required(),
+         roomId: Joi.string().required()
+      });
+
+      return !!validateSchema.validate(message)["error"] ? undefined : message as sendInviteToRoom;
    }
 }

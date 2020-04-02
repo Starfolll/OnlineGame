@@ -1,16 +1,18 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const joi_1 = __importDefault(require("joi"));
 class IsLobbyMessageValid {
     static GetValidUserInitialConnection(message) {
-        if (typeof message !== "object")
-            return undefined;
-        if (!message["messageType"] && message["messageType"] !== "userInitialConnection")
-            return undefined;
-        if (!message["token"] && typeof message["token"] !== "string")
-            return undefined;
-        if (!message["id"] && typeof message["id"] !== "string")
-            return undefined;
-        return message;
+        const m = joi_1.default.object({
+            messageType: "userInitialConnection",
+            token: joi_1.default.string(),
+            id: joi_1.default.string()
+        });
+        console.log(m.validate(message));
+        return !!m.validate(message)["error"] ? undefined : message;
     }
     static GetValidChatMessage(message) {
         if (typeof message !== "object")
