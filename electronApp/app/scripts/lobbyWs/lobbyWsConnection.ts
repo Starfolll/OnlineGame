@@ -1,6 +1,7 @@
 import {userAccountData} from "../../store/actions/account/account.actions.types";
 import {globalLobbyMessagesResponse,} from "../../store/actions/globalLobby/globalLobby.actions.types";
 import {roomActionsDeleteRoom} from "../../store/actions/room/room.actions";
+import GameConnection from "../gameWs/gameConnection";
 import GetGlobalLobbyMessage from "./communicationWithLobby/globalLobby/informGlobalLobbyMessages";
 import GlobalLobbyResponse from "./communicationWithLobby/globalLobby/reponseGlobalLobbyMessage";
 import {lobbyActions} from "./communicationWithLobby/globalLobby/responeGlobalLobbyActions";
@@ -115,12 +116,23 @@ export default class LobbyWSConnection {
             case "inviteToRoom":
                GlobalLobbyResponse.InviteToRoom(this.dispatch, data.roomId, data.userId);
                break;
+
+            case "gameStart":
+            case "redirectToGameTable":
+               new GameConnection({
+                  tableId: data.tableId,
+                  account: this.account,
+                  dispatch: this.dispatch,
+                  wsUrl: `ws://localhost:8010`,
+               });
+               break;
          }
       };
    }
 
    private SocketAttachOnClose(): void {
       this.socket.onclose = (e) => {
+         // if (e.reason === "redirect to game server");
          console.log(e);
       };
    }

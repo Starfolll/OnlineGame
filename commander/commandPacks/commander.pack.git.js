@@ -7,9 +7,6 @@ const gitCommands = {
         actionDescription: "git add . && git commit COMMIT_NAME && git push",
         cmd: [
             {
-                cmd: "ls"
-            },
-            {
                 cmd: "git",
                 cmdParams: "add .".split(" "),
             },

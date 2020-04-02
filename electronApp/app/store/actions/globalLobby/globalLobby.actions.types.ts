@@ -13,6 +13,8 @@ const SERVER_MESSAGE_FRIEND_CONNECTED_TO_GAME = "friendsConnectedToGame";
 const SERVER_MESSAGE_FRIEND_CONNECTED_TO_LOBBY = "friendConnectedToLobby";
 const SERVER_MESSAGE_FRIEND_DISCONNECTED_FROM_LOBBY = "friendDisconnectedFromLobby";
 const SERVER_MESSAGE_INVITE_TO_ROOM = "inviteToRoom";
+const SERVER_MESSAGE_GAME_START = "gameStart";
+const SERVER_MESSAGE_REDIRECTED_TO_GAME_TABLE = "redirectToGameTable";
 
 
 export interface ServerMessageLobbyInfo {
@@ -66,6 +68,15 @@ export interface ServerMessageInviteToRoom {
    userId: string;
 }
 
+export interface ServerMessageGameStart {
+   messageType: typeof SERVER_MESSAGE_GAME_START;
+   tableId: string;
+}
+
+export interface ServerMessageRedirectToGameTable {
+   messageType: typeof SERVER_MESSAGE_REDIRECTED_TO_GAME_TABLE;
+   tableId: string;
+}
 
 export type globalLobbyMessagesResponse =
    ServerMessageLobbyInfo |
@@ -77,7 +88,9 @@ export type globalLobbyMessagesResponse =
    ServerMessageFriendsConnectedToGame |
    ServerMessageFriendConnectedToLobby |
    ServerMessageFriendDisconnectedFromLobby |
-   ServerMessageInviteToRoom;
+   ServerMessageInviteToRoom |
+   ServerMessageGameStart |
+   ServerMessageRedirectToGameTable;
 
 
 export type chatMessageInfo = {
