@@ -21,9 +21,9 @@ export default class LobbyWSConnection {
    }) {
       this.wsUrl = props.wsUrl;
       this.account = props.account;
-      this.socket = new WebSocket(this.wsUrl);
-
       this.dispatch = props.dispatch;
+
+      this.socket = new WebSocket(this.wsUrl);
 
       this.lobbyActions = {
          sendMessage: ({message}) => this.socket.send(JSON.stringify({

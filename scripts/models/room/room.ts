@@ -27,7 +27,7 @@ export default class Room {
    public readonly isPublic: boolean;
    public readonly maxUsersInRoom: number;
    public readonly lobbyId: string;
-   public creatorId?: string;
+   public creatorId: string | undefined;
 
    private readonly usersInRoom: { [userId: string]: LobbyUser } = {};
    private readonly chat: Chat<ChatMessage>;
@@ -114,8 +114,9 @@ export default class Room {
       this.InformUsersAboutUserRemoved(userId);
 
       if (!this.isPublic && !!this.creatorId && userId === this.creatorId) {
-         this.creatorId = this.usersInRoom[this.usersIdInRoom[0]].id;
+         this.creatorId = this.usersIdInRoom.length > 0 ? this.usersInRoom[this.usersIdInRoom[0]].id : undefined;
          if (!!this.creatorId) {
+            console.log("asd");
             await DB_Rooms.ResetUserCreator(this.id, {id: this.creatorId} as userUniqueData);
             this.InformUsersAboutNewCreator(this.creatorId);
          } else {

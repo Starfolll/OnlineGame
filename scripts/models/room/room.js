@@ -68,8 +68,9 @@ class Room {
             delete this.usersInRoom[userId];
             this.InformUsersAboutUserRemoved(userId);
             if (!this.isPublic && !!this.creatorId && userId === this.creatorId) {
-                this.creatorId = this.usersInRoom[this.usersIdInRoom[0]].id;
+                this.creatorId = this.usersIdInRoom.length > 0 ? this.usersInRoom[this.usersIdInRoom[0]].id : undefined;
                 if (!!this.creatorId) {
+                    console.log("asd");
                     yield db_rooms_1.default.ResetUserCreator(this.id, { id: this.creatorId });
                     this.InformUsersAboutNewCreator(this.creatorId);
                 }

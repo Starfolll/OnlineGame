@@ -1,7 +1,7 @@
-import {initialConnection} from "./informGlobalLobbyMessages.types";
+import {initialGlobalLobbyConnection} from "./informGlobalLobbyMessages.types";
 
 export default class GetGlobalLobbyMessage {
-   public static InitialConnection(id: string, token: string): initialConnection {
+   public static InitialConnection(id: string, token: string): initialGlobalLobbyConnection {
       return {
          messageType: "userInitialConnection", id, token
       };

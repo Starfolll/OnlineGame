@@ -1,54 +1,54 @@
 export enum playerTurnResponse {
-    heroPicked = "heroPicked",
-    initialHeroTurnOptionPicked = "initialHeroTurnOptionPicked",
-    initialHeroCardPicked = "initialHeroCardPicked",
-    buildDistrict = "buildDistrict",
-    buildTurnMade = "buildTurnMade",
-    chatMessage = "chatMessage",
-    heroAbilityUsed = "heroAbilityUsed",
+   heroPicked = "heroPicked",
+   initialHeroTurnOptionPicked = "initialHeroTurnOptionPicked",
+   initialHeroCardPicked = "initialHeroCardPicked",
+   buildDistrict = "buildDistrict",
+   buildTurnMade = "buildTurnMade",
+   chatMessage = "chatMessage",
+   heroAbilityUsed = "heroAbilityUsed",
 }
 
 
 export type playerInitialConnection = {
-    messageType: string;
-    token: string;
-    id: string;
-    tableId: string;
+   messageType: string;
+   token: string;
+   id: string;
+   tableId: string;
 }
 
 export type heroPicked = {
-    messageType: string;
-    heroWeight: number;
+   messageType: string;
+   heroWeight: number;
 }
 
 export type initialHeroTurnOptions = "gold" | "cards";
 export const initialHeroTurnOptions: Set<string> = new Set(["gold", "cards"]);
 export type initialHeroTurnOptionPicked = {
-    messageType: string;
-    pickedOption: initialHeroTurnOptions;
+   messageType: string;
+   pickedOption: initialHeroTurnOptions;
 }
 
 export type initialHeroCardPicked = {
-    messageType: string;
-    cardInGameId: number;
+   messageType: string;
+   cardInGameId: number;
 }
 
 export type heroAbilityUsed = {
-    messageType: string;
-    abilityData: any;
+   messageType: string;
+   abilityData: any;
 };
 
 export type builtDistrict = {
-    messageType: string;
-    cardInGameId: number;
+   messageType: string;
+   cardInGameId: number;
 }
 
 export type buildTurnMade = {
-    messageType: string;
+   messageType: string;
 }
 
 export type gameChatMessage = {
-    messageType: string;
-    playerId: string;
-    message: string;
+   messageType: string;
+   playerId: string;
+   message: string;
 }
