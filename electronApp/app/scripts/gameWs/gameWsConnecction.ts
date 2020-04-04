@@ -41,8 +41,12 @@ export default class GameWsConnection {
 
    private SocketAttachOnMessage(): void {
       this.socket.onmessage = (e) => {
-         const data: any = JSON.parse(e.data);
+         const data:  = JSON.parse(e.data);
          console.log(data);
+         
+         switch (data) {
+
+         }
       };
    }
 

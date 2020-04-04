@@ -8,7 +8,7 @@ export default class GameConnection {
       wsUrl: string,
       account: userAccountData,
       dispatch: any,
-      tableId:string
+      tableId: string
    }) {
       new GameWsConnection(props);
    }

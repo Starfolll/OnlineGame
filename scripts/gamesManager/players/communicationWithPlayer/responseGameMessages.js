@@ -1,82 +1,71 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const responseGameMessages_types_1 = require("./responseGameMessages.types");
+const joi_1 = __importDefault(require("joi"));
 class IsGameMessageValid {
     static GetValidPlayerInitialConnection(message) {
-        if (typeof message !== "object")
-            return undefined;
-        if (!message["messageType"] && message["messageType"] !== "playerInitialConnection")
-            return undefined;
-        if (!message["token"] && typeof message["token"] !== "string")
-            return undefined;
-        if (!message["id"] && typeof message["id"] !== "string")
-            return undefined;
-        if (!message["tableId"] && typeof message["tableId"] !== "string")
-            return undefined;
-        return message;
+        const validateSchema = joi_1.default.object({
+            messageType: "playerInitialConnection",
+            token: joi_1.default.string().required(),
+            id: joi_1.default.string().required(),
+            tableId: joi_1.default.string().required()
+        });
+        return !!validateSchema.validate(message)["error"] ? undefined : message;
     }
     static GetValidHeroPickedMessage(message) {
-        if (typeof message !== "object")
-            return undefined;
-        if (!message["messageType"] && message["messageType"] !== "heroPicked")
-            return undefined;
-        if (!message["heroWeight"] && typeof message["heroWeight"] !== "number")
-            return undefined;
-        return message;
+        const validateSchema = joi_1.default.object({
+            messageType: "heroPicked",
+            heroWeight: joi_1.default.number().required()
+        });
+        return !!validateSchema.validate(message)["error"] ? undefined : message;
     }
     static GetValidInitialHeroTurnOptionPicked(message) {
-        if (typeof message !== "object")
+        const validateSchema = joi_1.default.object({
+            messageType: "initialHeroTurnOptionPicked",
+            pickedOption: joi_1.default.string().required()
+        });
+        if (!!validateSchema.validate(message)["error"])
             return undefined;
-        if (!message["messageType"] && message["messageType"] !== "initialHeroTurnOptionPicked")
-            return undefined;
-        if (!message["pickedOption"] && !responseGameMessages_types_1.initialHeroTurnOptions.has(message["pickedOption"]))
+        if (!responseGameMessages_types_1.initialHeroTurnOptions.has(message["pickedOption"]))
             return undefined;
         return message;
     }
     static GetValidInitialHeroCardPicked(message) {
-        if (typeof message !== "object")
-            return undefined;
-        if (!message["messageType"] && message["messageType"] !== "initialHeroCardPicked")
-            return undefined;
-        if (!message["cardInGameId"] && typeof message["cardInGameId"] !== "number")
-            return undefined;
-        return message;
+        const validateSchema = joi_1.default.object({
+            messageType: "initialHeroCardPicked",
+            cardInGameId: joi_1.default.number().required()
+        });
+        return !!validateSchema.validate(message)["error"] ? undefined : message;
     }
     static GetValidHeroAbilityUsed(message) {
-        if (typeof message !== "object")
-            return undefined;
-        if (!message["messageType"] && message["messageType"] !== "heroAbilityUsed")
-            return undefined;
-        if (!message["abilityData"])
-            return undefined;
-        return message;
+        const validateSchema = joi_1.default.object({
+            messageType: "heroAbilityUsed",
+            abilityData: joi_1.default.required()
+        });
+        return !!validateSchema.validate(message)["error"] ? undefined : message;
     }
     static GetValidBuiltDistrict(message) {
-        if (typeof message !== "object")
-            return undefined;
-        if (!message["messageType"] && message["messageType"] !== "builtDistrict")
-            return undefined;
-        if (!message["cardInGameId"] && typeof message["cardInGameId"] !== "number")
-            return undefined;
-        return message;
+        const validateSchema = joi_1.default.object({
+            messageType: "builtDistrict",
+            cardInGameId: joi_1.default.required()
+        });
+        return !!validateSchema.validate(message)["error"] ? undefined : message;
     }
     static GetValidBuildTurnMade(message) {
-        if (typeof message !== "object")
-            return undefined;
-        if (!message["messageType"] && message["messageType"] !== "buildTurnMade")
-            return undefined;
-        return message;
+        const validateSchema = joi_1.default.object({
+            messageType: "buildTurnMade",
+        });
+        return !!validateSchema.validate(message)["error"] ? undefined : message;
     }
     static GetValidChatMessage(message, messageLengthLimit) {
-        if (typeof message !== "object")
-            return undefined;
-        if (!message["messageType"] && message["messageType"] !== "chatMessage")
-            return undefined;
-        if (!message["message"] && typeof message["message"] !== "string")
-            return undefined;
-        if (message["message"].length > messageLengthLimit)
-            return undefined;
-        return message;
+        const validateSchema = joi_1.default.object({
+            messageType: "chatMessage",
+            message: joi_1.default.string().max(messageLengthLimit).required()
+        });
+        return !!validateSchema.validate(message)["error"] ? undefined : message;
     }
 }
 exports.IsGameMessageValid = IsGameMessageValid;

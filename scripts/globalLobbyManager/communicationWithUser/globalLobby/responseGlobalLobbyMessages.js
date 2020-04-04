@@ -6,56 +6,46 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const joi_1 = __importDefault(require("joi"));
 class IsLobbyMessageValid {
     static GetValidUserInitialConnection(message) {
-        const m = joi_1.default.object({
+        const validateSchema = joi_1.default.object({
             messageType: "userInitialConnection",
-            token: joi_1.default.string(),
-            id: joi_1.default.string()
+            token: joi_1.default.string().required(),
+            id: joi_1.default.string().required()
         });
-        console.log(m.validate(message));
-        return !!m.validate(message)["error"] ? undefined : message;
+        return !!validateSchema.validate(message)["error"] ? undefined : message;
     }
     static GetValidChatMessage(message) {
-        if (typeof message !== "object")
-            return undefined;
-        if (!message["messageType"] && message["messageType"] !== "globalLobbyChatMessage")
-            return undefined;
-        if (!message["message"] && typeof message["message"] !== "string")
-            return undefined;
-        return message;
+        const validateSchema = joi_1.default.object({
+            messageType: "globalLobbyChatMessage",
+            message: joi_1.default.string().required(),
+        });
+        return !!validateSchema.validate(message)["error"] ? undefined : message;
     }
     static GetValidPublicRoomSearch(message) {
-        if (typeof message !== "object")
-            return undefined;
-        if (!message["messageType"] && message["messageType"] !== "publicRoomSearch")
-            return undefined;
-        return message;
+        const validateSchema = joi_1.default.object({
+            messageType: "publicRoomSearch",
+        });
+        return !!validateSchema.validate(message)["error"] ? undefined : message;
     }
     static GetValidCreateNewPrivateRoom(message) {
-        if (typeof message !== "object")
-            return undefined;
-        if (!message["messageType"] && message["messageType"] !== "createNewPrivateRoom")
-            return undefined;
-        return message;
+        const validateSchema = joi_1.default.object({
+            messageType: "createNewPrivateRoom",
+        });
+        return !!validateSchema.validate(message)["error"] ? undefined : message;
     }
     static GetValidConnectToPrivateRoom(message) {
-        if (typeof message !== "object")
-            return undefined;
-        if (!message["messageType"] && message["messageType"] !== "connectToPrivateRoom")
-            return undefined;
-        if (!message["roomId"] && typeof message["roomId"] !== "string")
-            return undefined;
-        return message;
+        const validateSchema = joi_1.default.object({
+            messageType: "connectToPrivateRoom",
+            roomId: joi_1.default.string().required()
+        });
+        return !!validateSchema.validate(message)["error"] ? undefined : message;
     }
     static GetValidSendInviteToRoom(message) {
-        if (typeof message !== "object")
-            return undefined;
-        if (!message["messageType"] && message["messageType"] !== "sendInviteToRoom")
-            return undefined;
-        if (!message["userId"] && typeof message["userId"] !== "string")
-            return undefined;
-        if (!message["roomId"] && typeof message["roomId"] !== "string")
-            return undefined;
-        return message;
+        const validateSchema = joi_1.default.object({
+            messageType: "sendInviteToRoom",
+            userId: joi_1.default.string().required(),
+            roomId: joi_1.default.string().required()
+        });
+        return !!validateSchema.validate(message)["error"] ? undefined : message;
     }
 }
 exports.default = IsLobbyMessageValid;

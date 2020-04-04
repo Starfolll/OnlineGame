@@ -12,12 +12,13 @@ const commandsSections = new commandsSections_1.default({
     header: process.env.BUILD_MODE === "dev" ? "DEV" : "PROD",
     currentDirPath: __dirname,
     commands: {
-        "-build": {
-            name: "build-all",
-            actionDescription: "tsc && prisma deploy",
+        "-br": {
+            name: "br",
+            actionDescription: "builds server (tsc) and restart pm2 server",
             cmd: [
-                { cmd: "tsc" },
                 { cmd: "prisma", cmdParams: ["deploy"] },
+                { cmd: "tsc" },
+                { cmd: "pm2", cmdParams: ["ecosystem", "restart"] },
             ]
         },
         "-up": {

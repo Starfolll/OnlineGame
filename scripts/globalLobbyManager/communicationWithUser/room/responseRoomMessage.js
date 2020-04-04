@@ -1,37 +1,35 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const joi_1 = __importDefault(require("joi"));
 class IsRoomMessageValid {
     static GetValidChatMessage(message) {
-        if (typeof message !== "object")
-            return undefined;
-        if (!message["messageType"] && message["messageType"] !== "roomChatMessage")
-            return undefined;
-        if (!message["message"] && typeof message["message"] !== "string")
-            return undefined;
-        return message;
+        const validateSchema = joi_1.default.object({
+            messageType: "roomChatMessage",
+            message: joi_1.default.string().required()
+        });
+        return !!validateSchema.validate(message)["error"] ? undefined : message;
     }
     static GetValidStartGameMessage(message) {
-        if (typeof message !== "object")
-            return undefined;
-        if (!message["messageType"] && message["messageType"] !== "startGame")
-            return undefined;
-        return message;
+        const validateSchema = joi_1.default.object({
+            messageType: "startGame",
+        });
+        return !!validateSchema.validate(message)["error"] ? undefined : message;
     }
     static GetValidLeaveRoom(message) {
-        if (typeof message !== "object")
-            return undefined;
-        if (!message["messageType"] && message["messageType"] !== "leaveRoom")
-            return undefined;
-        return message;
+        const validateSchema = joi_1.default.object({
+            messageType: "leaveRoom",
+        });
+        return !!validateSchema.validate(message)["error"] ? undefined : message;
     }
     static GetValidRemoveUser(message) {
-        if (typeof message !== "object")
-            return undefined;
-        if (!message["messageType"] && message["messageType"] !== "removeUserFromRoom")
-            return undefined;
-        if (!message["userId"] && typeof message["userId"] !== "string")
-            return undefined;
-        return message;
+        const validateSchema = joi_1.default.object({
+            messageType: "removeUserFromRoom",
+            userId: joi_1.default.string().required()
+        });
+        return !!validateSchema.validate(message)["error"] ? undefined : message;
     }
 }
 exports.default = IsRoomMessageValid;
