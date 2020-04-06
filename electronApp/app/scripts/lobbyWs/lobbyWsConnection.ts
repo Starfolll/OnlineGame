@@ -1,7 +1,6 @@
 import {userAccountData} from "../../store/actions/account/account.actions.types";
 import {globalLobbyMessagesResponse,} from "../../store/actions/globalLobby/globalLobby.actions.types";
 import {roomActionsDeleteRoom} from "../../store/actions/room/room.actions";
-import {tableActionsDeclareTable} from "../../store/actions/table/table.actions";
 import GameConnection from "../gameWs/gameConnection";
 import GetGlobalLobbyMessage from "./communicationWithLobby/globalLobby/informGlobalLobbyMessages";
 import GlobalLobbyResponse from "./communicationWithLobby/globalLobby/reponseGlobalLobbyMessage";

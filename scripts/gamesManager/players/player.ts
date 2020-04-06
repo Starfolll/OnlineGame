@@ -6,7 +6,7 @@ import {GetGameMessage} from "./communicationWithPlayer/informGameMassages";
 import {tableInfoWithPlayers} from "./players";
 import {heroDebuffsTypes} from "../gameTableManager/heroesStacks/heroDebuffsTypes";
 import {heroAbilityTypes} from "../gameTableManager/heroesStacks/heroAbilityTypes";
-import User, {userData} from "../../models/user/user";
+import User, {userData, userPublicData} from "../../models/user/user";
 import {chatMessageInfo} from "../../utils/chat/chatMessage";
 
 
@@ -24,8 +24,7 @@ export type playerEndGameScoreTable = {
 }
 
 export type playerInfo = {
-   userId: string;
-   name: string;
+   user: userPublicData;
 
    isPlayerDisconnected: boolean;
 
@@ -245,8 +244,7 @@ export class Player extends User {
 
    public GetInfo(privateInfo: boolean): playerInfo {
       const info: playerInfo = {
-         "userId": this.id,
-         "name": this.name,
+         "user": this.GetUserPublicData(),
 
          "isPlayerDisconnected": this.IsConnected,
 

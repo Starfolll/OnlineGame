@@ -1,10 +1,8 @@
-import {command} from "../command";
-import {commandsSections} from "../commandsSections";
-import {execSync} from "child_process";
+const {execSync} = require("child_process");
 
 
 const gitCommands = {
-   acp: (): command => ({
+   acp: () => ({
       name: "acp",
       actionDescription: "git add . && git commit COMMIT_NAME && git push",
       cmd: [
@@ -25,7 +23,7 @@ const gitCommands = {
    }),
 };
 
-const gitCommandsSection: commandsSections = {
+const gitCommandsSection = {
    name: "git",
    startCommand: () => execSync("git branch", {stdio: "inherit"}),
    commands: {
@@ -33,4 +31,4 @@ const gitCommandsSection: commandsSections = {
    }
 };
 
-export default gitCommandsSection;
+module.exports = gitCommandsSection;

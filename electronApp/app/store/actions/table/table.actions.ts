@@ -1,8 +1,8 @@
 import {tableActionsTypes, tableInfoWithPlayers} from "./table.actions.types";
 
 
-export const tableActionsDeclareTable = (tableDataWithPlayers: tableInfoWithPlayers): tableActionsTypes => {
+export const tableActionsDeclareTable = (gameTable: tableInfoWithPlayers): tableActionsTypes => {
    return {
-      type: "DECLARE_TABLE", tableDataWithPlayers
+      type: "DECLARE_TABLE", gameTable
    };
 };

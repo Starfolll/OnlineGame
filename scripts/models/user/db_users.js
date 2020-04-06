@@ -21,7 +21,7 @@ class DB_Users {
     static CreateNewUser(user) {
         var _a, _b, _c, _d, _e;
         return __awaiter(this, void 0, void 0, function* () {
-            const res = yield wrappedPrisma_1.default.createUser(Object.assign(Object.assign({}, user), { password: yield bcrypt_1.default.hash(user.password, 10), token: (_a = user.token) !== null && _a !== void 0 ? _a : crypto_random_string_1.default({ length: 60 }), verificationLink: (_b = user.verificationLink) !== null && _b !== void 0 ? _b : null, lvl: (_c = user.lvl) !== null && _c !== void 0 ? _c : 1, xp: (_d = user.xp) !== null && _d !== void 0 ? _d : 0, gold: (_e = user.gold) !== null && _e !== void 0 ? _e : 0 }));
+            const res = yield wrappedPrisma_1.default.createUser(Object.assign(Object.assign({}, user), { password: yield bcrypt_1.default.hash(user.password, 10), token: (_a = user.token, (_a !== null && _a !== void 0 ? _a : crypto_random_string_1.default({ length: 60 }))), verificationLink: (_b = user.verificationLink, (_b !== null && _b !== void 0 ? _b : null)), lvl: (_c = user.lvl, (_c !== null && _c !== void 0 ? _c : 1)), xp: (_d = user.xp, (_d !== null && _d !== void 0 ? _d : 0)), gold: (_e = user.gold, (_e !== null && _e !== void 0 ? _e : 0)) }));
             if (!res.id)
                 logError_1.default(res);
             logInfo_1.default(`New user: ${res.name} | ${res.email} | ${res.id} | ${res.token}`);

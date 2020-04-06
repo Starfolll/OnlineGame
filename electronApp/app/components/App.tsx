@@ -4,6 +4,7 @@ import {withRouter} from "react-router-dom";
 import {rootReducerTypes} from "../store/reducers";
 import AppVersion from "./content/appVerion/AppVerion";
 import Frame from "./content/frame/Frame";
+import GameTableContainer from "./content/gameTable/gameTableContainer";
 import GapContainer from "./content/gapContainer/GapConteiner";
 import NavMenu from "./content/navMenu/NavMenu";
 import HomePage from "./pages/Home.page";
@@ -12,6 +13,7 @@ import LoginPage from "./pages/Login.page";
 
 function App(props: any) {
    const account = useSelector((state: rootReducerTypes) => state.account);
+   const gameTable = useSelector((state: rootReducerTypes) => state.gameTable);
 
    return (
       <GapContainer
@@ -26,8 +28,10 @@ function App(props: any) {
          padding={"5px"}
          gap={"0"}
       >
-         {!account ? <Frame/> : ""}
-         {!account ? <LoginPage/> : <HomePage/>}
+         {!account && !gameTable ? <Frame/> : ""}
+         {!account && !gameTable ? <LoginPage/> : ""}
+         {!!account && !gameTable ? <HomePage/> : ""}
+         {!!account && !!gameTable ? <GameTableContainer/> : ""}
 
          {!!account ? <NavMenu/> : ""}
 

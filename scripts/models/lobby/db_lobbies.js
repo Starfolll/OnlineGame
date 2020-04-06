@@ -17,11 +17,12 @@ const logInfo_1 = __importDefault(require("../../utils/consoleLogs/logInfo"));
 const wrappedPrisma_1 = __importDefault(require("../wrappedPrisma"));
 class DB_Lobbies {
     static GetLobbyData(lobbyId) {
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             const res = yield wrappedPrisma_1.default.lobby({ id: lobbyId });
-            if (!(res === null || res === void 0 ? void 0 : res.id))
+            if (!((_a = res) === null || _a === void 0 ? void 0 : _a.id))
                 logError_1.default(res);
-            if (!(res === null || res === void 0 ? void 0 : res.id))
+            if (!((_b = res) === null || _b === void 0 ? void 0 : _b.id))
                 return undefined;
             return {
                 name: res.name,

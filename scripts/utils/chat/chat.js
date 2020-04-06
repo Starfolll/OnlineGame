@@ -5,7 +5,7 @@ class Chat {
         this.messages = [];
         this.startMessages = [];
         this.maxSavedMessages = maxSavedMessages;
-        this.startMessages = startMessages !== null && startMessages !== void 0 ? startMessages : [];
+        this.startMessages = (startMessages !== null && startMessages !== void 0 ? startMessages : []);
     }
     AddMessage(message) {
         this.messages.push(message);

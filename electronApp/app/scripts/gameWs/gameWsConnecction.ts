@@ -1,5 +1,7 @@
 import {userAccountData} from "../../store/actions/account/account.actions.types";
+import {gameTableMessagesResponse} from "../../store/actions/table/table.actions.types";
 import GetGameMessage from "./communicationWithLobby/informGameMessages";
+import GameTableResponse from "./communicationWithLobby/responseTableMessage";
 
 export default class GameWsConnection {
    public readonly wsUrl: string;
@@ -41,11 +43,13 @@ export default class GameWsConnection {
 
    private SocketAttachOnMessage(): void {
       this.socket.onmessage = (e) => {
-         const data:  = JSON.parse(e.data);
-         console.log(data);
-         
-         switch (data) {
+         const data: gameTableMessagesResponse = JSON.parse(e.data);
 
+         console.log(data);
+         switch (data.messageType) {
+            case "tableInfo":
+               GameTableResponse.GameTableInfo(this.dispatch, data.gameTable);
+               break;
          }
       };
    }

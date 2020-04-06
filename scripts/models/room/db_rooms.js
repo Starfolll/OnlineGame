@@ -31,7 +31,7 @@ class DB_Rooms {
                     }
                 },
                 usersInRoom: {
-                    connect: (_a = room.creator) !== null && _a !== void 0 ? _a : []
+                    connect: (_a = room.creator, (_a !== null && _a !== void 0 ? _a : []))
                 }
             });
             if (!res.id)

@@ -21,13 +21,14 @@ const gamesManager_api_requests_1 = __importDefault(require("../../api/gamesMana
 const db_lobbies_1 = __importDefault(require("../lobby/db_lobbies"));
 class Room {
     constructor(lobbyId, roomData, onRoomDeleteHandler, creator) {
+        var _a;
         this.usersInRoom = {};
         this.id = roomData.id;
         this.isPublic = roomData.isPublic;
         this.maxUsersInRoom = roomData.maxUsersInRoom;
         this.lobbyId = lobbyId;
         this.usersInRoom = {};
-        this.creatorId = creator === null || creator === void 0 ? void 0 : creator.id;
+        this.creatorId = (_a = creator) === null || _a === void 0 ? void 0 : _a.id;
         if (!!creator && this.creatorId) {
             this.usersInRoom[this.creatorId] = creator;
             this.AttachUserOnMessageSend(creator);

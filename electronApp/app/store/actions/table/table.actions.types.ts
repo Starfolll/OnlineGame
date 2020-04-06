@@ -1,7 +1,19 @@
+import {userPublicData} from "../account/account.actions.types";
 import {chatMessageInfo} from "../globalLobby/globalLobby.actions.types";
 
 
-type turnsType =
+const SERVER_MESSAGE_GAME_TABLE_INFO = "tableInfo";
+
+export interface ServerMessageGameTableInfo {
+   messageType: typeof SERVER_MESSAGE_GAME_TABLE_INFO;
+   gameTable: tableInfoWithPlayers;
+}
+
+export type gameTableMessagesResponse =
+   ServerMessageGameTableInfo;
+
+
+export type turnsType =
    "waitingForPlayers" |
    "gameStarted" |
    "heroPickTurn" |
@@ -27,8 +39,7 @@ export type cardInfo = {
 }
 
 export type playerInfo = {
-   userId: string;
-   name: string;
+   user: userPublicData;
 
    isPlayerDisconnected: boolean;
 
@@ -117,7 +128,7 @@ const DECLARE_TABLE = "DECLARE_TABLE";
 
 interface DeclareTable {
    type: typeof DECLARE_TABLE;
-   tableDataWithPlayers: tableInfoWithPlayers;
+   gameTable: tableInfoWithPlayers;
 }
 
 export type tableActionsTypes = DeclareTable;

@@ -1,4 +1,3 @@
-import {roomActionsTypes} from "../room/room.actions.types";
 import {chatMessageInfo, globalLobbyActionsTypes, lobbyDataWithActions} from "./globalLobby.actions.types";
 
 

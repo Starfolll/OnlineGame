@@ -1,13 +1,9 @@
-import CommandsSection from "./commander/commandsSections";
-import commanderSections from "./commander/commandPacks";
-import dotenv from "dotenv";
+const commandsSection = require("./commandPacks/index");
 
-
-dotenv.config();
-const commandsSections = new CommandsSection({
+module.exports = {
    name: "Online game",
    header: process.env.BUILD_MODE === "dev" ? "DEV" : "PROD",
-   currentDirPath: __dirname,
+   currentDirPath: process.cwd(),
    commands: {
       "-br": {
          name: "br",
@@ -15,17 +11,17 @@ const commandsSections = new CommandsSection({
          cmd: [
             {cmd: "prisma", cmdParams: ["deploy"]},
             {cmd: "tsc"},
-            {cmd: "pm2", cmdParams: ["ecosystem", "restart"]},
+            {cmd: "pm2", cmdParams: ["restart", "ecosystem.config.js"]},
          ]
       },
       "-up": {
          name: "up",
          actionDescription: "pm2 ecosystem",
-         cmd: [{cmd: "pm2", cmdParams: ["start", "ecosystem.config.js"]}]
+         cmd: [{cmd: "pm2", cmdParams: ["restart", "ecosystem.config.js"]}]
       }
    },
    sections: {
-      ...commanderSections,
+      ...commandsSection,
       "tsc": {
          name: "tsc",
          commands: {
@@ -72,9 +68,4 @@ const commandsSections = new CommandsSection({
          }
       },
    }
-});
-
-commandsSections.Enter(() => {
-   console.clear();
-   console.log(" bye ");
-});
+};

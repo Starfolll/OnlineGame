@@ -154,8 +154,7 @@ class Player extends user_1.default {
     }
     GetInfo(privateInfo) {
         const info = {
-            "userId": this.id,
-            "name": this.name,
+            "user": this.GetUserPublicData(),
             "isPlayerDisconnected": this.IsConnected,
             "isKing": this.isKing,
             "isHeroPickTurnMade": this.isHeroPickTurnMade,

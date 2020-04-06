@@ -5,9 +5,8 @@ import GameManagerServerDev from "./scripts/run.gameManager.dev";
 import GlobalLobbyManagerServerDev from "./scripts/run.lobbyManager.dev";
 import StaticAndApiServeServerDev from "./scripts/run.staticAndApiServe.dev";
 
+dotenv.config();
 (async () => {
-    dotenv.config();
-
     const isDev: boolean = process.env.BUILD_MODE === "dev";
 
     let serverMode: string | undefined = "";

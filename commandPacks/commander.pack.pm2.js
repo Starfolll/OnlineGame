@@ -1,9 +1,5 @@
-import {commandsSections} from "../commandsSections";
-import {command} from "../command";
-
-
 const pm2Commands = {
-   list: (): command => ({
+   list: () => ({
       name: "list",
       actionDescription: "pm2 list",
       cmd: [{
@@ -11,7 +7,7 @@ const pm2Commands = {
          cmdParams: ["list"],
       }]
    }),
-   monit: (): command => ({
+   monit: () => ({
       name: "monit",
       actionDescription: "pm2 monit",
       cmd: [{
@@ -19,7 +15,7 @@ const pm2Commands = {
          cmdParams: ["monit"],
       }],
    }),
-   monitor: (): command => ({
+   monitor: () => ({
       name: "monitor",
       actionDescription: "pm2 monitor",
       cmd: [{
@@ -27,7 +23,7 @@ const pm2Commands = {
          cmdParams: ["monitor"],
       }],
    }),
-   startup: (): command => ({
+   startup: () => ({
       name: "startup",
       actionDescription: "pm2 startup",
       cmd: [{
@@ -35,7 +31,7 @@ const pm2Commands = {
          cmdParams: ["startup"],
       }],
    }),
-   saveStartup: (): command => ({
+   saveStartup: () => ({
       name: "save-startup",
       actionDescription: "pm2 save",
       cmd: [{
@@ -43,7 +39,7 @@ const pm2Commands = {
          cmdParams: ["save"],
       }],
    }),
-   start: (): command => ({
+   start: () => ({
       name: "start",
       actionDescription: "pm2 start {FILE_PATH} --name {APP_NAME} -- {ARGS}",
       cmd: [{
@@ -52,7 +48,7 @@ const pm2Commands = {
          cmdConfigurableValues: ["FILE_PATH", "APP_NAME", "ARGS"]
       }],
    }),
-   restart: (): command => ({
+   restart: () => ({
       name: "restart",
       actionDescription: "pm2 restart {APP_NAME}",
       cmd: [{
@@ -61,7 +57,7 @@ const pm2Commands = {
          cmdConfigurableValues: ["APP_NAME"]
       }]
    }),
-   stop: (): command => ({
+   stop: () => ({
       name: "stop",
       actionDescription: "pm2 stop {APP_NAME}",
       cmd: [{
@@ -70,7 +66,7 @@ const pm2Commands = {
          cmdConfigurableValues: ["APP_NAME"]
       }],
    }),
-   delete: (): command => ({
+   delete: () => ({
       name: "delete",
       actionDescription: "pm2 delete {APP_NAME}",
       cmd: [{
@@ -79,7 +75,7 @@ const pm2Commands = {
          cmdConfigurableValues: ["APP_NAME"]
       }],
    }),
-   reload: (): command => ({
+   reload: () => ({
       name: "reload",
       actionDescription: "pm2 reload {APP_NAME}",
       cmd: [{
@@ -88,7 +84,7 @@ const pm2Commands = {
          cmdConfigurableValues: ["APP_NAME"]
       }],
    }),
-   ecosystem: (): command => ({
+   ecosystem: () => ({
       name: "ecosystem",
       actionDescription: "pm2 ACTION[start|restart|stop|delete] ecosystem.config.js",
       cmd: [{
@@ -97,7 +93,7 @@ const pm2Commands = {
          cmdConfigurableValues: ["ACTION"]
       }],
    }),
-   save: (): command => ({
+   save: () => ({
       name: "save",
       actionDescription: "pm2 save",
       cmd: [{
@@ -107,7 +103,7 @@ const pm2Commands = {
    })
 };
 
-const pm2CommandsSection: commandsSections = {
+const pm2CommandsSection = {
    name: "pm2",
    commands: {
       "-list": pm2Commands.list(),
@@ -129,4 +125,4 @@ const pm2CommandsSection: commandsSections = {
    }
 };
 
-export default pm2CommandsSection;
+module.exports = pm2CommandsSection;

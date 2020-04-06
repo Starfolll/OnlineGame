@@ -17,8 +17,8 @@ const logError_1 = __importDefault(require("./scripts/utils/consoleLogs/logError
 const run_gameManager_dev_1 = __importDefault(require("./scripts/run.gameManager.dev"));
 const run_lobbyManager_dev_1 = __importDefault(require("./scripts/run.lobbyManager.dev"));
 const run_staticAndApiServe_dev_1 = __importDefault(require("./scripts/run.staticAndApiServe.dev"));
+dotenv_1.default.config();
 (() => __awaiter(void 0, void 0, void 0, function* () {
-    dotenv_1.default.config();
     const isDev = process.env.BUILD_MODE === "dev";
     let serverMode = "";
     for (const arg of process.argv) {
