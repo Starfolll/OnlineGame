@@ -1,24 +1,16 @@
 const commandsSection = require("./commandPacks/index");
 
 module.exports = {
-   name: "Online game",
-   header: process.env.BUILD_MODE === "dev" ? "DEV" : "PROD",
-   currentDirPath: process.cwd(),
    commands: {
       "-br": {
          name: "br",
-         actionDescription: "builds server (tsc) and restart pm2 server",
+         actionDescription: "builds and restart prisma tsc pm2",
          cmd: [
-            {cmd: "prisma", cmdParams: ["deploy"]},
+            {cmd: "prisma", cmdParams: "deploy"},
             {cmd: "tsc"},
-            {cmd: "pm2", cmdParams: ["restart", "ecosystem.config.js"]},
+            {cmd: "pm2", cmdParams: "start ecosystem.config.js"},
          ]
       },
-      "-up": {
-         name: "up",
-         actionDescription: "pm2 ecosystem",
-         cmd: [{cmd: "pm2", cmdParams: ["restart", "ecosystem.config.js"]}]
-      }
    },
    sections: {
       ...commandsSection,

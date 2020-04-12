@@ -16,14 +16,18 @@ export default function SectionCover(props: {
    style?: React.CSSProperties,
    title?: any,
    children?: any,
-   inverted?: boolean
+   inverted?: boolean,
+   className?: string
 }) {
    const classes = useStyles();
    const inverted = props.inverted ?? false;
 
    return (
       <Box>
-         <Box style={{background: inverted ? "black" : "inherit", ...props.style}} className={classes.root}>
+         <Box
+            style={{background: inverted ? "black" : "inherit", ...props.style}}
+            className={`${classes.root} ${props.className}`}
+         >
             {!!props.title ?
                <GapContainer padding={"5px"}>
                   <SectionTitle>

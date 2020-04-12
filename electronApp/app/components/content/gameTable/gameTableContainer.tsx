@@ -9,11 +9,17 @@ import GameTablePlayersSection from "./tableSectinos/gameTablePlayersSection";
 export default function GameTableContainer() {
    return (
       <ElementTransition>
-         <Grid container style={{height: "calc(100% + 16px)"}} spacing={2}>
-            <GameTableHandSection/>
-            <GameTablePlayersSection/>
-            <GameTableStatsSection/>
+         <Grid container spacing={2}>
+            <Grid item>
+               <GameTablePlayersSection/>
+            </Grid>
+            <Grid item>
+               <GameTableStatsSection/>
+            </Grid>
          </Grid>
+
+         <GameTableHandSection/>
+
       </ElementTransition>
    );
 }
