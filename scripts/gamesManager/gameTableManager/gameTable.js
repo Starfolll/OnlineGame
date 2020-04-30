@@ -174,8 +174,7 @@ class GameTable extends table_1.default {
     }
     GivePlayerHeroAbilityTurn() {
         this.currentTurnType = "heroAbilityTurn";
-        console.log(this.heroes.IsHeroHasAbility(this.players.GetCurrentHeroWeightTurn()));
-        if (this.heroes.IsHeroHasAbility(this.players.GetCurrentHeroWeightTurn())) {
+        if (false && this.heroes.IsHeroHasAbility(this.players.GetCurrentHeroWeightTurn())) {
             const abilityType = this.heroes.GetHeroAbilityType(this.players.GetCurrentHeroWeightTurn());
             this.players.SetHeroAbilityTurnStart(abilityType);
             this.players.InformPlayersAboutHeroAbilityTurnStart(abilityType);
@@ -214,10 +213,8 @@ class GameTable extends table_1.default {
     EndGame() {
         this.isGameEnd = true;
         this.players.InformPlayersAboutGameEnd();
-        setTimeout(() => {
-            this.players.DisconnectAllPlayers();
-            this.onGameEndCallback(this.id);
-        }, 6000);
+        this.players.DisconnectAllPlayers();
+        this.onGameEndCallback(this.id);
     }
     AddChatMessage(playerId, message) {
         const chatMessage = new chatMessage_1.default(this.players.GetPlayerWithId(playerId).GetUserPublicData(), message);

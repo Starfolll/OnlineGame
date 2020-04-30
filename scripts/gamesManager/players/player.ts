@@ -26,7 +26,7 @@ export type playerEndGameScoreTable = {
 export type playerInfo = {
    user: userPublicData;
 
-   isPlayerDisconnected: boolean;
+   connected: boolean;
 
    isKing: boolean;
    isHeroPickTurnMade: boolean;
@@ -152,6 +152,11 @@ export class Player extends User {
    }
 
    public IsDistrictBuildCanBeMade(cardInGameId: number): boolean {
+      console.log(typeof this.buildLimit !== "undefined");
+      console.log(typeof this.buildLimit !== "undefined" && this.buildLimit + this.additionalBuildLimit > 0);
+      console.log(this.hand.some(c => c.gameId === cardInGameId && this.HasEnoughGold(c.cost)));
+      console.log(!this.IsMaxDistrictsBuilt());
+      console.log(this.IsDistrictCanBePlaced(cardInGameId));
       return typeof this.buildLimit !== "undefined" &&
          this.buildLimit + this.additionalBuildLimit > 0 &&
          this.hand.some(c => c.gameId === cardInGameId && this.HasEnoughGold(c.cost)) &&
@@ -246,7 +251,7 @@ export class Player extends User {
       const info: playerInfo = {
          "user": this.GetUserPublicData(),
 
-         "isPlayerDisconnected": this.IsConnected,
+         "connected": this.IsConnected,
 
          "isKing": this.isKing,
          "isHeroPickTurnMade": this.isHeroPickTurnMade,
@@ -320,7 +325,7 @@ export class Player extends User {
 
    public InformAboutPickHeroTurn(playerIdTurn: string, heroesWeightLeft: Array<number> | undefined): void {
       if (this.IsConnected)
-         this.connection.send(JSON.stringify(GetGameMessage.PrickHero(playerIdTurn, heroesWeightLeft)));
+         this.connection.send(JSON.stringify(GetGameMessage.PickHero(playerIdTurn, heroesWeightLeft)));
    }
 
    public InformAboutInitialHeroTurn(heroWeight: number, playerId: string): void {

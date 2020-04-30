@@ -27,8 +27,8 @@ function LoginPage(props: {
 
    const [isLoading, setIsLoading] = React.useState(false);
 
-   const [email, setEmail] = React.useState("");
-   const [password, setPassword] = React.useState("");
+   const [email, setEmail] = React.useState("email1@email.com");
+   const [password, setPassword] = React.useState("1234567890");
 
    const [emailError, setEmailError] = React.useState("");
    const [passwordError, setPasswordError] = React.useState("");

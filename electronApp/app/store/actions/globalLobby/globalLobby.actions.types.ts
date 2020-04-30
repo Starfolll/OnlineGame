@@ -118,7 +118,7 @@ export type lobbyData = {
 
 const DECLARE_GLOBAL_LOBBY = "DECLARE_GLOBAL_LOBBY";
 const ADD_CHAT_MESSAGE = "ADD_CHAT_MESSAGE";
-
+const DELETE_GLOBAL_LOBBY_DATA = "DELETE_GLOBAL_LOBBY_DATA";
 
 export interface DeclareGlobalLobby {
    type: typeof DECLARE_GLOBAL_LOBBY;
@@ -130,6 +130,11 @@ export interface AddChatMessage {
    message: chatMessageInfo;
 }
 
+export interface DeleteGlobalLobbyData {
+   type: typeof DELETE_GLOBAL_LOBBY_DATA;
+}
+
 export type globalLobbyActionsTypes =
    DeclareGlobalLobby |
-   AddChatMessage;
+   AddChatMessage |
+   DeleteGlobalLobbyData;

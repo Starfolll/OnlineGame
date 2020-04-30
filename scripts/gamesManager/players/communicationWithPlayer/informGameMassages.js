@@ -40,9 +40,9 @@ class GetGameMessage {
             "playerIdTurn": playerIdTurn
         };
     }
-    static PrickHero(playerIdTurn, heroesWeightLeft) {
+    static PickHero(playerIdTurn, heroesWeightLeft) {
         return {
-            "messageType": "prickHero",
+            "messageType": "pickHero",
             "heroesWeightLeft": heroesWeightLeft,
             "playerIdTurn": playerIdTurn
         };

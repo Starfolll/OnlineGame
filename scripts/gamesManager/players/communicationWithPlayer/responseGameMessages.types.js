@@ -6,7 +6,6 @@ var playerTurnResponse;
     playerTurnResponse["initialHeroTurnOptionPicked"] = "initialHeroTurnOptionPicked";
     playerTurnResponse["initialHeroCardPicked"] = "initialHeroCardPicked";
     playerTurnResponse["buildDistrict"] = "buildDistrict";
-    playerTurnResponse["buildTurnMade"] = "buildTurnMade";
     playerTurnResponse["chatMessage"] = "chatMessage";
     playerTurnResponse["heroAbilityUsed"] = "heroAbilityUsed";
 })(playerTurnResponse = exports.playerTurnResponse || (exports.playerTurnResponse = {}));

@@ -13,6 +13,9 @@ export default function globalLobbyReducer(
          if (!!state) state.lobbyData.chat.push(action.message);
          return Object.assign({}, state);
 
+      case "DELETE_GLOBAL_LOBBY_DATA":
+         return null;
+
       default:
          return state;
    }

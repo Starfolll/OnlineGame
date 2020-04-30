@@ -81,10 +81,6 @@ export class GameTableManager extends GameTable {
                     this.PlayBuildDistrict(playerId, messageBody);
                     break;
 
-                case playerTurnResponse.buildTurnMade:
-                    this.PlayEndOfBuildTurn(playerId, messageBody);
-                    break;
-
                 case playerTurnResponse.chatMessage:
                     this.PlaySendChatMessage(playerId, messageBody);
                     break;
@@ -141,14 +137,9 @@ export class GameTableManager extends GameTable {
 
         if (this.IsPlayerCanBuildDistrict(playerId, validMessage.cardInGameId))
             this.PlayerBuildDistrict(playerId, validMessage.cardInGameId);
-    }
+        else if (validMessage.cardInGameId === -1 && this.PlayerCanEndBuildTurn(playerId))
+           this.EndPlayerBuildTurn(playerId);
 
-    private PlayEndOfBuildTurn(playerId: string, messageBody: any): void {
-        const validMessage = IsGameMessageValid.GetValidBuildTurnMade(messageBody);
-        if (!validMessage) return;
-
-        if (this.PlayerCanEndBuildTurn(playerId))
-            this.EndPlayerBuildTurn(playerId);
     }
 
     private PlaySendChatMessage(playerId: string, messageBody: any): void {

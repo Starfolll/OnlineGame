@@ -14,3 +14,7 @@ export const globalLobbyActionsAddGlobalLobbyMessage = (message: chatMessageInfo
       message
    };
 };
+
+export const globalLobbyDeleteLobbyData = (): globalLobbyActionsTypes => ({
+   type: "DELETE_GLOBAL_LOBBY_DATA"
+});

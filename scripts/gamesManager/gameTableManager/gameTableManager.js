@@ -54,9 +54,6 @@ class GameTableManager extends gameTable_1.GameTable {
                 case responseGameMessages_types_1.playerTurnResponse.buildDistrict:
                     this.PlayBuildDistrict(playerId, messageBody);
                     break;
-                case responseGameMessages_types_1.playerTurnResponse.buildTurnMade:
-                    this.PlayEndOfBuildTurn(playerId, messageBody);
-                    break;
                 case responseGameMessages_types_1.playerTurnResponse.chatMessage:
                     this.PlaySendChatMessage(playerId, messageBody);
                     break;
@@ -106,12 +103,7 @@ class GameTableManager extends gameTable_1.GameTable {
             return;
         if (this.IsPlayerCanBuildDistrict(playerId, validMessage.cardInGameId))
             this.PlayerBuildDistrict(playerId, validMessage.cardInGameId);
-    }
-    PlayEndOfBuildTurn(playerId, messageBody) {
-        const validMessage = responseGameMessages_1.IsGameMessageValid.GetValidBuildTurnMade(messageBody);
-        if (!validMessage)
-            return;
-        if (this.PlayerCanEndBuildTurn(playerId))
+        else if (validMessage.cardInGameId === -1 && this.PlayerCanEndBuildTurn(playerId))
             this.EndPlayerBuildTurn(playerId);
     }
     PlaySendChatMessage(playerId, messageBody) {

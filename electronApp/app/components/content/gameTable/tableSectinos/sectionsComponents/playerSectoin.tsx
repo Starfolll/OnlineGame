@@ -11,7 +11,10 @@ export default function PlayerSection(props: {
    player: playerInfo
 }) {
    return (
-      <SectionCover>
+      <SectionCover style={{
+         border: props.player.isMyTurn ? "2px solid black" : "none",
+         background: props.player.connected ? "none" : "rgba(0, 0, 0, 0.1)"
+      }}>
          <GapContainer padding={"5px"} gap={"8px"}>
             <Grid container spacing={1}>
                <Grid item>

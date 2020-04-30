@@ -49,14 +49,8 @@ class IsGameMessageValid {
     }
     static GetValidBuiltDistrict(message) {
         const validateSchema = joi_1.default.object({
-            messageType: "builtDistrict",
-            cardInGameId: joi_1.default.required()
-        });
-        return !!validateSchema.validate(message)["error"] ? undefined : message;
-    }
-    static GetValidBuildTurnMade(message) {
-        const validateSchema = joi_1.default.object({
-            messageType: "buildTurnMade",
+            messageType: "buildDistrict",
+            cardInGameId: joi_1.default.number().required()
         });
         return !!validateSchema.validate(message)["error"] ? undefined : message;
     }

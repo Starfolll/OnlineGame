@@ -1,4 +1,5 @@
 import {userAccountData} from "../../store/actions/account/account.actions.types";
+import {globalLobbyDeleteLobbyData} from "../../store/actions/globalLobby/globalLobby.actions";
 import {globalLobbyMessagesResponse,} from "../../store/actions/globalLobby/globalLobby.actions.types";
 import {roomActionsDeleteRoom} from "../../store/actions/room/room.actions";
 import GameConnection from "../gameWs/gameConnection";
@@ -125,6 +126,8 @@ export default class LobbyWSConnection {
                   dispatch: this.dispatch,
                   wsUrl: `ws://localhost:8010`,
                });
+               
+               this.dispatch(globalLobbyDeleteLobbyData());
                break;
          }
       };

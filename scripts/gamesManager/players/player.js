@@ -80,6 +80,11 @@ class Player extends user_1.default {
             this.initialTurnCardsToPickFrom.some(c => c.gameId === cardInGameId);
     }
     IsDistrictBuildCanBeMade(cardInGameId) {
+        console.log(typeof this.buildLimit !== "undefined");
+        console.log(typeof this.buildLimit !== "undefined" && this.buildLimit + this.additionalBuildLimit > 0);
+        console.log(this.hand.some(c => c.gameId === cardInGameId && this.HasEnoughGold(c.cost)));
+        console.log(!this.IsMaxDistrictsBuilt());
+        console.log(this.IsDistrictCanBePlaced(cardInGameId));
         return typeof this.buildLimit !== "undefined" &&
             this.buildLimit + this.additionalBuildLimit > 0 &&
             this.hand.some(c => c.gameId === cardInGameId && this.HasEnoughGold(c.cost)) &&
@@ -155,7 +160,7 @@ class Player extends user_1.default {
     GetInfo(privateInfo) {
         const info = {
             "user": this.GetUserPublicData(),
-            "isPlayerDisconnected": this.IsConnected,
+            "connected": this.IsConnected,
             "isKing": this.isKing,
             "isHeroPickTurnMade": this.isHeroPickTurnMade,
             "isInitialHeroTurnMade": this.isInitialHeroTurnMade,
@@ -218,7 +223,7 @@ class Player extends user_1.default {
     }
     InformAboutPickHeroTurn(playerIdTurn, heroesWeightLeft) {
         if (this.IsConnected)
-            this.connection.send(JSON.stringify(informGameMassages_1.GetGameMessage.PrickHero(playerIdTurn, heroesWeightLeft)));
+            this.connection.send(JSON.stringify(informGameMassages_1.GetGameMessage.PickHero(playerIdTurn, heroesWeightLeft)));
     }
     InformAboutInitialHeroTurn(heroWeight, playerId) {
         if (this.IsConnected)

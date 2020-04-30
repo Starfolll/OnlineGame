@@ -1,6 +1,5 @@
 import {
-   buildTurnMade,
-   builtDistrict,
+   buildDistrict,
    gameChatMessage,
    heroAbilityUsed,
    heroPicked,
@@ -62,21 +61,13 @@ export class IsGameMessageValid {
       return !!validateSchema.validate(message)["error"] ? undefined : message as heroAbilityUsed;
    }
 
-   public static GetValidBuiltDistrict(message: any): builtDistrict | undefined {
+   public static GetValidBuiltDistrict(message: any): buildDistrict | undefined {
       const validateSchema = Joi.object({
-         messageType: "builtDistrict",
-         cardInGameId: Joi.required()
+         messageType: "buildDistrict",
+         cardInGameId: Joi.number().required()
       });
 
-      return !!validateSchema.validate(message)["error"] ? undefined : message as builtDistrict;
-   }
-
-   public static GetValidBuildTurnMade(message: any): buildTurnMade | undefined {
-      const validateSchema = Joi.object({
-         messageType: "buildTurnMade",
-      });
-
-      return !!validateSchema.validate(message)["error"] ? undefined : message as builtDistrict;
+      return !!validateSchema.validate(message)["error"] ? undefined : message as buildDistrict;
    }
 
    public static GetValidChatMessage(message: any, messageLengthLimit: number): gameChatMessage | undefined {

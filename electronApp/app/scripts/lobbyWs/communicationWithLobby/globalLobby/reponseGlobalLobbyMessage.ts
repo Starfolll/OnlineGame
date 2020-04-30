@@ -52,7 +52,10 @@ export default class GlobalLobbyResponse {
    }
 
    public static InviteToRoom(dispatch: Function, roomId: string, userId: string): void {
-      console.log("invite to room");
       dispatch(accountActionSetInviteToRoom(roomId, userId));
+   }
+
+   public static DeleteLobbyData(dispatch: Function): void{
+      dispatch()
    }
 }

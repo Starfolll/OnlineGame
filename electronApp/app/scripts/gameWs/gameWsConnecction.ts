@@ -1,6 +1,14 @@
 import {userAccountData} from "../../store/actions/account/account.actions.types";
+import {
+   tableActionSetHeroesWeightToPickFrom,
+   tableActionSetInitialTurnOptions,
+   tableActionsSetBuildLimit,
+   tableActionsSetProposedCards
+} from "../../store/actions/table/table.actions";
 import {gameTableMessagesResponse} from "../../store/actions/table/table.actions.types";
 import GetGameMessage from "./communicationWithLobby/informGameMessages";
+import {initialHeroTurnOptions} from "./communicationWithLobby/informGameMessages.types";
+import {tableActions} from "./communicationWithLobby/responseTableActions";
 import GameTableResponse from "./communicationWithLobby/responseTableMessage";
 
 export default class GameWsConnection {
@@ -10,6 +18,7 @@ export default class GameWsConnection {
    public readonly tableId: string;
 
    private readonly dispatch: Function;
+   private readonly tableActions: tableActions;
 
    constructor(props: {
       tableId: string,
@@ -23,6 +32,28 @@ export default class GameWsConnection {
       this.tableId = props.tableId;
 
       this.socket = new WebSocket(this.wsUrl);
+
+      this.tableActions = {
+         pickHero: (hw: number) => {
+            this.socket.send(JSON.stringify(GetGameMessage.HeroPicked(hw)));
+            this.dispatch(tableActionSetHeroesWeightToPickFrom(undefined));
+         },
+
+         pickInitialOption: (option: initialHeroTurnOptions) => {
+            this.socket.send(JSON.stringify(GetGameMessage.InitialHeroTurnOptionPicked(option)));
+            this.dispatch(tableActionSetInitialTurnOptions(undefined));
+         },
+
+         pickInitialCard: (cardInGameId: number) => {
+            this.socket.send(JSON.stringify(GetGameMessage.InitialHeroCardPicked(cardInGameId)));
+            this.dispatch(tableActionsSetProposedCards(undefined));
+         },
+
+         builtDistrict: (cardInGameId: number) => {
+            this.socket.send(JSON.stringify(GetGameMessage.BuiltDistrict(cardInGameId)));
+            if (cardInGameId === -1) this.dispatch(tableActionsSetBuildLimit(undefined));
+         }
+      };
 
       this.SendInitialConnectionData();
 
@@ -48,7 +79,82 @@ export default class GameWsConnection {
          console.log(data);
          switch (data.messageType) {
             case "tableInfo":
-               GameTableResponse.GameTableInfo(this.dispatch, data.gameTable);
+               GameTableResponse.GameTableInfo(this.dispatch, {
+                  table: data.gameTable,
+                  actions: this.tableActions
+               });
+               break;
+
+            case "heroPickTurnStart":
+               GameTableResponse.HeroPickTurnStart(
+                  this.dispatch,
+                  data.heroesShiftedWeight,
+                  data.playerIdTurn,
+                  data.heroesWeightLeft
+               );
+               break;
+
+            case "pickHero":
+               GameTableResponse.PickHero(
+                  this.dispatch,
+                  data.playerIdTurn,
+                  data.heroesWeightLeft
+               );
+               break;
+
+            case "heroInitialTurnStarted":
+               GameTableResponse.HeroInitialTurnStarted(
+                  this.dispatch,
+                  data.playerId,
+                  data.heroId,
+                  data.options
+               );
+               break;
+
+            case "pickOneOfProposedCards":
+               GameTableResponse.PickOneOfProposedCards(
+                  this.dispatch,
+                  data.cards
+               );
+               break;
+
+            case "heroBuildTurnStarted":
+               GameTableResponse.HeroBuildTurnStarted(
+                  this.dispatch,
+                  data.playerId,
+                  data.buildLimit
+               );
+               break;
+
+            case "playerBuiltDistrict":
+               GameTableResponse.PlayerBuiltDistrict(
+                  this.dispatch,
+                  data.playerId,
+                  data.card
+               );
+               break;
+
+            case "playerReceivedGold":
+               GameTableResponse.PlayerReceivedGold(
+                  this.dispatch,
+                  data.count,
+                  data.playerId
+               );
+               break;
+
+            case "playerReceivedCard":
+               GameTableResponse.PlayerReceivedCard(
+                  this.dispatch,
+                  data.card,
+                  data.playerId
+               );
+               break;
+
+            case "gameEnd":
+               GameTableResponse.GameEnd(
+                  this.dispatch,
+                  data.scoreTable
+               );
                break;
          }
       };

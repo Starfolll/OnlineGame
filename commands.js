@@ -1,63 +1,62 @@
-const commandsSection = require("./commandPacks/index");
-
 module.exports = {
-   commands: {
-      "-br": {
-         name: "br",
-         actionDescription: "builds and restart prisma tsc pm2",
-         cmd: [
-            {cmd: "prisma", cmdParams: "deploy"},
-            {cmd: "tsc"},
-            {cmd: "pm2", cmdParams: "start ecosystem.config.js"},
-         ]
-      },
+   "name": "THE VOID",
+   "header": " This files contains commands and their description. \n Editing is available by changing commands.js file. \n To enter section you need to print its name. \n To run command write: -<<commandName>>",
+   "currentDirPath": "/home/starfolll/Proects/OnlineGame",
+   "showHelp": true,
+   "sections": {
+      "electronApp": {
+         "name": "electronApp",
+         "currentDirPath": "/home/starfolll/Proects/OnlineGame/electronApp",
+         "header": "",
+         "showHelp": true,
+         "sections": {},
+         "commands": {
+            "-dir": {
+               "actionDescription": "",
+               "cmd": [
+                  {
+                     "cmd": "dir",
+                     "cmdParams": "",
+                     "ignoreLogs": false
+                  }
+               ],
+               "name": "dir"
+            }
+         }
+      }
    },
-   sections: {
-      ...commandsSection,
-      "tsc": {
-         name: "tsc",
-         commands: {
-            "-build": {
-               name: "build",
-               actionDescription: "build .ts files",
-               cmd: [{
-                  cmd: "tsc"
-               }]
-            }
-         },
-      },
-      "prisma": {
-         name: "prisma",
-         commands: {
-            "-deploy": {
-               name: "deploy",
-               cmd: [{
-                  cmd: "prisma",
-                  cmdParams: ["deploy"]
-               }]
-            }
-         }
-      },
-      "docker-compose": {
-         name: "docker-compose",
-         commands: {
-            "-up": {
-               name: "up",
-               actionDescription: "docker-compose up",
-               cmd: [{
-                  cmd: "sudo",
-                  cmdParams: "docker-compose up".split(" ")
-               }]
+   "commands": {
+      "-rs": {
+         "actionDescription": "restart ecosystem",
+         "cmd": [
+            {
+               "cmd": "tsc",
+               "cmdParams": "",
+               "ignoreLogs": false
             },
-            "-down": {
-               name: "down",
-               actionDescription: "docker-compose down",
-               cmd: [{
-                  cmd: "sudo",
-                  cmdParams: "docker-compose down".split(" ")
-               }]
+            {
+               "cmd": "pm2 delete ecosystem.config.js",
+               "cmdParams": "",
+               "ignoreLogs": false
+            },
+            {
+               "cmd": "pm2 start ecosystem.config.js",
+               "cmdParams": "",
+               "ignoreLogs": false
             }
-         }
+         ],
+         "name": "rs"
       },
+      "-monit": {
+         "actionDescription": "pm2 monit",
+         "cmd": [
+            {
+               "cmd": "pm2 monit",
+               "cmdParams": "",
+               "ignoreLogs": false
+            }
+         ],
+         "name": "monit"
+      }
    }
 };

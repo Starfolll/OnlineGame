@@ -2,7 +2,7 @@
   "name": "electronApp",
   "version": "0.0.1",
   "scripts": {
-    "build": "tsc && webpack",
+    "build": "webpack",
     "electron": "electron ./dist/main.js --enable-transparent-visuals --disable-gpu",
     "start": "npm run build && electron ./dist/main.js --enable-transparent-visuals --disable-gpu"
   },

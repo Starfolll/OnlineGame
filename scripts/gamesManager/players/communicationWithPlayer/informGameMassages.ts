@@ -74,9 +74,9 @@ export class GetGameMessage {
       }
    }
 
-   static PrickHero(playerIdTurn: string, heroesWeightLeft: Array<number> | undefined): playerPickingHero {
+   static PickHero(playerIdTurn: string, heroesWeightLeft: Array<number> | undefined): playerPickingHero {
       return {
-         "messageType": "prickHero",
+         "messageType": "pickHero",
          "heroesWeightLeft": heroesWeightLeft,
          "playerIdTurn": playerIdTurn
       }
