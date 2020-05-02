@@ -1,5 +1,11 @@
 import {initialHeroTurnOptions} from "../../../scripts/gameWs/communicationWithLobby/informGameMessages.types";
-import {cardInfo, playerEndGameScoreTable, tableActionsTypes, tableWidthActions} from "./table.actions.types";
+import {
+   cardInfo,
+   heroAbilityTypes,
+   playerEndGameScoreTable,
+   tableActionsTypes,
+   tableWidthActions
+} from "./table.actions.types";
 
 
 export const tableActionDeclareTable = (gameTable: tableWidthActions): tableActionsTypes => ({
@@ -28,6 +34,10 @@ export const tableActionsSetProposedCards = (cards: Array<cardInfo> | undefined)
 
 export const tableActionsSetBuildLimit = (buildLimit: number | undefined): tableActionsTypes => ({
    type: "SET_BUILD_LIMIT", buildLimit
+});
+
+export const tableActionsSetPlayerAbilityTurnType = (heroAbilityType: heroAbilityTypes | undefined): tableActionsTypes => ({
+   type: "SET_HERO_ABILITY_TURN_TYPE", heroAbilityType
 });
 
 export const tableActionRevealPlayerHero = (playerId: string, heroId: number): tableActionsTypes => ({

@@ -13,6 +13,7 @@ const SERVER_MESSAGE_HERO_BUILD_TURN_STARTED = "heroBuildTurnStarted";
 const SERVER_MESSAGE_PLAYER_BUILT_DISTRICT = "playerBuiltDistrict";
 const SERVER_MESSAGE_PLAYER_RECEIVED_GOLD = "playerReceivedGold";
 const SERVER_MESSAGE_PLAYER_RECEIVED_CARD = "playerReceivedCard";
+const SERVER_MESSAGE_HERO_ABILITY_TURN_STARTED = "heroAbilityTurnStarted";
 const SERVER_MESSAGE_GAME_END = "gameEnd";
 
 export interface ServerMessageGameTableInfo {
@@ -69,6 +70,12 @@ export interface ServerMessagePlayerBuiltDistrict {
    card: cardInfo;
 }
 
+export interface ServerMessageHeroAbilityTurnStarted {
+   messageType: typeof SERVER_MESSAGE_HERO_ABILITY_TURN_STARTED;
+   heroAbilityType: heroAbilityTypes;
+   playerId: string;
+}
+
 export interface ServerMessageGameEnd {
    messageType: typeof SERVER_MESSAGE_GAME_END;
    scoreTable: Array<playerEndGameScoreTable>;
@@ -84,6 +91,7 @@ export type gameTableMessagesResponse =
    ServerMessagePlayerBuiltDistrict |
    ServerMessagePlayerReceivedGold |
    ServerMessagePlayerReceivedCard |
+   ServerMessageHeroAbilityTurnStarted |
    ServerMessageGameEnd;
 
 
@@ -221,6 +229,7 @@ const SET_BUILD_LIMIT = "SET_BUILD_LIMIT";
 const REVEAL_PLAYER_HERO = "REVEAL_PLAYER_HERO";
 const REMOVE_CARD_FROM_HAND = "REMOVE_CARD_FROM_HAND";
 const PLAYER_BUILT_CARD = "PLAYER_BUILT_CARD";
+const SET_HERO_ABILITY_TURN_TYPE = "SET_HERO_ABILITY_TURN_TYPE";
 const PLAYER_RECEIVED_GOLD = "PLAYER_RECEIVED_GOLD";
 const PLAYER_RECEIVED_CARD = "PLAYER_RECEIVED_CARD";
 const GAME_END = "GAME_END";
@@ -259,6 +268,11 @@ interface SetProposedCard {
 interface SetBuildLimit {
    type: typeof SET_BUILD_LIMIT;
    buildLimit: number | undefined;
+}
+
+interface SetHeroAbilityTurnType {
+   type: typeof SET_HERO_ABILITY_TURN_TYPE;
+   heroAbilityType: heroAbilityTypes | undefined;
 }
 
 interface RevealPlayerHero {
@@ -311,6 +325,7 @@ export type tableActionsTypes =
    RevealPlayerHero |
    RemoveCardFromHand |
    PlayerBuiltCard |
+   SetHeroAbilityTurnType |
    PlayerReceivedGold |
    PlayerReceivedCard |
    GameEnd |

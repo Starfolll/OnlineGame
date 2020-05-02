@@ -1,4 +1,5 @@
 import {Grid} from "@material-ui/core";
+import Button from "@material-ui/core/Button";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import React from "react";
 import {useSelector} from "react-redux";
@@ -10,7 +11,6 @@ import Hero from "./sectionsComponents/hero";
 
 const useStyles = makeStyles(theme => ({
    card: {
-      transition: "top 0.3s, left 0.3s",
       "&:hover": {
          top: "-70px !important",
          zIndex: "1"
@@ -26,22 +26,12 @@ export default function GameTableHandSection() {
       (state: rootReducerTypes) =>
          state.gameTable.table.players.filter((u: playerInfo) => u.user.id === account.id)[0]);
 
-   const buildCard = (cardInGameId: number) => gameTable.actions.builtDistrict(cardInGameId);
+   const buildCard = (cardInGameId: number) => {
+      if (typeof me.buildLimit !== "undefined")
+         gameTable.actions.builtDistrict(cardInGameId);
+   };
 
-   const hand = !!me.hand ? me.hand.map(c => ({...c, sequenceNum: 0})) : null;
-   if (!!hand) for (let i = 0; i < hand.length; i++) hand[i].sequenceNum = i;
-
-   if (typeof me.buildLimit !== "undefined") hand!.push({
-      gameId: -1,
-      sequenceNum: hand!.length,
-      cardClass: "all",
-      cost: 0,
-      description: "skip",
-      id: -1,
-      name: "skip"
-   });
-
-   const cardsCount = hand!.length;
+   const cardsCount = me.hand!.length;
    const gap = typeof me.buildLimit !== "undefined" ? 20 : -20;
    const cardWidth = 170;
    const cardsWithSpace = cardsCount * (cardWidth + gap);
@@ -58,13 +48,17 @@ export default function GameTableHandSection() {
    };
 
    return (
-      <Grid style={{position: "fixed", bottom: "160px", left: "50%"}}>
+      <div style={{position: "fixed", bottom: "160px", left: "50%"}}>
          <div style={{position: "relative", top: 0, left: 0}}>
-            {!!hand ? hand.map(c =>
+            {!!me.hand ? me.hand.map(c =>
                <Grid
                   item key={c.gameId}
-                  onClick={typeof me.buildLimit !== "undefined" ? () => buildCard(c.gameId) : () => ({})}
-                  style={{position: "absolute", ...getCardPosition(c.sequenceNum)}}
+                  onClick={() => buildCard(c.gameId)}
+                  style={{
+                     position: "absolute",
+                     transition: "top 0.3s, left 0.3s",
+                     ...getCardPosition(me.hand!.indexOf(c))
+                  }}
                   className={typeof me.buildLimit !== "undefined" ? "" : classes.card}
                >
                   <BuildingCard card={c}/>
@@ -75,9 +69,23 @@ export default function GameTableHandSection() {
          <div style={{position: "fixed", bottom: "30px", left: "30px"}}>
             {!!me.pickedHeroWeight && gameTable.table.tableInfo.heroes.filter((h: heroInfo) => h.weight === me.pickedHeroWeight).length > 0 ?
                <div>
-                  <Hero hero={gameTable.table.tableInfo.heroes.filter((h: heroInfo) => h.weight === me.pickedHeroWeight)[0]}/>
+                  <Hero hero={
+                     gameTable
+                        .table.tableInfo.heroes
+                        .filter((h: heroInfo) => h.weight === me.pickedHeroWeight)[0]
+                  }/>
                </div> : ""}
          </div>
-      </Grid>
+
+         <div style={{position: "fixed", bottom: "30px", right: "30px"}}>
+            {me.abilityTurnType}
+            {typeof me.buildLimit !== "undefined" ?
+               <div>
+                  <Button onClick={() => buildCard(-1)}>
+                     Continue
+                  </Button>
+               </div> : ""}
+         </div>
+      </div>
    );
 }

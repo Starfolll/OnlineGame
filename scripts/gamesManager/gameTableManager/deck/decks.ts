@@ -7,7 +7,7 @@ export class Decks {
 
         let cardGameId = 0;
 
-        for (let i = 0; i < 54; i++) cards.push(new Tavern(cardGameId++));
+        for (let i = 0; i < 1; i++) cards.push(new Tavern(cardGameId++));
 
         return cards;
     }

@@ -2,10 +2,10 @@ import {userAccountData} from "../../store/actions/account/account.actions.types
 import {
    tableActionSetHeroesWeightToPickFrom,
    tableActionSetInitialTurnOptions,
-   tableActionsSetBuildLimit,
+   tableActionsSetBuildLimit, tableActionsSetPlayerAbilityTurnType,
    tableActionsSetProposedCards
 } from "../../store/actions/table/table.actions";
-import {gameTableMessagesResponse} from "../../store/actions/table/table.actions.types";
+import {gameTableMessagesResponse, heroAbilityTypes} from "../../store/actions/table/table.actions.types";
 import GetGameMessage from "./communicationWithLobby/informGameMessages";
 import {initialHeroTurnOptions} from "./communicationWithLobby/informGameMessages.types";
 import {tableActions} from "./communicationWithLobby/responseTableActions";
@@ -47,6 +47,11 @@ export default class GameWsConnection {
          pickInitialCard: (cardInGameId: number) => {
             this.socket.send(JSON.stringify(GetGameMessage.InitialHeroCardPicked(cardInGameId)));
             this.dispatch(tableActionsSetProposedCards(undefined));
+         },
+
+         useHeroAbility: (abilityType: heroAbilityTypes, abilityData: any) => {
+            this.socket.send(JSON.stringify(GetGameMessage.HeroAbilityUsed(abilityType, abilityData)));
+            this.dispatch(tableActionsSetPlayerAbilityTurnType(undefined));
          },
 
          builtDistrict: (cardInGameId: number) => {
@@ -147,6 +152,13 @@ export default class GameWsConnection {
                   this.dispatch,
                   data.card,
                   data.playerId
+               );
+               break;
+
+            case "heroAbilityTurnStarted":
+               GameTableResponse.HeroAbilityTurnStarted(
+                  this.dispatch,
+                  data.heroAbilityType,
                );
                break;
 

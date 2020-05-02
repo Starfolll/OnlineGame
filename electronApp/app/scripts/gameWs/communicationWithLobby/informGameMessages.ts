@@ -1,5 +1,6 @@
+import {heroAbilityTypes} from "../../../store/actions/table/table.actions.types";
 import {
-   buildDistrict,
+   buildDistrict, heroAbilityUsed,
    heroPicked,
    initialGameConnection,
    initialHeroCardPicked,
@@ -26,5 +27,9 @@ export default class GetGameMessage {
 
    public static BuiltDistrict(cardInGameId: number): buildDistrict {
       return {messageType: "buildDistrict", cardInGameId};
+   }
+
+   public static HeroAbilityUsed(abilityType: heroAbilityTypes, abilityData: any): heroAbilityUsed{
+      return {messageType: "heroAbilityUsed", abilityData}
    }
 }

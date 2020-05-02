@@ -49,6 +49,13 @@ export default function gameTableReducer(
                   state.table.players[i].buildLimit = action.buildLimit;
          return Object.assign({}, state);
 
+      case "SET_HERO_ABILITY_TURN_TYPE":
+         if (!!state)
+            for (let i = 0; i < state.table.players.length; i++)
+               if (state.table.players[i].isMyTurn)
+                  state.table.players[i].abilityTurnType = action.heroAbilityType;
+         return Object.assign({}, state);
+
       case "REVEAL_PLAYER_HERO":
          if (!!state)
             for (let i = 0; i < state.table.players.length; i++)

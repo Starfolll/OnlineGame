@@ -6,16 +6,19 @@ import {cardInfo, heroInfo, playerInfo} from "../../../../store/actions/table/ta
 import {rootReducerTypes} from "../../../../store/reducers";
 import GapContainer from "../../gapContainer/GapConteiner";
 import SectionCover from "../../sectionCover/SectionCover";
+import HeroAbilityOverlayChangeHand from "./heroesAbilityOverlay/HeroAbilityOverlay.ChangeHand";
 import BuildingCard from "./sectionsComponents/buildingCard";
 import Hero from "./sectionsComponents/hero";
 
 
 export default function GameTableInfoSection() {
    const gameTable = useSelector((state: rootReducerTypes) => state.gameTable);
+   const account = useSelector((state: rootReducerTypes) => state.account);
 
    const myHeroesWeightToPickFrom = gameTable.table.players.filter((p: playerInfo) => !!p.heroesWeightToPickFrom)[0];
    const myInitialTurnOptionsToPickFrom = gameTable.table.players.filter((p: playerInfo) => !!p.initialTurnOptionsToPickFrom)[0];
    const myCardsToPickFrom = gameTable.table.players.filter((p: playerInfo) => !!p.initialTurnCardsToPickFrom)[0];
+   const me: playerInfo = gameTable.table.players.filter((u: playerInfo) => u.user.id === account.id)[0];
 
    const pickHero = (hw: number) => gameTable.actions.pickHero(hw);
    const pickInitialTurnOption = (option: initialHeroTurnOptions) => gameTable.actions.pickInitialOption(option);
@@ -65,6 +68,15 @@ export default function GameTableInfoSection() {
                   </Grid>
                )) : ""}
             </Grid>
+
+            {!!me.abilityTurnType ? (() => {
+               switch (me.abilityTurnType) {
+                  case "changeHand":
+                     return <HeroAbilityOverlayChangeHand/>;
+                  default:
+                     return "????";
+               }
+            })() : ""}
          </GapContainer>
       </SectionCover>
    );

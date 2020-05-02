@@ -11,9 +11,15 @@ import {
    tableActionSetPlayerTurn,
    tableActionSetShiftedHeroes,
    tableActionsSetBuildLimit,
+   tableActionsSetPlayerAbilityTurnType,
    tableActionsSetProposedCards
 } from "../../../store/actions/table/table.actions";
-import {cardInfo, playerEndGameScoreTable, tableWidthActions} from "../../../store/actions/table/table.actions.types";
+import {
+   cardInfo,
+   heroAbilityTypes,
+   playerEndGameScoreTable,
+   tableWidthActions
+} from "../../../store/actions/table/table.actions.types";
 import {initialHeroTurnOptions} from "./informGameMessages.types";
 
 
@@ -50,6 +56,10 @@ export default class GameTableResponse {
       dispatch(tableActionSetPlayerTurn(playerId));
 
       if (!!buildLimit) dispatch(tableActionsSetBuildLimit(buildLimit));
+   }
+
+   public static HeroAbilityTurnStarted(dispatch: Function, heroAbilityType: heroAbilityTypes): void {
+      dispatch(tableActionsSetPlayerAbilityTurnType(heroAbilityType));
    }
 
    public static PlayerBuiltDistrict(dispatch: Function, playerId: string, card: cardInfo): void {

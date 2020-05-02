@@ -5,7 +5,7 @@ class Decks {
     static get defaultDeck() {
         const cards = [];
         let cardGameId = 0;
-        for (let i = 0; i < 54; i++)
+        for (let i = 0; i < 1; i++)
             cards.push(new Tavern_1.Tavern(cardGameId++));
         return cards;
     }
